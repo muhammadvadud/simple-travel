@@ -1,0 +1,60 @@
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django_core.models import AbstractBaseModel
+from .tickets import TicketsModel
+
+
+class HotelModel(AbstractBaseModel):
+    ticket = models.ForeignKey(TicketsModel, related_name="ticket_hotel", verbose_name=_("ticket"),
+                               on_delete=models.CASCADE)
+    name = models.CharField(verbose_name=_("name"), max_length=255)
+    address = models.TextField(verbose_name=_("address"))
+    city = models.CharField(verbose_name=_("city"), max_length=100)
+    country = models.CharField(verbose_name=_("city"), max_length=100)
+    desc = models.TextField(verbose_name=_("description"), blank=True, null=True)
+    phone = models.CharField(verbose_name=_("phone number"), max_length=50, blank=True, null=True)
+    website = models.URLField(verbose_name=_("hotel website"), blank=True, null=True)
+    rating = models.FloatField(verbose_name=_("rating"), blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.pk)
+
+    @classmethod
+    def _create_fake(self):
+        return self.objects.create(
+            name="mock",
+            address="mock",
+            city="mock",
+            country="mock",
+            desc="mock",
+            phone="mock",
+            website="https://www.default.com/",
+            rating=4.5,
+        )
+
+    class Meta:
+        db_table = "hotel"
+        verbose_name = _("HotelModel")
+        verbose_name_plural = _("HotelModels")
+
+
+class HotelImagesModel(AbstractBaseModel):
+    image = models.ImageField(verbose_name=_("image"), upload_to="hotel_images/")
+    hotel = models.ForeignKey(HotelModel, verbose_name=_("hotel"), on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.pk)
+
+    @classmethod
+    def _create_fake(self):
+        return self.objects.create(
+            image="resources/static/images/logo.png",
+            hotel=HotelModel._create_fake(),
+        )
+
+    class Meta:
+        db_table = "hotel_images"
+        verbose_name = _("HotelImagesModel")
+        verbose_name_plural = _("HotelImagesModels")
