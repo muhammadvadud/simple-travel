@@ -4,7 +4,32 @@ from django_core.models import AbstractBaseModel
 from .tickets import TicketsModel
 
 
+class HotelTypeModel(models.Model):
+    name = models.CharField(verbose_name=_("name"), max_length=255)
+
+    def __str__(self):
+        return str(self.pk)
+
+    @classmethod
+    def _create_fake(self):
+        return self.objects.create(
+            name="mock",
+        )
+
+    class Meta:
+        db_table = "hotel_types"
+        verbose_name = _("HotelTypeModel")
+        verbose_name_plural = _("HotelTypeModels")
+
+
 class HotelModel(AbstractBaseModel):
+    MEAL_PLAN_CHOICES = [
+        ("all_inclusive", "All Inclusive"),
+        ("breakfast", "Breakfast Only"),
+        ("half_board", "Half Board"),
+        ("full_board", "Full Board"),
+    ]
+
     ticket = models.ForeignKey(TicketsModel, related_name="ticket_hotel", verbose_name=_("ticket"),
                                on_delete=models.CASCADE)
     name = models.CharField(verbose_name=_("name"), max_length=255)
@@ -15,6 +40,9 @@ class HotelModel(AbstractBaseModel):
     phone = models.CharField(verbose_name=_("phone number"), max_length=50, blank=True, null=True)
     website = models.URLField(verbose_name=_("hotel website"), blank=True, null=True)
     rating = models.FloatField(verbose_name=_("rating"), blank=True, null=True)
+    meal_plan = models.CharField(verbose_name=_("meal plan"), choices=MEAL_PLAN_CHOICES, max_length=255,
+                                 default="breakfast")
+    hotel_type = models.ManyToManyField(HotelTypeModel, verbose_name=_("hotel type"))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

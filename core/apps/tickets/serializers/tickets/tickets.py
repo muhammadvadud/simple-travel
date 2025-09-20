@@ -3,9 +3,10 @@ from core.apps.tickets.models import TicketsModel, TicketsImagesModel, TicketsAm
     TicketsIncludedServicesModel, TicketsItineraryModel, TicketsItineraryImagesModel, TicketsItineraryDestinationsModel, \
     TicketsHotelMealsModel, TicketsCommentsModel
 from core.apps.accounts.models import User
-
 from core.apps.accounts.serializers.user import UserSerializer
 from core.apps.tickets.models.tariff import TariffModel
+from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
+
 
 
 class TicketsTariffSerializer(serializers.ModelSerializer):
@@ -108,7 +109,34 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
 
 
 class ListTicketsSerializer(BaseTicketsSerializer):
-    class Meta(BaseTicketsSerializer.Meta): ...
+    ticket_images = serializers.SerializerMethodField()
+    ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
+    badge = ListBadgeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = TicketsModel
+        fields = [
+            "id",
+            "title",
+            "price",
+            "departure_date",
+            "departure",
+            "passenger_count",
+            "rating",
+            "duration_days",
+            "destination",
+            "ticket_images",
+            "ticket_amenities",
+            "passenger_count",
+            "badge",
+            "visa_required"
+        ]
+
+    def get_ticket_images(self, obj):
+        image = obj.ticket_images.first()
+        if image:
+            return TicketsImageSerializer(image).data
+        return None
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):

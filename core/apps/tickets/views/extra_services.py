@@ -14,7 +14,7 @@ from core.apps.tickets.serializers.extra_services import (
 )
 
 
-@extend_schema(tags=["extra_servoces"])
+@extend_schema(tags=["extra_services"])
 class ExtraServicesView(BaseViewSetMixin, ReadOnlyModelViewSet):
     queryset = ExtraServicesModel.objects.all()
     serializer_class = ListExtraServicesSerializer

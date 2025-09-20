@@ -7,7 +7,7 @@ class BasePostSerializer(serializers.ModelSerializer):
         model = PostModel
         fields = [
             "id",
-            "name",
+            "title",
 
         ]
 
@@ -24,6 +24,6 @@ class CreatePostSerializer(BasePostSerializer):
     class Meta(BasePostSerializer.Meta):
         fields = [
             "id",
-            "name",
+            "title",
 
         ]

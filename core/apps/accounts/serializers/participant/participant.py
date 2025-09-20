@@ -8,7 +8,6 @@ class BaseParticipantSerializer(serializers.ModelSerializer):
         model = ParticipantModel
         fields = [
             "id",
-            "name",
         ]
 
 
@@ -24,5 +23,4 @@ class CreateParticipantSerializer(BaseParticipantSerializer):
     class Meta(BaseParticipantSerializer.Meta):
         fields = [
             "id",
-            "name",
         ]

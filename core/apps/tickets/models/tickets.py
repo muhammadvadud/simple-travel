@@ -4,7 +4,6 @@ from django_core.models import AbstractBaseModel
 
 from core.apps.accounts.models import User
 from core.apps.accounts.models.participant import ParticipantModel
-
 from .tariff import TariffModel
 from django.utils.text import slugify
 
@@ -29,7 +28,9 @@ class TicketsModel(AbstractBaseModel):
     duration_days = models.IntegerField(verbose_name=_("duration days"))
     hotel_meals = models.TextField(verbose_name=_("hotel meals"), null=True, blank=True)
     tariff = models.ManyToManyField(TariffModel, related_name="ticket_tariffs", verbose_name=_("tariff"))
-    slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True)
+    slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True, null=True, blank=True)
+    badge = models.ManyToManyField("tickets.BadgeModel", verbose_name=_("badge"), null=True, blank=True)
+    visa_required = models.BooleanField(verbose_name=_("visa required"))
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_("updated at"), auto_now=True)
 
@@ -43,6 +44,8 @@ class TicketsModel(AbstractBaseModel):
 
     @classmethod
     def _create_fake(self):
+        from core.apps.tickets.models.badge import BadgeModel
+
         return self.objects.create(
             name="mock",
             price=150000,
@@ -53,6 +56,7 @@ class TicketsModel(AbstractBaseModel):
             rating=4.5,
             hotel_info="mock",
             duration_days=15,
+            badge=BadgeModel._create_fake(),
         )
 
     class Meta:
@@ -301,6 +305,7 @@ class TicketorderModel(AbstractBaseModel):
 
     @classmethod
     def _create_fake(self):
+        from core.apps.tickets.models.extra_services import ExtraServicesModel, PaidServicesModel
         return self.objects.create(
             user=User._create_fake(),
             departure="mock",

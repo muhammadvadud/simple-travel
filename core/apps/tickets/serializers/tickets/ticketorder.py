@@ -8,7 +8,6 @@ class BaseTicketorderSerializer(serializers.ModelSerializer):
         model = TicketorderModel
         fields = [
             "id",
-            "name",
         ]
 
 
@@ -24,5 +23,4 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
     class Meta(BaseTicketorderSerializer.Meta):
         fields = [
             "id",
-            "name",
         ]

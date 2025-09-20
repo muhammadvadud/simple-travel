@@ -1,11 +1,12 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import ExtraServicesView, PaidServicesView, TariffView, TicketorderView
+from .views import BadgeView, ExtraServicesView, PaidServicesView, TariffView, TicketorderView
 from .views.hotel import HotelView
 from .views.tickets import TicketsView
 
 router = DefaultRouter()
+router.register("badge", BadgeView, basename="badge")
 router.register("ticketorder", TicketorderView, basename="ticketorder")
 router.register("paid_services", PaidServicesView, basename="paid_services")
 router.register("extra_services", ExtraServicesView, basename="extra_services")

@@ -14,9 +14,9 @@ class ExtraServicesTest(TestCase):
         self.client = APIClient()
         self.instance = self._create_data()
         self.urls = {
-            "list": reverse("extra_servoces-list"),
-            "retrieve": reverse("extra_servoces-detail", kwargs={"pk": self.instance.pk}),
-            "retrieve-not-found": reverse("extra_servoces-detail", kwargs={"pk": 1000}),
+            "list": reverse("extra_services-list"),
+            "retrieve": reverse("extra_services-detail", kwargs={"pk": self.instance.pk}),
+            "retrieve-not-found": reverse("extra_services-detail", kwargs={"pk": 1000}),
         }
 
     def test_create(self):
