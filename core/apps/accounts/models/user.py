@@ -9,7 +9,7 @@ class User(auth_models.AbstractUser):
     phone = models.CharField(max_length=255, unique=True, null=True, blank=True)
     email = models.EmailField(unique=True, null=True, blank=True)
     username = models.CharField(max_length=255, null=True, blank=True)
-    avatar = models.ImageField(default="static/images/default_avatar.jpg", upload_to="avatars/")
+    avatar = models.ImageField(default="avatars/default_avatar.jpg", upload_to="avatars/")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     validated_at = models.DateTimeField(null=True, blank=True)

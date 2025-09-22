@@ -93,6 +93,7 @@ class TicketsAmenitiesModel(AbstractBaseModel):
     """Chipta ichidagi qulayliklarni saqlaydi."""
 
     name = models.CharField(verbose_name=_("name"), max_length=255)
+    icon_name = models.CharField(verbose_name=_("icon name"), max_length=255)
     ticket = models.ForeignKey(
         TicketsModel, verbose_name=_("ticket"), related_name="ticket_amenities", on_delete=models.CASCADE
     )
@@ -291,7 +292,7 @@ class TicketorderModel(AbstractBaseModel):
     departure_date = models.DateField(verbose_name=_("departure date"))
     arrival_time = models.DateField(verbose_name=_("arrival time"))
     participant = models.ManyToManyField(ParticipantModel, verbose_name=_("participant"), null=True, blank=True)
-    ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), on_delete=models.CASCADE)
+    ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), on_delete=models.SET_NULL, null=True)
     tariff = models.CharField(verbose_name=_("tariff"), max_length=255)
     transport = models.CharField(verbose_name=_("transport"), max_length=255)
     extra_service = models.ManyToManyField("tickets.ExtraServicesModel", verbose_name=_("extra services"))

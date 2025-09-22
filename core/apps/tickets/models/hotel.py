@@ -22,6 +22,24 @@ class HotelTypeModel(models.Model):
         verbose_name_plural = _("HotelTypeModels")
 
 
+class HotelAmenitiesModel(AbstractBaseModel):
+    name = models.CharField(max_length=255, verbose_name=_("name"))
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def _create_fake(self):
+        return self.objects.create(
+            name="mock",
+        )
+
+    class Meta:
+        db_table = "hotel_amenities"
+        verbose_name = _("Hotel Amenity")
+        verbose_name_plural = _("Hotel Amenities")
+
+
 class HotelModel(AbstractBaseModel):
     MEAL_PLAN_CHOICES = [
         ("all_inclusive", "All Inclusive"),
@@ -43,6 +61,7 @@ class HotelModel(AbstractBaseModel):
     meal_plan = models.CharField(verbose_name=_("meal plan"), choices=MEAL_PLAN_CHOICES, max_length=255,
                                  default="breakfast")
     hotel_type = models.ManyToManyField(HotelTypeModel, verbose_name=_("hotel type"))
+    hotel_amenities = models.ManyToManyField(HotelAmenitiesModel, verbose_name=_("hotel amenities"))
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -7,7 +7,7 @@ from core.apps.tickets.models.tickets import TicketsModel
 
 class LikesModel(AbstractBaseModel):
     user = models.ForeignKey(User, verbose_name=_('user'), on_delete=models.CASCADE)
-    ticket = models.ForeignKey(TicketsModel, verbose_name=_('ticket'), on_delete=models.CASCADE)
+    ticket = models.ForeignKey(TicketsModel, verbose_name=_('ticket'), related_name="ticket_like", on_delete=models.CASCADE)
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
 
     def __str__(self):

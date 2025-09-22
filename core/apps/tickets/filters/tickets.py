@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from core.apps.tickets.models import TicketsModel
+from core.apps.tickets.models.hotel import HotelImagesModel
 
 
 class TicketsFilter(filters.FilterSet):
@@ -16,6 +17,10 @@ class TicketsFilter(filters.FilterSet):
     meal_plan = filters.CharFilter(field_name="ticket_hotel__meal_plan", lookup_expr="icontains")
     hotel_type = filters.CharFilter(field_name="ticket_hotel__hotel_type__name", lookup_expr="icontains")
     ticket_amenities = filters.CharFilter(field_name="ticket_amenities__name", lookup_expr="icontains")
+    departure = filters.CharFilter(field_name="departure", lookup_expr="icontains")
+    destination = filters.CharFilter(field_name="destination", lookup_expr="icontains")
+    departure_date = filters.DateFilter(field_name="departure_date", lookup_expr="exact")
+    hotel_amenities = filters.ModelMultipleChoiceFilter(field_name="hotel_amenities",queryset=HotelImagesModel.objects.all())
 
     class Meta:
         model = TicketsModel
@@ -29,6 +34,9 @@ class TicketsFilter(filters.FilterSet):
             "hotel_rating",
             "hotel_type",
             "ticket_amenities",
+            "departure",
+            "destination",
+            "departure_time",
         ]
 
     def filter_cheapest(self, queryset, name, value):

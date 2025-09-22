@@ -8,7 +8,6 @@ from core.apps.tickets.models.tariff import TariffModel
 from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
 
 
-
 class TicketsTariffSerializer(serializers.ModelSerializer):
     class Meta:
         model = TariffModel
@@ -82,6 +81,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, read_only=True)
     ticket_comments = TicketsCommentsSerializer(many=True, read_only=True)
     tariff = TicketsTariffSerializer(many=True, read_only=True)
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = TicketsModel
@@ -104,14 +104,22 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "ticket_hotel_meals",
             "ticket_comments",
             "tariff",
+            "is_liked",
 
         ]
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return obj.ticket_like.filter(user=user).exists()
+        return False
 
 
 class ListTicketsSerializer(BaseTicketsSerializer):
     ticket_images = serializers.SerializerMethodField()
     ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
     badge = ListBadgeSerializer(many=True, read_only=True)
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = TicketsModel
@@ -129,7 +137,8 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "ticket_amenities",
             "passenger_count",
             "badge",
-            "visa_required"
+            "visa_required",
+            "is_liked",
         ]
 
     def get_ticket_images(self, obj):
@@ -137,6 +146,12 @@ class ListTicketsSerializer(BaseTicketsSerializer):
         if image:
             return TicketsImageSerializer(image).data
         return None
+
+    def get_is_liked(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            return obj.ticket_like.filter(user=user).exists()
+        return False
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):
