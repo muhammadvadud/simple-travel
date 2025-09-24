@@ -1,9 +1,10 @@
 from django_core.mixins import BaseViewSetMixin
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ReadOnlyModelViewSet
-
+from core.apps.blog.permissions.post import IsModeratorOrReadOnly
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from core.apps.blog.models import CategoryModel, PostModel, TagModel
+from core.apps.blog.serializers import UpdatePostSerializer
 from core.apps.blog.serializers.post import (
     CreateCategorySerializer,
     CreatePostSerializer,
@@ -18,15 +19,17 @@ from core.apps.blog.serializers.post import (
 
 
 @extend_schema(tags=["post"])
-class PostView(BaseViewSetMixin, ReadOnlyModelViewSet):
+class PostView(BaseViewSetMixin, ModelViewSet):
     queryset = PostModel.objects.all()
-    serializer_class = ListPostSerializer
-    permission_classes = [AllowAny]
+    serializer_class = BaseViewSetMixin
+    permission_classes = [IsModeratorOrReadOnly]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     action_permission_classes = {}
     action_serializer_class = {
         "list": ListPostSerializer,
         "retrieve": RetrievePostSerializer,
+        "partial_update": UpdatePostSerializer,
         "create": CreatePostSerializer,
     }
 

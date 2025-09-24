@@ -23,7 +23,7 @@ urlpatterns = [
     path("api/v1/", include("core.apps.payments.urls")),
     path("api/v1/", include("core.apps.tickets.urls")),
     path("api/v1/", include("core.apps.shared.urls")),
-    path("api/", include("core.apps.blog.urls")),
+    path("api/v1/", include("core.apps.blog.urls")),
 ]
 urlpatterns += [
     path("admin/", admin.site.urls),

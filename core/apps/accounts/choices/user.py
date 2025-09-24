@@ -11,4 +11,6 @@ class RoleChoice(models.TextChoices):
     ADMIN = "admin", _("Admin")
     Moderator = "moderator", _("Moderator")
     TourAdmin = "tour_admin", _("TourAdmin")
+    Buxgalter = "buxgalter", _("Buxgalter")
+    Operator = "operator", _("Operator")
     USER = "user", _("User")

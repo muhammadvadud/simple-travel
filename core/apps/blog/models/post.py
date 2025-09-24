@@ -8,7 +8,7 @@ class CategoryModel(AbstractBaseModel):
     name = models.CharField(verbose_name=_("name"), max_length=255)
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.name)
 
     @classmethod
     def _create_fake(self):
@@ -23,11 +23,13 @@ class CategoryModel(AbstractBaseModel):
 
 
 class PostModel(AbstractBaseModel):
-    title = models.CharField(verbose_name=_("name"), max_length=255)
+    title = models.CharField(verbose_name=_("title"), max_length=255)
+    image = models.ImageField(verbose_name=_("image"), upload_to="post/images/")
     text = models.TextField(verbose_name=_("text"))
     category = models.ForeignKey(CategoryModel, related_name="post_category", verbose_name=_("category"),
                                  on_delete=models.CASCADE)
-    slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True)
+    slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True, null=True, blank=True)
+    is_public = models.BooleanField(verbose_name=_("is public"), default=False)
     created = models.DateTimeField(verbose_name=_("created"), auto_now_add=True)
     updated = models.DateTimeField(verbose_name=_("updated"), auto_now=True)
 
@@ -35,7 +37,7 @@ class PostModel(AbstractBaseModel):
         return str(self.pk)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if self.title and (not self.slug or self.slug != slugify(self.title)):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
@@ -74,6 +76,7 @@ class TagModel(AbstractBaseModel):
 
 class PostimagesModel(AbstractBaseModel):
     image = models.ImageField(verbose_name=_("image"), upload_to="post/images/")
+    text = models.TextField(verbose_name=_("text"), null=True, blank=True)
     post = models.ForeignKey(PostModel, verbose_name=_("post"), related_name="post_images", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -83,6 +86,7 @@ class PostimagesModel(AbstractBaseModel):
     def _create_fake(self):
         return self.objects.create(
             image="resources/static/images/default_avatar.jpg",
+            text="mock",
             post=PostModel._create_fake(),
         )
 
