@@ -1,9 +1,9 @@
 from django_core.mixins import BaseViewSetMixin
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework import mixins
 from core.apps.tickets.filters import TicketsFilter
 from core.apps.tickets.models import TicketorderModel, TicketsModel
 from core.apps.tickets.serializers.tickets import (
@@ -13,6 +13,7 @@ from core.apps.tickets.serializers.tickets import (
     ListTicketsSerializer,
     RetrieveTicketorderSerializer,
     RetrieveTicketsSerializer,
+    BaseTicketorderSerializer,
 )
 
 
@@ -33,10 +34,11 @@ class TicketsView(BaseViewSetMixin, ReadOnlyModelViewSet):
 
 
 @extend_schema(tags=["ticketorder"])
-class TicketorderView(BaseViewSetMixin, ReadOnlyModelViewSet):
+class TicketorderView(BaseViewSetMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin,
+                      GenericViewSet):
     queryset = TicketorderModel.objects.all()
-    serializer_class = ListTicketorderSerializer
-    permission_classes = [AllowAny]
+    serializer_class = BaseTicketorderSerializer
+    permission_classes = [IsAuthenticated]
 
     action_permission_classes = {}
     action_serializer_class = {

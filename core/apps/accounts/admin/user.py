@@ -30,6 +30,7 @@ class CustomUserAdmin(admin.UserAdmin, ModelAdmin):
                     "user_permissions",
                     "role",
                     "avatar",
+                    "travel_agency",
                 ),
             },
         ),

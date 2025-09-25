@@ -10,7 +10,7 @@ from core.apps.accounts.serializers.likes import CreateLikesSerializer, ListLike
 
 
 @extend_schema(tags=["likes"])
-class LikesView(mixins.CreateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
+class LikesView(BaseViewSetMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
     queryset = LikesModel.objects.all()
     serializer_class = CreateLikesSerializer
     permission_classes = [IsAuthenticated]

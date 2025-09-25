@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
-
-from core.apps.accounts.models import User
+from core.apps.accounts.models import User, TravelAgency
 from core.apps.accounts.models.participant import ParticipantModel
 from .tariff import TariffModel
 from django.utils.text import slugify
@@ -10,16 +9,22 @@ from django.utils.text import slugify
 
 class TicketsModel(AbstractBaseModel):
     """Chiptalar haqidagi asosiy ma’lumotlarni saqlaydi."""
-
+    travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True)
     title = models.CharField(verbose_name=_("title"), max_length=255)
     price = models.BigIntegerField(verbose_name=_("price"))
     departure_date = models.DateField(verbose_name=_("departure date"))
     departure = models.CharField(verbose_name=_("departure"), max_length=255)
     destination = models.CharField(verbose_name=_("destination"), max_length=255)
     #############
-    # Bu ikkisi aniq bo'lgandan keyin yo olib tashlanadi yoki qoladi !
+    # Bu uchalasi aniq bo'lgandan keyin yo olib tashlanadi yoki qoladi !
     departure_time = models.DateTimeField(verbose_name=_("departure time"))
     travel_time = models.DateTimeField(verbose_name=_("travel time"))
+    location_name = models.CharField(
+        verbose_name=_("joylashadigan manzil nomi"),
+        max_length=255,
+        null=True,
+        blank=True
+    )
     ##############
     passenger_count = models.IntegerField(verbose_name=_("passenger count"))
     languages = models.CharField(verbose_name=_("languages"), max_length=255)
@@ -295,8 +300,10 @@ class TicketorderModel(AbstractBaseModel):
     ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), on_delete=models.SET_NULL, null=True)
     tariff = models.CharField(verbose_name=_("tariff"), max_length=255)
     transport = models.CharField(verbose_name=_("transport"), max_length=255)
-    extra_service = models.ManyToManyField("tickets.ExtraServicesModel", verbose_name=_("extra services"))
-    extra_paid_service = models.ManyToManyField("tickets.PaidServicesModel", verbose_name=_("extra paid services"))
+    extra_service = models.ManyToManyField("tickets.ExtraServicesModel", verbose_name=_("extra services"), null=True,
+                                           blank=True)
+    extra_paid_service = models.ManyToManyField("tickets.PaidServicesModel", verbose_name=_("extra paid services"),
+                                                null=True, blank=True)
     order_status = models.CharField(verbose_name=_("order status"), max_length=255, choices=STATUS_CHOICES,
                                     default="pending_payment")
     total_price = models.BigIntegerField(verbose_name=_("total price"))

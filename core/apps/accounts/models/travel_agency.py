@@ -25,7 +25,7 @@ class TravelAgency(AbstractBaseModel):
     web_site = models.URLField(verbose_name=_('TravelAgency Website'))
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.name)
 
     @classmethod
     def _create_fake(self):

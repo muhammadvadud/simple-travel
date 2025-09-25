@@ -8,6 +8,9 @@ class BaseParticipantSerializer(serializers.ModelSerializer):
         model = ParticipantModel
         fields = [
             "id",
+            "first_name",
+            "last_name",
+
         ]
 
 

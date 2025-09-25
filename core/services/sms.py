@@ -1,9 +1,11 @@
 import random
 from datetime import datetime, timedelta
-
+from django.utils import timezone
 from config.env import env
 from core.apps.accounts.tasks.sms import SendConfirm
+from core.apps.accounts.tasks.email_cod import EmailSendConfirm
 from django_core import exceptions, models
+from core.apps.accounts.models.user import EmailCodeConfirm
 
 
 class SmsService:
@@ -13,7 +15,7 @@ class SmsService:
         if env.bool("OTP_PROD", False):
             code = "".join(str(random.randint(0, 9)) for _ in range(env.int("OTP_SIZE", 4)))
         else:
-            code = env.int("OTP_DEFAULT", 1111) 
+            code = env.int("OTP_DEFAULT", 1111)
 
         sms_confirm, status = models.SmsConfirm.objects.get_or_create(phone=phone, defaults={"code": code})
 
@@ -40,6 +42,59 @@ class SmsService:
     @staticmethod
     def check_confirm(phone, code):
         sms_confirm = models.SmsConfirm.objects.filter(phone=phone).first()
+
+        if sms_confirm is None:
+            raise exceptions.SmsException("Invalid confirmation code")
+
+        sms_confirm.sync_limits()
+
+        if sms_confirm.is_expired():
+            raise exceptions.SmsException("Time for confirmation has expired")
+
+        if sms_confirm.is_block():
+            expired = sms_confirm.interval(sms_confirm.unlock_time)
+            raise exceptions.SmsException(f"Try again in {expired}")
+
+        if str(sms_confirm.code) == str(code):
+            sms_confirm.delete()
+            return True
+
+        sms_confirm.try_count += 1
+        sms_confirm.save()
+
+        raise exceptions.SmsException("Invalid confirmation code")
+
+    @staticmethod
+    def send_email_confirmation_code(email):
+        # TODO: Deploy this change when deploying -> code = random.randint(1000, 9999) # noqa
+        if env.bool("OTP_PROD", False):
+            code = "".join(str(random.randint(0, 9)) for _ in range(env.int("OTP_SIZE", 4)))
+        else:
+            code = env.int("OTP_DEFAULT", 1111)
+        sms_confirm, status = EmailCodeConfirm.objects.get_or_create(email=email, defaults={"code": code})
+
+        sms_confirm.sync_limits()
+
+        if sms_confirm.resend_unlock_time is not None:
+            expired = sms_confirm.interval(sms_confirm.resend_unlock_time)
+            exception = exceptions.SmsException(f"Resend blocked, try again in {expired}", expired=expired)
+            raise exception
+        sms_confirm.code = code
+        sms_confirm.try_count = 0
+        sms_confirm.resend_count += 1
+        sms_confirm.email = email
+        sms_confirm.expired_time = datetime.now() + timedelta(seconds=EmailCodeConfirm.SMS_EXPIRY_SECONDS)  # noqa
+        sms_confirm.resend_unlock_time = timezone.now() + timedelta(
+            seconds=EmailCodeConfirm.SMS_EXPIRY_SECONDS
+        )  # noqa
+        sms_confirm.save()
+        EmailSendConfirm.delay(email, code)
+
+        return True
+
+    @staticmethod
+    def check_email_confirm(email, code):
+        sms_confirm = EmailCodeConfirm.objects.filter(email=email).first()
 
         if sms_confirm is None:
             raise exceptions.SmsException("Invalid confirmation code")

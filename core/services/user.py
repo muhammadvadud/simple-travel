@@ -28,6 +28,17 @@ class UserService(sms.SmsService):
             },
         )
 
+    def email_create_user(self, email, first_name, last_name, password):
+        get_user_model().objects.update_or_create(
+            email=email,
+            defaults={
+                "email": email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "password": hashers.make_password(password),
+            },
+        )
+
     def send_confirmation(self, phone) -> bool:
         try:
             self.send_confirm(phone)
@@ -62,3 +73,12 @@ class UserService(sms.SmsService):
         user = get_user_model().objects.filter(phone=phone).first()
         user.set_password(password)
         user.save()
+    def send_email_confirmation(self, email) -> bool:
+        try:
+            self.send_email_confirmation_code(email)
+            return True
+        except exceptions.SmsException as e:
+            raise PermissionDenied(_("Qayta cod  yuborish uchun kuting: {}").format(e.kwargs.get("expired")))
+        except Exception:
+            raise PermissionDenied(_("Serverda xatolik yuz berdi"))
+
