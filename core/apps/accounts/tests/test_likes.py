@@ -13,35 +13,25 @@ class LikesTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.instance = self._create_data()
+        self.client.force_authenticate(user=self.instance.user)
         self.urls = {
             "list": reverse("likes-list"),
-            "retrieve": reverse("likes-detail", kwargs={"pk": self.instance.pk}),
-            "retrieve-not-found": reverse("likes-detail", kwargs={"pk": 1000}),
+            "detail": reverse("likes-detail", args=[self.instance.id]),
         }
 
     def test_create(self):
-        self.assertTrue(True)
-
-    def test_update(self):
-        self.assertTrue(True)
-
-    def test_partial_update(self):
-        self.assertTrue(True)
+        response = self.client.post(
+            self.urls["list"],
+            data={"ticket": LikesModel._create_fake().ticket.id},
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(response.json()["status"])
 
     def test_destroy(self):
-        self.assertTrue(True)
+        response = self.client.delete(self.urls["detail"])
+        self.assertEqual(response.status_code, 204)
 
     def test_list(self):
         response = self.client.get(self.urls["list"])
         self.assertTrue(response.json()["status"])
         self.assertEqual(response.status_code, 200)
-
-    def test_retrieve(self):
-        response = self.client.get(self.urls["retrieve"])
-        self.assertTrue(response.json()["status"])
-        self.assertEqual(response.status_code, 200)
-
-    def test_retrieve_not_found(self):
-        response = self.client.get(self.urls["retrieve-not-found"])
-        self.assertFalse(response.json()["status"])
-        self.assertEqual(response.status_code, 404)

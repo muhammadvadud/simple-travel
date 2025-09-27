@@ -3,6 +3,7 @@ from django.db import models
 from core.apps.accounts.models.travel_agency import TravelAgency
 from ..choices import RoleChoice
 from ..managers import UserManager
+from random import randint
 
 
 class User(auth_models.AbstractUser):
@@ -28,8 +29,10 @@ class User(auth_models.AbstractUser):
 
     @classmethod
     def _create_fake(self):
+        phone = f"9989{randint(1000000, 9999999)}"
+
         return self.objects.create(
-            phone="998940105669",
+            phone=phone,
             username="mock",
         )
 

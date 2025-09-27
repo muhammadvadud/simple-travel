@@ -82,6 +82,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     ticket_comments = TicketsCommentsSerializer(many=True, read_only=True)
     tariff = TicketsTariffSerializer(many=True, read_only=True)
     is_liked = serializers.SerializerMethodField()
+    travel_agency_id = serializers.SerializerMethodField()
 
     class Meta:
         model = TicketsModel
@@ -102,10 +103,10 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "ticket_included_services",
             "ticket_itinerary",
             "ticket_hotel_meals",
+            "travel_agency_id",
             "ticket_comments",
             "tariff",
             "is_liked",
-
         ]
 
     def get_is_liked(self, obj):
@@ -114,6 +115,11 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             return obj.ticket_like.filter(user=user).exists()
         return False
 
+    def get_travel_agency_id(self, obj):
+        travel_id = getattr(obj.travel_agency, "id", None)
+        if travel_id is not None:
+            return f"T-100{travel_id}"
+        return None
 
 class ListTicketsSerializer(BaseTicketsSerializer):
     ticket_images = serializers.SerializerMethodField()
@@ -152,6 +158,28 @@ class ListTicketsSerializer(BaseTicketsSerializer):
         if user.is_authenticated:
             return obj.ticket_like.filter(user=user).exists()
         return False
+
+
+
+class FullInformationTicketsSerializer(serializers.Serializer):
+    tickets = serializers.SerializerMethodField()
+    min_price = serializers.SerializerMethodField()
+    max_price = serializers.SerializerMethodField()
+
+    def get_tickets(self, queryset):
+        return ListTicketsSerializer(queryset, many=True, context=self.context).data
+
+    def get_min_price(self, obj):
+        products = obj
+        if not products:
+            return None
+        return min([p.price for p in products])
+
+    def get_max_price(self, obj):
+        products = obj
+        if not products:
+            return None
+        return max([p.price for p in products])
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):

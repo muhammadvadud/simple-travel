@@ -1,38 +1,33 @@
 from rest_framework import serializers, status
-from rest_framework.response import Response
-
+from core.apps.tickets.serializers.tickets.tickets import ListTicketsSerializer
 from core.apps.accounts.models import LikesModel
+from core.apps.tickets.models import TicketsModel
 
 
 class BaseLikesSerializer(serializers.ModelSerializer):
+    ticket = ListTicketsSerializer(read_only=True)
+
     class Meta:
         model = LikesModel
         fields = [
-            "ticket"
+            "id",
+            "ticket",
         ]
-
-        def delete(self):
-            user = self.context["request"].user  # type: ignore
-            like_id = self.context["view"].kwargs.get("pk")  # type: ignore
-            like = LikesModel.objects.get(pk=like_id)
-            if like:
-                if like.user == user:
-                    like.delete()
-                raise serializers.ValidationError("Like is not yours")
-            raise serializers.ValidationError("Like not found")
 
 
 class ListLikesSerializer(BaseLikesSerializer):
     class Meta(BaseLikesSerializer.Meta): ...
-
 
 class RetrieveLikesSerializer(BaseLikesSerializer):
     class Meta(BaseLikesSerializer.Meta): ...
 
 
 class CreateLikesSerializer(BaseLikesSerializer):
+    ticket = serializers.PrimaryKeyRelatedField(queryset=TicketsModel.objects.all())
+
     class Meta(BaseLikesSerializer.Meta):
         fields = [
+            "id",
             "ticket",
         ]
 

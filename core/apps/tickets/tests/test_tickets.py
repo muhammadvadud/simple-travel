@@ -55,6 +55,7 @@ class TicketorderTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.instance = self._create_data()
+        self.client.force_authenticate(user=self.instance.user)
         self.urls = {
             "list": reverse("ticketorder-list"),
             "retrieve": reverse("ticketorder-detail", kwargs={"pk": self.instance.pk}),

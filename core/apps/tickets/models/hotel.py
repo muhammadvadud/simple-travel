@@ -71,6 +71,7 @@ class HotelModel(AbstractBaseModel):
     @classmethod
     def _create_fake(self):
         return self.objects.create(
+            ticket=TicketsModel._create_fake(),
             name="mock",
             address="mock",
             city="mock",

@@ -9,7 +9,7 @@ OTP_SIZE = env.int("OTP_SIZE", 4)
 class EmailRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
 
-    def validate_phone(self, value):
+    def validate_email(self, value):
         user = get_user_model().objects.filter(email=value, validated_at__isnull=False)
         if user.exists():
             raise exceptions.ValidationError(_("Email already registered."), code="unique")

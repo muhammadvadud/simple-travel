@@ -44,8 +44,10 @@ class PostModel(AbstractBaseModel):
     @classmethod
     def _create_fake(self):
         return self.objects.create(
-            name="mock",
-            text="mock",
+            title="title",
+            text="text",
+            image="images/logo.png",
+            category=CategoryModel._create_fake(),
         )
 
     class Meta:

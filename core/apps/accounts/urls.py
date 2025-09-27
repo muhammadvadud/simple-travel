@@ -1,4 +1,4 @@
-from .views import ParticipantView
+from .views import ParticipantView, SupportView
 
 """
 Accounts app urls
@@ -7,11 +7,18 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt import views as jwt_views
 
-from .views import ChangePasswordView, MeView, RegisterView, ResetPasswordView, EmailRegisterView, \
-    EmailResetPasswordView
+from .views import (
+    ChangePasswordView,
+    EmailRegisterView,
+    EmailResetPasswordView,
+    MeView,
+    RegisterView,
+    ResetPasswordView,
+)
 from .views.likes import LikesView
 
 router = DefaultRouter()
+router.register("support", SupportView, basename="support")
 router.register("participant", ParticipantView, basename="participant")
 router.register("auth", RegisterView, basename="auth")
 router.register("auth", ResetPasswordView, basename="reset-password")

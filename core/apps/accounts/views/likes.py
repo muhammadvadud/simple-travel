@@ -10,9 +10,10 @@ from core.apps.accounts.serializers.likes import CreateLikesSerializer, ListLike
 
 
 @extend_schema(tags=["likes"])
-class LikesView(BaseViewSetMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin, GenericViewSet):
+class LikesView(BaseViewSetMixin, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin,
+                GenericViewSet):
     queryset = LikesModel.objects.all()
-    serializer_class = CreateLikesSerializer
+    serializer_class = ListLikesSerializer
     permission_classes = [IsAuthenticated]
 
     action_permission_classes = {}
@@ -21,3 +22,7 @@ class LikesView(BaseViewSetMixin, mixins.CreateModelMixin, mixins.DestroyModelMi
         "retrieve": RetrieveLikesSerializer,
         "create": CreateLikesSerializer,
     }
+
+    def get_queryset(self):
+        user = self.request.user
+        return LikesModel.objects.filter(user=user)

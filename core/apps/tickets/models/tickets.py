@@ -50,9 +50,13 @@ class TicketsModel(AbstractBaseModel):
     @classmethod
     def _create_fake(self):
         from core.apps.tickets.models.badge import BadgeModel
+        from django.utils.text import slugify
+        import uuid
 
-        return self.objects.create(
-            name="mock",
+        slug = slugify(f"slug-{uuid.uuid4()}")
+
+        ticket = self.objects.create(
+            title="mock",
             price=150000,
             departure_date="2025-10-01",
             destination="mock",
@@ -61,13 +65,24 @@ class TicketsModel(AbstractBaseModel):
             rating=4.5,
             hotel_info="mock",
             duration_days=15,
-            badge=BadgeModel._create_fake(),
+            travel_agency=TravelAgency._create_fake(),
+            departure_time="2025-10-01T10:00:00",
+            travel_time="2025-10-01T18:00:00",
+            slug=slug,
+            languages="en",
+            visa_required=False,
         )
 
-    class Meta:
-        db_table = "tickets"
-        verbose_name = _("TicketsModel")
-        verbose_name_plural = _("TicketsModels")
+        badge = BadgeModel._create_fake()
+
+        ticket.badge.set([badge])
+        return ticket
+
+
+class Meta:
+    db_table = "tickets"
+    verbose_name = _("TicketsModel")
+    verbose_name_plural = _("TicketsModels")
 
 
 class TicketsImagesModel(AbstractBaseModel):
@@ -314,20 +329,25 @@ class TicketorderModel(AbstractBaseModel):
     @classmethod
     def _create_fake(self):
         from core.apps.tickets.models.extra_services import ExtraServicesModel, PaidServicesModel
-        return self.objects.create(
+        order = self.objects.create(
             user=User._create_fake(),
             departure="mock",
             destination="mock",
             departure_date="2025-12-01",
             arrival_time="2025-12-01",
-            participant=ParticipantModel._create_fake(),
             ticket=TicketsModel._create_fake(),
             tariff="mock",
             transport="mock",
-            extra_service=ExtraServicesModel._create_fake(),
-            extra_paid_service=PaidServicesModel._create_fake(),
             total_price=40,
         )
+        participant = ParticipantModel._create_fake()
+        extra_service = ExtraServicesModel._create_fake()
+        extra_paid_service = PaidServicesModel._create_fake()
+
+        order.participant.set([participant])
+        order.extra_service.set([extra_service])
+        order.extra_paid_service.set([extra_paid_service])
+        return order
 
     class Meta:
         db_table = "ticketorder"
