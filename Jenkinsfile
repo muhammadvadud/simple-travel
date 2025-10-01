@@ -31,7 +31,7 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                git branch: 'main', credentialsId: 'gitmuhammadvadud', url: 'https://gitea.felixits.uz/felixits/simple-travel-backend.git'
+                git branch: 'main', credentialsId: 'muhammadvadud', url: 'https://github.com/muhammadvadud/simple-travel.git'
             }
         }
         stage('Build Image') {

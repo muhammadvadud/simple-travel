@@ -13,7 +13,7 @@ class TicketsFilter(filters.FilterSet):
     most_expensive = filters.BooleanFilter(method="filter_most_expensive")
     visa_required = filters.BooleanFilter(method="filter_visa_required")
     duration_days = filters.NumberFilter(field_name="duration_days", lookup_expr="exact")
-    hotel_rating = filters.NumberFilter(field_name="ticket_hotel__rating", lookup_expr="exact")
+    hotel_rating = filters.NumberFilter(field_name="ticket_hotel__rating", lookup_expr="gte")
     meal_plan = filters.CharFilter(field_name="ticket_hotel__meal_plan", lookup_expr="icontains")
     hotel_type = filters.CharFilter(field_name="ticket_hotel__hotel_type__name", lookup_expr="icontains")
     ticket_amenities = filters.CharFilter(field_name="ticket_amenities__name", lookup_expr="icontains")
@@ -21,7 +21,7 @@ class TicketsFilter(filters.FilterSet):
     destination = filters.CharFilter(field_name="destination", lookup_expr="icontains")
     min_departure_date = filters.DateFilter(field_name="departure_date", lookup_expr="gte")
     max_departure_date = filters.DateFilter(field_name="travel_time", lookup_expr="lte")
-
+    passenger_count = filters.NumberFilter(field_name="passenger_count", lookup_expr="gte")
     hotel_amenities = filters.ModelMultipleChoiceFilter(field_name="hotel_amenities",
                                                         queryset=HotelImagesModel.objects.all())
 
@@ -44,6 +44,7 @@ class TicketsFilter(filters.FilterSet):
             "travel_time",
             "min_departure_date",
             "max_departure_date",
+            "passenger_count",
         ]
 
     def filter_cheapest(self, queryset, name, value):
