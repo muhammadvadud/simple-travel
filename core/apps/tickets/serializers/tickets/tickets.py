@@ -1,9 +1,17 @@
 from rest_framework import serializers
-from core.apps.tickets.models import TicketsModel, TicketsImagesModel, TicketsAmenitiesModel, \
-    TicketsIncludedServicesModel, TicketsItineraryModel, TicketsItineraryImagesModel, TicketsItineraryDestinationsModel, \
-    TicketsHotelMealsModel, TicketsCommentsModel
 from core.apps.accounts.models import User
 from core.apps.accounts.serializers.user import UserSerializer
+from core.apps.tickets.models import (
+    TicketsAmenitiesModel,
+    TicketsCommentsModel,
+    TicketsHotelMealsModel,
+    TicketsImagesModel,
+    TicketsIncludedServicesModel,
+    TicketsItineraryDestinationsModel,
+    TicketsItineraryImagesModel,
+    TicketsItineraryModel,
+    TicketsModel,
+)
 from core.apps.tickets.models.tariff import TariffModel
 from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
 
@@ -11,7 +19,7 @@ from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
 class TicketsTariffSerializer(serializers.ModelSerializer):
     class Meta:
         model = TariffModel
-        fields = ['name']
+        fields = ["name"]
 
 
 class CommentUserSerializer(UserSerializer):
@@ -37,13 +45,13 @@ class TicketsHotelMealsSerializer(serializers.ModelSerializer):
 class TicketsItineraryDestinationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsItineraryDestinationsModel
-        fields = ['name']
+        fields = ["name"]
 
 
 class TicketsItineraryImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsItineraryImagesModel
-        fields = ['image']
+        fields = ["image"]
 
 
 class TicketsItinerarySerializer(serializers.ModelSerializer):
@@ -58,7 +66,11 @@ class TicketsItinerarySerializer(serializers.ModelSerializer):
 class TicketsIncludedServicesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsIncludedServicesModel
-        fields = ["image", "title", "desc", ]
+        fields = [
+            "image",
+            "title",
+            "desc",
+        ]
 
 
 class TicketsAmenitiesSerializer(serializers.ModelSerializer):
@@ -121,6 +133,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             return f"T-100{travel_id}"
         return None
 
+
 class ListTicketsSerializer(BaseTicketsSerializer):
     ticket_images = serializers.SerializerMethodField()
     ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
@@ -134,6 +147,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "title",
             "price",
             "departure_date",
+            "travel_time",
             "departure",
             "passenger_count",
             "rating",
@@ -154,11 +168,10 @@ class ListTicketsSerializer(BaseTicketsSerializer):
         return None
 
     def get_is_liked(self, obj):
-        user = self.context['request'].user
+        user = self.context["request"].user
         if user.is_authenticated:
             return obj.ticket_like.filter(user=user).exists()
         return False
-
 
 
 class FullInformationTicketsSerializer(serializers.Serializer):
