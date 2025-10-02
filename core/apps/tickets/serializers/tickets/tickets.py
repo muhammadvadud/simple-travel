@@ -79,7 +79,6 @@ class TicketsAmenitiesSerializer(serializers.ModelSerializer):
         fields = ["name", "icon_name"]
 
 
-
 class TicketsImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsImagesModel
@@ -107,6 +106,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "departure",
             "destination",
             "passenger_count",
+            "languages",
             "rating",
             "hotel_info",
             "duration_days",
