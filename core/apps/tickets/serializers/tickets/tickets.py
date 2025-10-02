@@ -76,7 +76,8 @@ class TicketsIncludedServicesSerializer(serializers.ModelSerializer):
 class TicketsAmenitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsAmenitiesModel
-        fields = ["name"]
+        fields = ["name", "icon_name"]
+
 
 
 class TicketsImageSerializer(serializers.ModelSerializer):
