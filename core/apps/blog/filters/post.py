@@ -9,18 +9,15 @@ class PostFilter(filters.FilterSet):
     class Meta:
         model = PostModel
         fields = [
-            "name",
         ]
 
 
 class TagFilter(filters.FilterSet):
-    # name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
     class Meta:
         model = TagModel
-        fields = [
-            "name",
-        ]
+        fields = ["name"]
 
 
 class CategoryFilter(filters.FilterSet):
@@ -39,5 +36,4 @@ class PostimagesFilter(filters.FilterSet):
     class Meta:
         model = PostimagesModel
         fields = [
-            "name",
         ]

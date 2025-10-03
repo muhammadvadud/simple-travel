@@ -5,6 +5,8 @@ from core.apps.blog.permissions.post import IsModeratorOrReadOnly
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from core.apps.blog.models import CategoryModel, PostModel, TagModel
 from core.apps.blog.serializers import UpdatePostSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from core.apps.blog.filters.post import TagFilter
 from core.apps.blog.serializers.post import (
     CreateCategorySerializer,
     CreatePostSerializer,
@@ -39,7 +41,8 @@ class TagView(BaseViewSetMixin, ReadOnlyModelViewSet):
     queryset = TagModel.objects.all()
     serializer_class = ListTagSerializer
     permission_classes = [AllowAny]
-
+    filterset_class = TagFilter
+    filter_backends = [DjangoFilterBackend]
     action_permission_classes = {}
     action_serializer_class = {
         "list": ListTagSerializer,
