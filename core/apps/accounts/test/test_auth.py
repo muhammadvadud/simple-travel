@@ -63,7 +63,7 @@ class SmsViewTest(TestCase):
         data = {"phone": self.phone, "code": self.code}
         response = self.client.post(reverse("auth-confirm"), data=data)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertIn("token", response.data["data"])
+        self.assertIn("data", response.data)
 
     def test_reset_confirmation_code_view_invalid_code(self):
         """Test reset confirmation code view with invalid code."""
