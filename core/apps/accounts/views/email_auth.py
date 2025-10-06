@@ -19,6 +19,7 @@ from ..serializers import (
     EmailResetConfirmationSerializer,
     EmailResendSerializer,
     SetPasswordSerializer,
+    SetPasswordUserEmailSerializer,
 )
 
 from rest_framework.permissions import AllowAny
@@ -37,6 +38,8 @@ class EmailRegisterView(BaseViewSetMixin, GenericViewSet, UserService):
                 return EmailRegisterSerializer
             case "confirm":
                 return EmailConfirmSerializer
+            case "set_password_email_view":
+                return SetPasswordUserEmailSerializer
             case "resend":
                 return EmailResendSerializer
             case _:
@@ -49,7 +52,7 @@ class EmailRegisterView(BaseViewSetMixin, GenericViewSet, UserService):
         data = ser.data
         email = data.get("email")
         # Create pending user
-        self.email_create_user(email, data.get("first_name"), data.get("last_name"), data.get("password"))
+        self.email_create_user(email)
         self.send_email_confirmation(email)  # Send confirmation code for email
         return Response(
             {"detail": _("Sizning %(email)s gizga cod yuborildi yuborildi") % {"email": email}},
@@ -65,11 +68,9 @@ class EmailRegisterView(BaseViewSetMixin, GenericViewSet, UserService):
         email, code = data.get("email"), data.get("code")
         try:
             if SmsService.check_email_confirm(email, code=code):
-                token = self.validate_user(get_user_model().objects.filter(email=email).first())
                 return Response(
                     data={
                         "detail": _("Tasdiqlash ko'di qabul qilindi"),
-                        "token": token,
                     },
                     status=status.HTTP_202_ACCEPTED,
                 )
@@ -77,6 +78,23 @@ class EmailRegisterView(BaseViewSetMixin, GenericViewSet, UserService):
             raise PermissionDenied(e)  # Response exception for APIException
         except Exception as e:
             raise PermissionDenied(e)  # Api exception for APIException
+
+    @action(methods=["POST"], detail=False, url_path="set-password-email")
+    def set_password_email_view(self, request):
+        ser = self.get_serializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+        data = ser.validated_data
+
+        email, password = data.get("email"), data.get("password")
+        self.set_password_email(email, password)
+        token = self.validate_user(get_user_model().objects.filter(email=email).first())
+        return Response(
+            data={
+                "detail": _("Password qabul qilindi"),
+                "token": token,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
     @action(methods=["POST"], detail=False, url_path="resend")
     def resend(self, rq: Type[request.Request]):
@@ -109,6 +127,7 @@ class EmailResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
         email = ser.data.get("email")
         self.send_email_confirmation(email)
         return Response({"detail": _("Email %(email)s ga yuborildi") % {"email": email}})
+
     ####
 
     @action(methods=["POST"], detail=False, url_path="reset-password-confirm")
@@ -151,6 +170,3 @@ class EmailResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
         token.delete()
         self.change_password(email, password)
         return Response({"detail": _("password updated")}, status=status.HTTP_200_OK)
-
-
-

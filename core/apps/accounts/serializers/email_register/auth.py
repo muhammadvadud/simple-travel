@@ -17,13 +17,8 @@ class EmailRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ["first_name", "last_name", "email", "password"]
-        extra_kwargs = {
-            "first_name": {
-                "required": True,
-            },
-            "last_name": {"required": True},
-        }
+        fields = ["email"]
+
 
 
 class EmailConfirmSerializer(serializers.Serializer):
@@ -52,6 +47,9 @@ class EmailResetConfirmationSerializer(serializers.Serializer):
             return value
         raise serializers.ValidationError(_("User does not exist"))
 
+class SetPasswordUserEmailSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=255)
 
 class EmailResendSerializer(serializers.Serializer):
     email = serializers.EmailField()

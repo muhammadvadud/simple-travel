@@ -4,6 +4,8 @@ from django.utils.translation import gettext as _
 from rest_framework import exceptions, serializers
 
 OTP_SIZE = env.int("OTP_SIZE", 4)
+
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255)
@@ -13,26 +15,25 @@ class RegisterSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=255)
 
     def validate_phone(self, value):
-        user = get_user_model().objects.filter(phone=value, validated_at__isnull=False)
-        if user.exists():
-            raise exceptions.ValidationError(_("Phone number already registered."), code="unique")
+        user = get_user_model().objects.filter(phone=value, validated_at__isnull=False, is_active=False).first()
+        if user:
+            if user.exists():
+                raise exceptions.ValidationError(_("Phone number already registered."), code="unique")
         return value
 
     class Meta:
         model = get_user_model()
-        fields = ["first_name", "last_name", "phone", "password"]
-        extra_kwargs = {
-            "first_name": {
-                "required": True,
-            },
-            "last_name": {"required": True},
-        }
+        fields = ["phone"]
 
 
 class ConfirmSerializer(serializers.Serializer):
     code = serializers.CharField(max_length=OTP_SIZE, min_length=OTP_SIZE)
     phone = serializers.CharField(max_length=255)
 
+
+class SetPasswordUserSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=255)
 
 class ResetPasswordSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=255)

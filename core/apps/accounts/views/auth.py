@@ -20,7 +20,7 @@ from ..serializers import (
     ResetConfirmationSerializer,
     SetPasswordSerializer,
     UserSerializer,
-    UserUpdateSerializer,
+    UserUpdateSerializer, SetPasswordUserSerializer,
 )
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.hashers import make_password
@@ -42,6 +42,8 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
                 return RegisterSerializer
             case "confirm":
                 return ConfirmSerializer
+            case "set_password_view":
+                return SetPasswordUserSerializer
             case "resend":
                 return ResendSerializer
             case _:
@@ -54,7 +56,7 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
         data = ser.data
         phone = data.get("phone")
         # Create pending user
-        self.create_user(phone, data.get("first_name"), data.get("last_name"), data.get("password"))
+        self.create_user(phone)
         self.send_confirmation(phone)  # Send confirmation code for sms eskiz.uz
         return Response(
             {"detail": _("Sms %(phone)s raqamiga yuborildi") % {"phone": phone}},
@@ -70,11 +72,9 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
         phone, code = data.get("phone"), data.get("code")
         try:
             if SmsService.check_confirm(phone, code=code):
-                token = self.validate_user(get_user_model().objects.filter(phone=phone).first())
                 return Response(
                     data={
                         "detail": _("Tasdiqlash ko'di qabul qilindi"),
-                        "token": token,
                     },
                     status=status.HTTP_202_ACCEPTED,
                 )
@@ -82,6 +82,23 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
             raise PermissionDenied(e)  # Response exception for APIException
         except Exception as e:
             raise PermissionDenied(e)  # Api exception for APIException
+
+    @action(methods=["POST"], detail=False, url_path="set-password")
+    def set_password_view(self, request):
+        ser = self.get_serializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+        data = ser.validated_data
+
+        phone, password = data.get("phone"), data.get("password")
+        self.set_password_phone(phone, password)
+        token = self.validate_user(get_user_model().objects.filter(phone=phone).first())
+        return Response(
+            data={
+                "detail": _("Password qabul qilindi"),
+                "token": token,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
     @action(methods=["POST"], detail=False, url_path="resend")
     def resend(self, rq: Type[request.Request]):
