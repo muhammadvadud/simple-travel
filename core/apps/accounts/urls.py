@@ -14,6 +14,7 @@ from .views import (
     MeView,
     RegisterView,
     ResetPasswordView,
+    EmailTokenObtainPairView
 )
 from .views.likes import LikesView
 
@@ -29,7 +30,8 @@ router.register("email-auth", EmailRegisterView, basename="email-auth")
 router.register("email-auth", EmailResetPasswordView, basename="email-reset-password")
 urlpatterns = [
     path("", include(router.urls)),
-    path("auth/token/", jwt_views.TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("auth/token/email/", EmailTokenObtainPairView.as_view(), name="token_obtain_email"),
+    path("auth/token/phone/", jwt_views.TokenObtainPairView.as_view(), name="token_obtain_phone"),
     path("auth/token/verify/", jwt_views.TokenVerifyView.as_view(), name="token_verify"),
     path("auth/token/refresh/", jwt_views.TokenRefreshView.as_view(), name="token_refresh"),
 ]

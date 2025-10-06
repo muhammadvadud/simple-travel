@@ -170,3 +170,4 @@ class EmailResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
         token.delete()
         self.change_password(email, password)
         return Response({"detail": _("password updated")}, status=status.HTTP_200_OK)
+
