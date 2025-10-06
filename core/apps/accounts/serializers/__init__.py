@@ -6,3 +6,4 @@ from .participant import *  # noqa
 from .set_password import *  # noqa
 from .support import *  # noqa
 from .user import *  # noqa
+from .tour_agency import *  # noqa
