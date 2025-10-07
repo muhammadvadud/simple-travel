@@ -16,7 +16,7 @@ class LikesTest(TestCase):
         self.client.force_authenticate(user=self.instance.user)
         self.urls = {
             "list": reverse("likes-list"),
-            "detail": reverse("likes-detail", args=[self.instance.id]),
+            "detail": reverse("likes-detail", args=[self.instance.ticket_id]),
         }
 
     def test_create(self):

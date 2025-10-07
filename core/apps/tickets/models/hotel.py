@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
-from core.apps.tickets.choises.hotel_feature import HotelFeature
 from .tickets import TicketsModel
 
 
@@ -41,6 +40,46 @@ class HotelAmenitiesModel(AbstractBaseModel):
         verbose_name_plural = _("Hotel Amenities")
 
 
+class HotelFeatureTypeModel(AbstractBaseModel):
+    hotel_feature_type_name = models.CharField(verbose_name=_("hotel feature type name"), max_length=255)
+
+    def __str__(self):
+        return str(self.pk)
+
+    @classmethod
+    def _create_fake(self):
+        return self.objects.create(
+            hotel_feature_type_name="mock",
+
+        )
+
+    class Meta:
+        db_table = "hotel_feature_type"
+        verbose_name = _("HotelFeatureTypeModel")
+        verbose_name_plural = _("HotelFeatureTypeModels")
+
+
+class HotelFeatureModel(AbstractBaseModel):
+    feature_type = models.ForeignKey(HotelFeatureTypeModel, on_delete=models.CASCADE)
+    feature_name = models.CharField(verbose_name=_("hotel feature name"), max_length=255)
+
+    def __str__(self):
+        return str(self.pk)
+
+    @classmethod
+    def _create_fake(self):
+        return self.objects.create(
+            feature_type=HotelFeatureTypeModel._create_fake(),
+            feature_name="mock",
+
+        )
+
+    class Meta:
+        db_table = "hotel_feature"
+        verbose_name = _("HotelFeatureModel")
+        verbose_name_plural = _("HotelFeatureModels")
+
+
 class HotelModel(AbstractBaseModel):
     MEAL_PLAN_CHOICES = [
         ("all_inclusive", "All Inclusive"),
@@ -57,6 +96,7 @@ class HotelModel(AbstractBaseModel):
                                  default="breakfast")
     hotel_type = models.ManyToManyField(HotelTypeModel, verbose_name=_("hotel type"))
     hotel_amenities = models.ManyToManyField(HotelAmenitiesModel, verbose_name=_("hotel amenities"))
+    hotel_features = models.ManyToManyField(HotelFeatureModel, verbose_name=_("hotel features"), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -75,27 +115,3 @@ class HotelModel(AbstractBaseModel):
         db_table = "hotel"
         verbose_name = _("HotelModel")
         verbose_name_plural = _("HotelModels")
-
-
-class HotelFeatureModel(AbstractBaseModel):
-    hotel = models.ForeignKey(HotelModel, verbose_name=_("hotel"), on_delete=models.CASCADE)
-    hotel_feature_choice = models.CharField(verbose_name=_("hotel feature choice"), choices=HotelFeature,
-                                            max_length=255)
-    hotel_feature_name = models.CharField(verbose_name=_("hotel feature name"), max_length=255)
-
-    def __str__(self):
-        return str(self.pk)
-
-    @classmethod
-    def _create_fake(self):
-        return self.objects.create(
-            hotel=HotelModel._create_fake(),
-            hotel_feature_name="mock",
-            hotel_feature_choice="children_section",
-
-        )
-
-    class Meta:
-        db_table = "hotel_feature"
-        verbose_name = _("HotelFeatureModel")
-        verbose_name_plural = _("HotelFeatureModels")
