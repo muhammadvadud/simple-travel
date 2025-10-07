@@ -4,16 +4,17 @@ from core.apps.blog.models import CategoryModel, PostimagesModel, PostModel, Tag
 
 
 class PostFilter(filters.FilterSet):
-    # name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    category = filters.NumberFilter(field_name='category__id', lookup_expr='exact')
 
     class Meta:
         model = PostModel
         fields = [
+            "category",
         ]
 
 
 class TagFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    # name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
     class Meta:
         model = TagModel

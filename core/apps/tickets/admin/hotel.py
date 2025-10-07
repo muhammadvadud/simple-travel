@@ -1,12 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from core.apps.tickets.models import HotelModel, HotelImagesModel, HotelTypeModel
-
-
-class HotelImagesInline(admin.TabularInline):
-    model = HotelImagesModel
-    extra = 1
+from core.apps.tickets.models import HotelModel, HotelTypeModel, HotelAmenitiesModel
 
 
 @admin.register(HotelModel)
@@ -15,13 +10,18 @@ class HotelAdmin(ModelAdmin):
         "id",
         "__str__",
     )
-    inlines = (
-        HotelImagesInline,
-    )
 
 
 @admin.register(HotelTypeModel)
 class HotelTypeModelAdmin(ModelAdmin):
+    list_display = (
+        "id",
+        "__str__",
+    )
+
+
+@admin.register(HotelAmenitiesModel)
+class HotelAmenitiesModelAdmin(ModelAdmin):
     list_display = (
         "id",
         "__str__",

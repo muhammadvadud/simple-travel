@@ -15,10 +15,12 @@ class RegisterSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(max_length=255)
 
     def validate_phone(self, value):
-        user = get_user_model().objects.filter(phone=value, validated_at__isnull=False, is_active=False).first()
+        user = get_user_model().objects.filter(phone=value, validated_at__isnull=False).first()
         if user:
-            if user.exists():
-                raise exceptions.ValidationError(_("Phone number already registered."), code="unique")
+            raise exceptions.ValidationError(
+                _("Phone number already registered."),
+                code="unique"
+            )
         return value
 
     class Meta:
@@ -34,6 +36,7 @@ class ConfirmSerializer(serializers.Serializer):
 class SetPasswordUserSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255)
+
 
 class ResetPasswordSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=255)

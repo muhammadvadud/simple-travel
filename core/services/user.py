@@ -23,7 +23,6 @@ class UserService(sms.SmsService):
             phone=phone,
             defaults={
                 "phone": phone,
-                "is_active": False,
             },
         )
 
@@ -36,7 +35,6 @@ class UserService(sms.SmsService):
             email=email,
             defaults={
                 "email": email,
-                "is_active": False,
             },
         )
 
@@ -91,7 +89,6 @@ class UserService(sms.SmsService):
             raise exc.ValidationError("Parol allaqachon o‘rnatilgan")
 
         user.set_password(password)
-        user.is_active = True
         user.save()
 
     def set_password_email(self, email, password):
@@ -106,7 +103,6 @@ class UserService(sms.SmsService):
             raise exc.ValidationError("Parol allaqachon o‘rnatilgan")
 
         user.set_password(password)
-        user.is_active = True
         user.save()
 
     def send_email_confirmation(self, email) -> bool:

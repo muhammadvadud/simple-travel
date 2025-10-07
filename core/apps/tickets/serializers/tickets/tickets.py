@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from core.apps.accounts.models import User
 from core.apps.accounts.serializers.user import UserSerializer
+from collections import Counter
+
 from core.apps.tickets.models import (
     TicketsAmenitiesModel,
     TicketsCommentsModel,
@@ -179,6 +181,8 @@ class FullInformationTicketsSerializer(serializers.Serializer):
     tickets = serializers.SerializerMethodField()
     min_price = serializers.SerializerMethodField()
     max_price = serializers.SerializerMethodField()
+    top_duration = serializers.SerializerMethodField()
+    top_destinations = serializers.SerializerMethodField()
 
     def get_tickets(self, queryset):
         return ListTicketsSerializer(queryset, many=True, context=self.context).data
@@ -194,6 +198,28 @@ class FullInformationTicketsSerializer(serializers.Serializer):
         if not products:
             return None
         return max([p.price for p in products])
+
+    def get_top_duration(self, obj):
+        from collections import Counter
+
+        qs = obj
+
+        duration_days_list = [
+            t.duration_days for t in qs if getattr(t, "duration_days", None) is not None
+        ]
+        counter = Counter(duration_days_list)
+
+        return [{"duration": val} for val, _ in counter.most_common(3)]
+
+    def get_top_destinations(self, obj):
+        from collections import Counter
+        qs = obj
+
+        destination_list = [
+            t.destination for t in qs if getattr(t, "destination", None) is not None
+        ]
+        counter = Counter(destination_list)
+        return [{"destination": val} for val, _ in counter.most_common(5)]
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):

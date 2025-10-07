@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from core.apps.tickets.models import HotelModel, HotelImagesModel
+from core.apps.tickets.models import HotelModel
 
 
 class HotelFilter(filters.FilterSet):

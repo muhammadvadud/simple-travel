@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 from core.apps.tickets.models import TicketsModel
-from core.apps.tickets.models.hotel import HotelImagesModel
+from core.apps.tickets.models.hotel import HotelAmenitiesModel
 
 
 class TicketsFilter(filters.FilterSet):
@@ -13,7 +13,7 @@ class TicketsFilter(filters.FilterSet):
     most_expensive = filters.BooleanFilter(method="filter_most_expensive")
     visa_required = filters.BooleanFilter(method="filter_visa_required")
     duration_days = filters.NumberFilter(field_name="duration_days", lookup_expr="exact")
-    rating = filters.NumberFilter(field_name="rating", lookup_expr="gte")
+    hotel_rating = filters.NumberFilter(field_name="ticket_hotel__rating", lookup_expr="exact")
     meal_plan = filters.CharFilter(field_name="ticket_hotel__meal_plan", lookup_expr="icontains")
     hotel_type = filters.CharFilter(field_name="ticket_hotel__hotel_type__name", lookup_expr="icontains")
     ticket_amenities = filters.CharFilter(field_name="ticket_amenities__name", lookup_expr="icontains")
@@ -23,7 +23,8 @@ class TicketsFilter(filters.FilterSet):
     max_departure_date = filters.DateFilter(field_name="travel_time", lookup_expr="lte")
     passenger_count = filters.NumberFilter(field_name="passenger_count", lookup_expr="gte")
     hotel_amenities = filters.ModelMultipleChoiceFilter(field_name="hotel_amenities",
-                                                        queryset=HotelImagesModel.objects.all())
+                                                        queryset=HotelAmenitiesModel.objects.all())
+    hotel_name = filters.CharFilter(field_name="ticket_hotel__name", lookup_expr="icontains")
 
     class Meta:
         model = TicketsModel
@@ -45,6 +46,7 @@ class TicketsFilter(filters.FilterSet):
             "min_departure_date",
             "max_departure_date",
             "passenger_count",
+            "hotel_name",
         ]
 
     def filter_cheapest(self, queryset, name, value):

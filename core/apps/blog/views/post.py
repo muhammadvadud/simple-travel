@@ -6,7 +6,8 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from core.apps.blog.models import CategoryModel, PostModel, TagModel
 from core.apps.blog.serializers import UpdatePostSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from core.apps.blog.filters.post import TagFilter
+from core.apps.blog.filters.post import TagFilter, PostFilter
+from core.apps.accounts.choices.user import RoleChoice
 from core.apps.blog.serializers.post import (
     CreateCategorySerializer,
     CreatePostSerializer,
@@ -26,6 +27,8 @@ class PostView(BaseViewSetMixin, ModelViewSet):
     serializer_class = BaseViewSetMixin
     permission_classes = [IsModeratorOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
+    filterset_class = PostFilter
+    filter_backends = [DjangoFilterBackend]
 
     action_permission_classes = {}
     action_serializer_class = {
@@ -35,14 +38,21 @@ class PostView(BaseViewSetMixin, ModelViewSet):
         "create": CreatePostSerializer,
     }
 
+    def get_queryset(self):
+        qs = PostModel.objects.all()
+        user = self.request.user
+
+        if user.is_authenticated and user.role == RoleChoice.Moderator:
+            return qs
+
+        return qs.filter(is_public=True)
+
 
 @extend_schema(tags=["tag"])
 class TagView(BaseViewSetMixin, ReadOnlyModelViewSet):
     queryset = TagModel.objects.all()
     serializer_class = ListTagSerializer
     permission_classes = [AllowAny]
-    filterset_class = TagFilter
-    filter_backends = [DjangoFilterBackend]
     action_permission_classes = {}
     action_serializer_class = {
         "list": ListTagSerializer,
