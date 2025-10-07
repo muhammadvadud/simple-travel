@@ -168,5 +168,5 @@ class EmailResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
             raise PermissionDenied(_("Invalid token"))
         email = token.first().user.email
         token.delete()
-        self.change_password(email, password)
+        self.change_password_email(email, password)
         return Response({"detail": _("password updated")}, status=status.HTTP_200_OK)

@@ -77,6 +77,14 @@ class UserService(sms.SmsService):
         user.set_password(password)
         user.save()
 
+    def change_password_email(self, email, password):
+        """
+        Change password Email
+        """
+        user = get_user_model().objects.filter(email=email).first()
+        user.set_password(password)
+        user.save()
+
     def set_password_phone(self, phone, password):
         """
         Set password
