@@ -136,7 +136,7 @@ class EmailResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
         ser.is_valid(raise_exception=True)
 
         data = ser.data
-        code, email = data.get("code"), data.get("phone")
+        code, email = data.get("code"), data.get("email")
         try:
             SmsService.check_email_confirm(email, code)
             token = models.ResetToken.objects.create(
@@ -170,4 +170,3 @@ class EmailResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
         token.delete()
         self.change_password(email, password)
         return Response({"detail": _("password updated")}, status=status.HTTP_200_OK)
-
