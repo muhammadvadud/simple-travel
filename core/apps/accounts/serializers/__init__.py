@@ -7,3 +7,4 @@ from .set_password import *  # noqa
 from .support import *  # noqa
 from .user import *  # noqa
 from .tour_agency import *  # noqa
+from .login_phone import *  # noqa
