@@ -150,8 +150,8 @@ pipeline {
 
         success {
             withCredentials([
-                string(credentialsId: 'bot-token', variable: 'BOT_TOKEN'),
-                string(credentialsId: 'chat-id', variable: 'CHAT_ID')
+                string(credentialsId: 'muhammadvadud-bot-token', variable: 'BOT_TOKEN'),
+                string(credentialsId: 'muhammadvadud-chat-id', variable: 'CHAT_ID')
             ]) {
                 sh '''
                 curl -s -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage \
@@ -163,8 +163,8 @@ pipeline {
 
         failure {
             withCredentials([
-                string(credentialsId: 'bot-token', variable: 'BOT_TOKEN'),
-                string(credentialsId: 'chat-id', variable: 'CHAT_ID')
+                string(credentialsId: 'muhammadvadud-bot-token', variable: 'BOT_TOKEN'),
+                string(credentialsId: 'muhammadvadud-chat-id', variable: 'CHAT_ID')
             ]) {
                 sh '''
                 curl -s -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage \

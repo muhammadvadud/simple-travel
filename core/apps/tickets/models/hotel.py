@@ -68,7 +68,6 @@ class HotelModel(AbstractBaseModel):
         return self.objects.create(
             ticket=TicketsModel._create_fake(),
             name="mock",
-            website="https://www.default.com/",
             rating=4.5,
         )
 

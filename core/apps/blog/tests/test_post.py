@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from core.apps.blog.models import CategoryModel, PostimagesModel, PostModel, TagModel
+from core.apps.blog.models import CategoryModel, PostModel, TagModel
 
 
 class PostTest(TestCase):

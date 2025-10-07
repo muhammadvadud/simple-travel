@@ -47,6 +47,7 @@ class PostModel(AbstractBaseModel):
             title="title",
             text="text",
             image="images/logo.png",
+            is_public=True,
             category=CategoryModel._create_fake(),
         )
 
