@@ -1,7 +1,8 @@
 from django_core.mixins import BaseViewSetMixin
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework import mixins
 
 from core.apps.accounts.models import SupportModel
 from core.apps.accounts.serializers.support import (
@@ -12,7 +13,8 @@ from core.apps.accounts.serializers.support import (
 
 
 @extend_schema(tags=["support"])
-class SupportView(BaseViewSetMixin, ReadOnlyModelViewSet):
+class SupportView(BaseViewSetMixin, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+                  GenericViewSet):
     queryset = SupportModel.objects.all()
     serializer_class = ListSupportSerializer
     permission_classes = [AllowAny]
