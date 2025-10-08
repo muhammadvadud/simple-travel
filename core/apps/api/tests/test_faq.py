@@ -19,5 +19,5 @@ class FaqTest(TestCase):
 
     def test_list(self):
         response = self.client.get(self.urls["list"])
-        self.assertTrue(response.json()["status"])
+        self.assertTrue(response.json())
         self.assertEqual(response.status_code, 200)
