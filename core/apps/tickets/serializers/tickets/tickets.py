@@ -184,6 +184,8 @@ class FullInformationTicketsSerializer(serializers.Serializer):
     top_duration = serializers.SerializerMethodField()
     top_destinations = serializers.SerializerMethodField()
     hotel_features_by_type = serializers.SerializerMethodField()
+    hotel_types = serializers.SerializerMethodField()
+    hotel_amenities = serializers.SerializerMethodField()
 
     def get_tickets(self, queryset):
         return ListTicketsSerializer(queryset, many=True, context=self.context).data
@@ -239,6 +241,22 @@ class FullInformationTicketsSerializer(serializers.Serializer):
             {"type": type_name, "features": list(set(features))}
             for type_name, features in features_map.items()
         ]
+
+    def get_hotel_types(self, obj):
+        types = set()
+        for ticket in obj:
+            for hotel in ticket.ticket_hotel.all():
+                for htype in hotel.hotel_type.all():
+                    types.add(htype.name)
+        return list(types)
+
+    def get_hotel_amenities(self, obj):
+        amenities = set()
+        for ticket in obj:
+            for hotel in ticket.ticket_hotel.all():
+                for amenity in hotel.hotel_amenities.all():
+                    amenities.add(amenity.name)
+        return list(amenities)
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):
