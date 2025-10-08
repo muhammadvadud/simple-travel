@@ -13,7 +13,8 @@ class TicketsFilter(filters.FilterSet):
     most_expensive = filters.BooleanFilter(method="filter_most_expensive")
     visa_required = filters.BooleanFilter(method="filter_visa_required")
     duration_days = filters.NumberFilter(field_name="duration_days", lookup_expr="exact")
-    hotel_rating = filters.NumberFilter(field_name="ticket_hotel__rating", lookup_expr="exact")
+    hotel_rating = filters.NumberFilter(field_name="ticket_hotel__rating", lookup_expr="gte")
+    rating = filters.NumberFilter(field_name="rating", lookup_expr="gte")
     meal_plan = filters.CharFilter(field_name="ticket_hotel__meal_plan", lookup_expr="icontains")
     hotel_type = filters.CharFilter(field_name="ticket_hotel__hotel_type__name", lookup_expr="icontains")
     ticket_amenities = filters.CharFilter(field_name="ticket_amenities__name", lookup_expr="icontains")
@@ -25,6 +26,7 @@ class TicketsFilter(filters.FilterSet):
     hotel_amenities = filters.ModelMultipleChoiceFilter(field_name="hotel_amenities",
                                                         queryset=HotelAmenitiesModel.objects.all())
     hotel_name = filters.CharFilter(field_name="ticket_hotel__name", lookup_expr="icontains")
+    hotel_feature = filters.CharFilter(method="filter_hotel_features")
 
     class Meta:
         model = TicketsModel
@@ -67,3 +69,10 @@ class TicketsFilter(filters.FilterSet):
             visa_required = queryset.filter(visa_required=value)
             return visa_required
         return queryset
+
+    def filter_hotel_features(self, queryset, name, value_list):
+        for feature in value_list:
+            queryset = queryset.filter(
+                ticket_hotel__hotel_features__feature_name__icontains=feature
+            )
+        return queryset.distinct()
