@@ -13,6 +13,7 @@ class ParticipantTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.instance = self._create_data()
+        self.client.force_authenticate(user=self.instance.created_by)
         self.urls = {
             "list": reverse("participant-list"),
             "retrieve": reverse("participant-detail", kwargs={"pk": self.instance.pk}),

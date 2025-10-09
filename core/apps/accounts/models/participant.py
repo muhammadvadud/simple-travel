@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
 from django.conf import settings
 from ..choices import ParticipantGenderChoices
+from ..models.user import User
 
 
 class ParticipantModel(AbstractBaseModel):
@@ -24,6 +25,7 @@ class ParticipantModel(AbstractBaseModel):
             last_name="mock",
             birth_date="2025-09-19",
             phone_number="998940105669",
+            created_by=User._create_fake(),
         )
 
     class Meta:
