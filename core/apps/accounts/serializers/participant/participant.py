@@ -6,7 +6,7 @@ from core.apps.accounts.models import ParticipantModel, ParticipantPasportImageM
 class ParticipantPasportImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParticipantPasportImageModel
-        fields = ["image"]
+        fields = ["id", "image"]
 
 
 class BaseParticipantSerializer(serializers.ModelSerializer):
@@ -32,6 +32,8 @@ class ListParticipantSerializer(BaseParticipantSerializer):
             "id",
             "first_name",
             "last_name",
+            "gender",
+
         ]
 
 
@@ -63,3 +65,40 @@ class CreateParticipantSerializer(BaseParticipantSerializer):
             for pasport_image in pasport_images:
                 ParticipantPasportImageModel.objects.create(image=pasport_image, participant=participant)
         return participant
+
+
+class UpdateParticipantSerializer(BaseParticipantSerializer):
+    participant_pasport_image = ParticipantPasportImageSerializer(many=True, read_only=True)
+
+    class Meta(BaseParticipantSerializer.Meta):
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "birth_date",
+            "phone_number",
+            "gender",
+            "participant_pasport_image",
+
+        ]
+
+    def update(self, instance, validated_data):
+        pasport_images = self.context["request"].FILES.getlist("pasport_images", [])
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if pasport_images:
+            for image in pasport_images:
+                ParticipantPasportImageModel.objects.create(
+                    participant=instance, image=image
+                )
+
+        return instance
+
+
+class ParticipantPasportImageDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParticipantPasportImageModel
+        fields = ["id", "image"]

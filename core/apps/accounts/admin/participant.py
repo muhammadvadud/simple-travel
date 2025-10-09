@@ -16,3 +16,9 @@ class ParticipantAdmin(ModelAdmin):
         "__str__",
     )
     inlines = [ParticipantPasportImageAdmin]
+@admin.register(ParticipantPasportImageModel)
+class ParticipantPasportImageModelAdmin(ModelAdmin):
+    list_display = (
+        "id",
+        "__str__",
+    )

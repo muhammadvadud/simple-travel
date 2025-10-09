@@ -16,7 +16,8 @@ from .views import (
     ResetPasswordView,
     EmailTokenObtainPairView,
     TravelAgencyView,
-    PhoneTokenObtainPairView
+    PhoneTokenObtainPairView,
+    ParticipantPasportImageView,
 )
 from .views.likes import LikesView
 
@@ -31,6 +32,7 @@ router.register("likes", LikesView, basename="likes")
 router.register("email-auth", EmailRegisterView, basename="email-auth")
 router.register("email-auth", EmailResetPasswordView, basename="email-reset-password")
 router.register("travel-agency", TravelAgencyView, basename="travel-agency")
+router.register("participant-image", ParticipantPasportImageView, basename="participant-image")
 urlpatterns = [
     path("", include(router.urls)),
     path("auth/token/email/", EmailTokenObtainPairView.as_view(), name="token_obtain_email"),
