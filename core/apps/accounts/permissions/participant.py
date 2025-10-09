@@ -9,4 +9,6 @@ class ParticipantPermission(permissions.BasePermission):
         return self
 
     def has_permission(self, request, view):
-        return True
+       return request.user and request.user.is_authenticated
+    def has_object_permission(self, request, view, obj):
+        return obj.created_by == request.user

@@ -1,18 +1,18 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
+from django.conf import settings
+from ..choices import ParticipantGenderChoices
 
 
 class ParticipantModel(AbstractBaseModel):
-    GenderChoices = (
-        ('Male', 'Male'),
-        ('Female', 'Female'),
-    )
-    gender = models.CharField(verbose_name=_("gender"), max_length=255, choices=GenderChoices, default='Male')
+    gender = models.CharField(verbose_name=_("gender"), max_length=255, choices=ParticipantGenderChoices,
+                              default='male')
     first_name = models.CharField(verbose_name=_("first name"), max_length=255)
     last_name = models.CharField(verbose_name=_("last name"), max_length=255)
     birth_date = models.DateField(verbose_name=_("birth date"))
     phone_number = models.CharField(verbose_name=_("phone number"), max_length=255)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("created by"), on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.pk)

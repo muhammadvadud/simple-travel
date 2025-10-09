@@ -1,7 +1,12 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from core.apps.accounts.models import ParticipantModel
+from core.apps.accounts.models import ParticipantModel, ParticipantPasportImageModel
+
+
+class ParticipantPasportImageAdmin(admin.TabularInline):
+    model = ParticipantPasportImageModel
+    extra = 1
 
 
 @admin.register(ParticipantModel)
@@ -10,3 +15,4 @@ class ParticipantAdmin(ModelAdmin):
         "id",
         "__str__",
     )
+    inlines = [ParticipantPasportImageAdmin]
