@@ -20,6 +20,7 @@ class BaseParticipantSerializer(serializers.ModelSerializer):
             "last_name",
             "birth_date",
             "phone_number",
+            "gender",
             "participant_pasport_image",
 
         ]
@@ -48,6 +49,7 @@ class CreateParticipantSerializer(BaseParticipantSerializer):
             "first_name",
             "last_name",
             "birth_date",
+            "gender",
             "phone_number",
         ]
 
