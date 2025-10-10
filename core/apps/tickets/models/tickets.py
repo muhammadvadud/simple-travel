@@ -7,6 +7,19 @@ from .tariff import TariffModel
 from django.utils.text import slugify
 
 
+class TransportTicketModel(AbstractBaseModel):
+    name = models.CharField(verbose_name=_("name"), max_length=255)
+    icon_name = models.CharField(verbose_name=_("icon name"), max_length=255)
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        db_table = "transport_ticket"
+        verbose_name = _("TransportTicket")
+        verbose_name_plural = _("TransportTicketModels")
+
+
 class TicketsModel(AbstractBaseModel):
     """Chiptalar haqidagi asosiy ma’lumotlarni saqlaydi."""
     travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True)
@@ -36,6 +49,9 @@ class TicketsModel(AbstractBaseModel):
     slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True, null=True, blank=True)
     badge = models.ManyToManyField("tickets.BadgeModel", verbose_name=_("badge"), null=True, blank=True)
     visa_required = models.BooleanField(verbose_name=_("visa required"))
+    image_banner = models.ImageField(verbose_name=_("banner image"), upload_to="images_banner/")
+    transports = models.ManyToManyField(TransportTicketModel, related_name="ticket_transport",
+                                       verbose_name=_("transport"))
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_("updated at"), auto_now=True)
 

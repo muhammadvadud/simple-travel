@@ -16,6 +16,7 @@ from core.apps.tickets.serializers.tickets import (
     RetrieveTicketsSerializer,
     BaseTicketorderSerializer,
     FullInformationTicketsSerializer,
+    GetTicketInfoOrderCreateSerializer
 )
 
 
@@ -55,3 +56,13 @@ class TicketorderView(BaseViewSetMixin, mixins.ListModelMixin, mixins.RetrieveMo
         "retrieve": RetrieveTicketorderSerializer,
         "create": CreateTicketorderSerializer,
     }
+
+
+@extend_schema(tags=["ticketorder"])
+class GetTicketInfoOrderCreateView(BaseViewSetMixin, mixins.RetrieveModelMixin, GenericViewSet):
+    serializer_class = GetTicketInfoOrderCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        return TicketsModel.objects.filter(pk=pk)

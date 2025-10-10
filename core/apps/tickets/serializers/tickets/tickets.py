@@ -165,9 +165,9 @@ class ListTicketsSerializer(BaseTicketsSerializer):
         ]
 
     def get_ticket_images(self, obj):
-        image = obj.ticket_images.first()
+        image = obj.image_banner
         if image:
-            return TicketsImageSerializer(image).data
+            return image.url
         return None
 
     def get_is_liked(self, obj):

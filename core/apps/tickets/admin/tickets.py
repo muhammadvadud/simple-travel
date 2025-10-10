@@ -12,6 +12,7 @@ from core.apps.tickets.models import (
     TicketsItineraryImagesModel,
     TicketsItineraryModel,
     TicketsModel,
+    TransportTicketModel,
 )
 
 
@@ -74,6 +75,12 @@ class TicketsCommentsAdmin(ModelAdmin):
 
 @admin.register(TicketorderModel)
 class TicketorderAdmin(ModelAdmin):
+    list_display = (
+        "id",
+        "__str__",
+    )
+@admin.register(TransportTicketModel)
+class TransportTicketModelAdmin(ModelAdmin):
     list_display = (
         "id",
         "__str__",

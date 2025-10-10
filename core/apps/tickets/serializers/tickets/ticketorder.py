@@ -1,9 +1,11 @@
 from rest_framework import serializers
+from core.apps.tickets.models import TicketorderModel, TicketsModel, PaidServicesModel, ExtraServicesModel, \
+    TransportTicketModel
 
-from core.apps.tickets.models import TicketorderModel, TicketsModel, PaidServicesModel, ExtraServicesModel
 from core.apps.accounts.models import ParticipantModel
 from core.apps.accounts.serializers.participant.participant import ListParticipantSerializer
 from core.apps.tickets.serializers import ListExtraServicesSerializer, ListPaidServicesSerializer
+from ..tickets.tickets import TicketsAmenitiesSerializer, TicketsTariffSerializer
 
 
 class OrderTicketSerializer(serializers.ModelSerializer):
@@ -95,3 +97,35 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
             ticketorder.extra_paid_service.set(extra_paid_services_data)
 
         return ticketorder
+
+
+class TransportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransportTicketModel
+        fields = [
+            "name",
+            "icon_name"
+        ]
+
+
+class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
+    ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
+    tariff = TicketsTariffSerializer(many=True, read_only=True)
+    transports = TransportSerializer(many=True, read_only=True)
+    extra_service = ListExtraServicesSerializer(many=True, read_only=True)
+    extra_paid_service = ListPaidServicesSerializer(many=True, read_only=True)
+    class Meta:
+        model = TicketsModel
+        fields = [
+            "departure",
+            "destination",
+            "departure_date",
+            "departure_time",
+            "travel_time",
+            "image_banner",
+            "ticket_amenities",
+            "tariff",
+            "transports",
+            "extra_service",
+            "extra_paid_service",
+        ]
