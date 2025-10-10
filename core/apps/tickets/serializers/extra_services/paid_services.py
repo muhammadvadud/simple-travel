@@ -9,6 +9,7 @@ class BasePaidServicesSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "price",
         ]
 
 
