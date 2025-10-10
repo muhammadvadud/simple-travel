@@ -114,15 +114,18 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
     transports = TransportSerializer(many=True, read_only=True)
     extra_service = ListExtraServicesSerializer(many=True, read_only=True)
     extra_paid_service = ListPaidServicesSerializer(many=True, read_only=True)
+
     class Meta:
         model = TicketsModel
         fields = [
+            "title",
             "departure",
             "destination",
             "departure_date",
             "departure_time",
             "travel_time",
             "image_banner",
+            "rating",
             "ticket_amenities",
             "tariff",
             "transports",
