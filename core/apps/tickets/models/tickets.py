@@ -5,6 +5,7 @@ from core.apps.accounts.models import User, TravelAgency
 from core.apps.accounts.models.participant import ParticipantModel
 from .tariff import TariffModel
 from django.utils.text import slugify
+from ..choices.order import OrderStatusChoices
 
 
 class TransportTicketModel(AbstractBaseModel):
@@ -51,7 +52,7 @@ class TicketsModel(AbstractBaseModel):
     visa_required = models.BooleanField(verbose_name=_("visa required"))
     image_banner = models.ImageField(verbose_name=_("banner image"), upload_to="images_banner/")
     transports = models.ManyToManyField(TransportTicketModel, related_name="ticket_transport",
-                                       verbose_name=_("transport"))
+                                        verbose_name=_("transport"))
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_("updated at"), auto_now=True)
 
@@ -315,13 +316,6 @@ class TicketsCommentsModel(AbstractBaseModel):
 
 
 class TicketorderModel(AbstractBaseModel):
-    STATUS_CHOICES = [
-        ("pending_payment", "Pending Payment"),
-        ("pending_confirmation", "Pending Confirmation"),
-        ("cancelled", "Cancelled"),
-        ("confirmed", "Confirmed"),
-        ("completed", "Completed"),
-    ]
     user = models.ForeignKey(User, verbose_name=_("user"), on_delete=models.CASCADE)
     departure = models.CharField(verbose_name=_("departure"), max_length=255)
     destination = models.CharField(verbose_name=_("destination"), max_length=255)
@@ -335,8 +329,8 @@ class TicketorderModel(AbstractBaseModel):
                                            blank=True)
     extra_paid_service = models.ManyToManyField("tickets.PaidServicesModel", verbose_name=_("extra paid services"),
                                                 null=True, blank=True)
-    order_status = models.CharField(verbose_name=_("order status"), max_length=255, choices=STATUS_CHOICES,
-                                    default="pending_payment")
+    order_status = models.CharField(verbose_name=_("order status"), max_length=255, choices=OrderStatusChoices,
+                                    default=OrderStatusChoices.PENDING_PAYMENT)
     total_price = models.BigIntegerField(verbose_name=_("total price"))
 
     def __str__(self):

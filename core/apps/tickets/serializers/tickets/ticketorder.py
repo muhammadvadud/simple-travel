@@ -13,7 +13,7 @@ class OrderTicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TicketsModel
-        fields = ['id', "service_name", "location_name"]
+        fields = ['id', "title", "service_name", "location_name"]
 
     def get_service_name(self, obj):
         return f"{obj.departure}-{obj.destination}"
@@ -40,6 +40,7 @@ class BaseTicketorderSerializer(serializers.ModelSerializer):
             "extra_service",
             "extra_paid_service",
             "total_price",
+            "order_status",
         ]
 
 
