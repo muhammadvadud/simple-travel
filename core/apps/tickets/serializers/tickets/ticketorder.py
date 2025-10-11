@@ -119,6 +119,7 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
         model = TicketsModel
         fields = [
             "title",
+            "price",
             "departure",
             "destination",
             "departure_date",
