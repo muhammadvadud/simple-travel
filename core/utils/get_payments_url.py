@@ -1,4 +1,3 @@
-from aiohttp.payload import Order
 from payme import Payme
 from click_up import ClickUp
 from core.apps.tickets.models.tickets import TicketorderModel
