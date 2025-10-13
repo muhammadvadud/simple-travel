@@ -15,7 +15,7 @@ class ClickWebhookAPIView(ClickWebhook):
         successfully payment method process you can ovveride it
         """
         try:
-            transaction_id = params.get("id")
+            transaction_id = params.get("click_trans_id")
             transaction = ClickTransaction.objects.filter(transaction_id=transaction_id).first()
             order = TicketorderModel.objects.get(id=transaction.account_id)
             order.order_status = OrderStatusChoices.PENDING_CONFIRMATION
@@ -30,7 +30,7 @@ class ClickWebhookAPIView(ClickWebhook):
         cancelled payment method process you can ovveride it
         """
         try:
-            transaction_id = params.get("id")
+            transaction_id = params.get("click_trans_id")
             transaction = ClickTransaction.objects.filter(transaction_id=transaction_id).first()
             order = TicketorderModel.objects.get(id=transaction.account_id)
             order.order_status = OrderStatusChoices.CANCELLED
