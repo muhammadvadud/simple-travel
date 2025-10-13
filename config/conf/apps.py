@@ -5,7 +5,10 @@ APPS = [
     "cacheops",
     "rosetta",
     "django_ckeditor_5",
-    
+
+    "click_up",
+    "payme",
+
     "drf_spectacular",
     "rest_framework",
     "corsheaders",

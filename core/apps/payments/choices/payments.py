@@ -7,7 +7,6 @@ class PaymentStatusChoices(models.TextChoices):
     Payments Status Choice
     """
 
-    PENDING = "pending", _("Pending")
     SUCCESS = "success", _("Success")
     FAILED = "failed", _("Failed")
     CANCELLED = "cancelled", _("Cancelled")

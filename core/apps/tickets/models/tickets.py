@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
-from core.apps.accounts.models import User, TravelAgency
+from core.apps.accounts.models.user import User, TravelAgency
 from core.apps.accounts.models.participant import ParticipantModel
 from .tariff import TariffModel
 from django.utils.text import slugify

@@ -8,7 +8,6 @@ class BasePaymentsSerializer(serializers.ModelSerializer):
         model = PaymentsModel
         fields = [
             "id",
-            "name",
         ]
 
 
@@ -24,5 +23,4 @@ class CreatePaymentsSerializer(BasePaymentsSerializer):
     class Meta(BasePaymentsSerializer.Meta):
         fields = [
             "id",
-            "name",
         ]

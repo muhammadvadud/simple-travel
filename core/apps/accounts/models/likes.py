@@ -2,12 +2,12 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
 from .user import User
-from core.apps.tickets.models.tickets import TicketsModel
 
 
 class LikesModel(AbstractBaseModel):
     user = models.ForeignKey(User, verbose_name=_('user'), on_delete=models.CASCADE)
-    ticket = models.ForeignKey(TicketsModel, verbose_name=_('ticket'), related_name="ticket_like", on_delete=models.CASCADE)
+    ticket = models.ForeignKey("tickets.TicketsModel", verbose_name=_('ticket'), related_name="ticket_like",
+                               on_delete=models.CASCADE)
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
 
     def __str__(self):
@@ -15,6 +15,7 @@ class LikesModel(AbstractBaseModel):
 
     @classmethod
     def _create_fake(self):
+        from core.apps.tickets.models.tickets import TicketsModel
         return self.objects.create(
             user=User._create_fake(),
             ticket=TicketsModel._create_fake(),
