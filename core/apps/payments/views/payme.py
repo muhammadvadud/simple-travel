@@ -1,9 +1,12 @@
 from payme.views import PaymeWebHookAPIView
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import AllowAny
 
 
 @extend_schema(tags=["payments"])
 class PaymeCallBackAPIView(PaymeWebHookAPIView):
+    permission_classes = [AllowAny]
+
     def handle_created_payment(self, params, result, *args, **kwargs):
         """
         Handle the successful payment. You can override this method

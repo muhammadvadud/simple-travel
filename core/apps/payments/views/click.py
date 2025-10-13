@@ -1,9 +1,12 @@
 from click_up.views import ClickWebhook
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import AllowAny
 
 
 @extend_schema(tags=["payments"])
 class ClickWebhookAPIView(ClickWebhook):
+    permission_classes = [AllowAny]
+
     def successfully_payment(self, params):
         """
         successfully payment method process you can ovveride it
