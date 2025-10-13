@@ -16,6 +16,7 @@ class ClickWebhookAPIView(ClickWebhook):
         """
         try:
             transaction_id = params.get("click_trans_id")
+            print(transaction_id)
             transaction = ClickTransaction.objects.filter(transaction_id=transaction_id).first()
             order = TicketorderModel.objects.get(id=transaction.account_id)
             order.order_status = OrderStatusChoices.PENDING_CONFIRMATION
