@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from core.apps.tickets.filters import TicketsFilter
 from core.apps.tickets.models import TicketorderModel, TicketsModel
 from core.apps.tickets.permissions.tickets import TicketorderPermission
-from django.http import FileResponse
+from django.http import HttpResponse
 from core.apps.tickets.serializers.tickets import (
     CreateTicketorderSerializer,
     CreateTicketsSerializer,
@@ -88,6 +88,7 @@ class GetOrderPdfView(APIView):
         if not os.path.exists(file_path):
             return Response({"detail": "PDF fayl topilmadi."}, status=404)
         file_name = os.path.basename(file_path)
-        response = FileResponse(open(file_path, "rb"), content_type="application/pdf")
-        response["Content-Disposition"] = f'attachment; filename="{file_name}"'
-        return response
+        with open(file_path, "rb") as pdf_file:
+            response = HttpResponse(pdf_file.read(), content_type="application/pdf")
+            response["Content-Disposition"] = f'attachment; filename="{file_name}"'
+            return response
