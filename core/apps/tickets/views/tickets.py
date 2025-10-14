@@ -51,9 +51,8 @@ class TicketsView(BaseViewSetMixin, ReadOnlyModelViewSet):
 @extend_schema(tags=["ticketorder"])
 class TicketorderView(BaseViewSetMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin,
                       GenericViewSet):
-    queryset = TicketorderModel.objects.all()
     serializer_class = BaseTicketorderSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [TicketorderPermission]
 
     action_permission_classes = {}
     action_serializer_class = {
@@ -61,6 +60,10 @@ class TicketorderView(BaseViewSetMixin, mixins.ListModelMixin, mixins.RetrieveMo
         "retrieve": RetrieveTicketorderSerializer,
         "create": CreateTicketorderSerializer,
     }
+
+    def get_queryset(self):
+        queryset = TicketorderModel.objects.filter(user=self.request.user)
+        return queryset
 
 
 @extend_schema(tags=["ticketorder"])
@@ -81,7 +84,7 @@ class GetOrderPdfView(APIView):
         serializer = GetOrderPdfSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         result = serializer.save()
-        file_path = result.get("file_path") or result  
+        file_path = result.get("file_path") or result
         if not os.path.exists(file_path):
             return Response({"detail": "PDF fayl topilmadi."}, status=404)
         file_name = os.path.basename(file_path)
