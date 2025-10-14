@@ -6,6 +6,7 @@ from core.apps.accounts.models import ParticipantModel
 from core.apps.accounts.serializers.participant.participant import ListParticipantSerializer
 from core.apps.tickets.serializers import ListExtraServicesSerializer, ListPaidServicesSerializer
 from ..tickets.tickets import TicketsAmenitiesSerializer, TicketsTariffSerializer
+from core.utils.order_pdf_creator import creator_pdf
 
 
 class OrderTicketSerializer(serializers.ModelSerializer):
@@ -134,3 +135,15 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
             "extra_service",
             "extra_paid_service",
         ]
+
+
+class GetOrderPdfSerializer(serializers.Serializer):
+    lang = serializers.CharField(write_only=True, required=True)
+    order_id = serializers.CharField(write_only=True, required=True)
+    file_path = serializers.SerializerMethodField()
+
+    def create(self, validated_data):
+        order_id = validated_data["order_id"]
+        lang = validated_data["lang"]
+        file_path = creator_pdf(order_id, lang)
+        return {"file_path": file_path}

@@ -23,7 +23,7 @@ rich
 pydantic
 bcrypt
 pytest-django
-
+reportlab==4.4.4
 
 
 django-modeltranslation~=0.19.11

@@ -1,12 +1,14 @@
 from django_core.mixins import BaseViewSetMixin
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, GenericViewSet
+from rest_framework.views import APIView
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.response import Response
 from core.apps.tickets.filters import TicketsFilter
 from core.apps.tickets.models import TicketorderModel, TicketsModel
+from core.apps.tickets.permissions.tickets import TicketorderPermission
 from core.apps.tickets.serializers.tickets import (
     CreateTicketorderSerializer,
     CreateTicketsSerializer,
@@ -16,7 +18,8 @@ from core.apps.tickets.serializers.tickets import (
     RetrieveTicketsSerializer,
     BaseTicketorderSerializer,
     FullInformationTicketsSerializer,
-    GetTicketInfoOrderCreateSerializer
+    GetTicketInfoOrderCreateSerializer,
+    GetOrderPdfSerializer,
 )
 
 
@@ -66,3 +69,14 @@ class GetTicketInfoOrderCreateView(BaseViewSetMixin, mixins.RetrieveModelMixin, 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         return TicketsModel.objects.filter(pk=pk)
+
+
+@extend_schema(tags=["ticketorder"])
+class GetOrderPdfView(APIView):
+    permission_classes = [TicketorderPermission]
+
+    def post(self, request, *args, **kwargs):
+        serializer = GetOrderPdfSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        result = serializer.save()
+        return Response(result)
