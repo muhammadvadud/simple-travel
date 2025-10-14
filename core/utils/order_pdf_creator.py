@@ -6,7 +6,10 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from core.apps.tickets.models.tickets import TicketorderModel
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.utils.text import slugify
 import random
+import os
 
 pdfmetrics.registerFont(TTFont("DejaVuSans", "resources/fonts/DejaVuSans.ttf"))
 pdfmetrics.registerFont(TTFont("DejaVuSans-Bold", "resources/fonts/DejaVuSans-Bold.ttf"))
@@ -22,9 +25,13 @@ def get_section_titles(lang):
 
 
 def create_tour_pdf(file_name, base_info, services_data, companions, lang):
+    folder_path = os.path.join(settings.MEDIA_ROOT, "order_pdf")
+    os.makedirs(folder_path, exist_ok=True)
+
+    file_path = os.path.join(folder_path, file_name)
     section_titles = get_section_titles(lang)
 
-    pdf = SimpleDocTemplate(file_name, pagesize=A4)
+    pdf = SimpleDocTemplate(file_path, pagesize=A4)
     elements = []
 
     styles = getSampleStyleSheet()
@@ -42,7 +49,6 @@ def create_tour_pdf(file_name, base_info, services_data, companions, lang):
     elements.append(Spacer(1, 12))
 
     data = base_info.copy()
-
     data.append(["", ""])
     section_label = {
         "uz": "Yo‘ldoshlar",
@@ -77,6 +83,7 @@ def create_tour_pdf(file_name, base_info, services_data, companions, lang):
     table.setStyle(style)
     elements.append(table)
     pdf.build(elements)
+    return file_path
 
 
 def creator_pdf(order_id, lang='uz'):
@@ -130,6 +137,8 @@ def creator_pdf(order_id, lang='uz'):
             (s.name, f"+{s.price:,} sum") for s in extra_paid_services
         ]
 
-    file_name = f"resources/media/order_pdf/{order.user.first_name}_{order.ticket.title}_{order.id}.pdf"
-    create_tour_pdf(file_name, base_info, services_data, companions, lang)
-    return file_name
+    safe_user = slugify(order.user.first_name)
+    safe_title = slugify(order.ticket.title)
+    file_name = f"{safe_user}_{safe_title}_{order.id}.pdf"
+    file_path = create_tour_pdf(file_name, base_info, services_data, companions, lang)
+    return file_path

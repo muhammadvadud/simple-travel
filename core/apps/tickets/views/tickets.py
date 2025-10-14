@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from core.apps.tickets.filters import TicketsFilter
 from core.apps.tickets.models import TicketorderModel, TicketsModel
 from core.apps.tickets.permissions.tickets import TicketorderPermission
+from django.http import FileResponse
 from core.apps.tickets.serializers.tickets import (
     CreateTicketorderSerializer,
     CreateTicketsSerializer,
@@ -21,6 +22,7 @@ from core.apps.tickets.serializers.tickets import (
     GetTicketInfoOrderCreateSerializer,
     GetOrderPdfSerializer,
 )
+import os
 
 
 @extend_schema(tags=["tickets"])
@@ -79,4 +81,10 @@ class GetOrderPdfView(APIView):
         serializer = GetOrderPdfSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         result = serializer.save()
-        return Response(result)
+        file_path = result.get("file_path") or result  
+        if not os.path.exists(file_path):
+            return Response({"detail": "PDF fayl topilmadi."}, status=404)
+        file_name = os.path.basename(file_path)
+        response = FileResponse(open(file_path, "rb"), content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{file_name}"'
+        return response
