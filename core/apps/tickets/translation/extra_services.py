@@ -5,9 +5,13 @@ from core.apps.tickets.models import ExtraServicesModel, PaidServicesModel
 
 @register(ExtraServicesModel)
 class ExtraServicesTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "name"
+    ]
 
 
 @register(PaidServicesModel)
 class PaidServicesTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "name"
+    ]

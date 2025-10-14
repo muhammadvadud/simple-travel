@@ -5,4 +5,6 @@ from core.apps.tickets.models import BadgeModel
 
 @register(BadgeModel)
 class BadgeTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "name"
+    ]

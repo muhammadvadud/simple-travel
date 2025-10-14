@@ -5,19 +5,28 @@ from core.apps.blog.models import CategoryModel, PostimagesModel, PostModel, Tag
 
 @register(PostModel)
 class PostTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "title",
+        "text"
+    ]
 
 
 @register(TagModel)
 class TagTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "name"
+    ]
 
 
 @register(CategoryModel)
 class CategoryTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "name"
+    ]
 
 
 @register(PostimagesModel)
 class PostimagesTranslation(TranslationOptions):
-    fields = []
+    fields = [
+        "text"
+    ]
