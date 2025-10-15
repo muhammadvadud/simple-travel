@@ -278,3 +278,5 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "duration_days",
             "hotel_meals",
         ]
+
+
