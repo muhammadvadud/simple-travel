@@ -20,7 +20,7 @@ class TicketsFilter(filters.FilterSet):
     ticket_amenities = filters.CharFilter(field_name="ticket_amenities__name", lookup_expr="icontains")
     departure = filters.CharFilter(field_name="departure", lookup_expr="icontains")
     destination = filters.CharFilter(field_name="destination", lookup_expr="icontains")
-    min_departure_date = filters.DateFilter(field_name="departure_date", lookup_expr="gte")
+    min_departure_date = filters.DateFilter(field_name="departure_time", lookup_expr="gte")
     max_departure_date = filters.DateFilter(field_name="travel_time", lookup_expr="lte")
     passenger_count = filters.NumberFilter(field_name="passenger_count", lookup_expr="gte")
     hotel_name = filters.CharFilter(field_name="ticket_hotel__name", lookup_expr="icontains")
@@ -45,7 +45,6 @@ class TicketsFilter(filters.FilterSet):
             "departure",
             "destination",
             "departure_time",
-            "departure_date",
             "travel_time",
             "min_departure_date",
             "max_departure_date",
@@ -78,7 +77,6 @@ class TicketsFilter(filters.FilterSet):
                 ticket_hotel__hotel_features__feature_name__icontains=feature
             )
         return queryset.distinct()
-
 
     def filter_hotel_amenity(self, queryset, name, value):
         values = self.request.GET.getlist("hotel_amenity")

@@ -124,7 +124,6 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
             "price",
             "departure",
             "destination",
-            "departure_date",
             "departure_time",
             "travel_time",
             "image_banner",

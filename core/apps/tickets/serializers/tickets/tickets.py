@@ -104,7 +104,6 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "price",
-            "departure_date",
             "departure",
             "destination",
             "passenger_count",
@@ -131,9 +130,9 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
         return False
 
     def get_travel_agency_id(self, obj):
-        travel_id = getattr(obj.travel_agency, "id", None)
+        travel_id = getattr(obj.travel_agency, "custom_id", None)
         if travel_id is not None:
-            return f"T-100{travel_id}"
+            return f"{travel_id}"
         return None
 
 
@@ -149,7 +148,6 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "id",
             "title",
             "price",
-            "departure_date",
             "travel_time",
             "departure",
             "passenger_count",
@@ -269,7 +267,6 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "id",
             "title",
             "price",
-            "departure_date",
             "departure",
             "destination",
             "passenger_count",
@@ -278,5 +275,3 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "duration_days",
             "hotel_meals",
         ]
-
-

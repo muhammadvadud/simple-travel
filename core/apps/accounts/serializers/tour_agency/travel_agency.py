@@ -14,7 +14,6 @@ class BaseTravelAgencySerializer(serializers.ModelSerializer):
             "addres",
             "email",
             "phone",
-            "instagram",
             "web_site",
         ]
 
@@ -36,7 +35,6 @@ class CreateTravelAgencySerializer(BaseTravelAgencySerializer):
             "addres",
             "email",
             "phone",
-            "instagram",
             "web_site",
             "documents",
         ]

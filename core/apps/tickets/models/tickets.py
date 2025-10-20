@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
 from core.apps.accounts.models.user import User, TravelAgency
 from core.apps.accounts.models.participant import ParticipantModel
-from .tariff import TariffModel
+from .tariff import FullTariff
 from django.utils.text import slugify
 from ..choices.order import OrderStatusChoices
 
@@ -21,12 +21,27 @@ class TransportTicketModel(AbstractBaseModel):
         verbose_name_plural = _("TransportTicketModels")
 
 
+class FullTransportInfoModel(AbstractBaseModel):
+    transport = models.ForeignKey(TransportTicketModel, verbose_name=_("transport"), on_delete=models.PROTECT,
+                                  related_name="full_info")
+    price = models.PositiveBigIntegerField(verbose_name=_("price"), default=0)
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        db_table = "transport_price"
+        verbose_name = _("FullTransportInfoModel")
+        verbose_name_plural = _("FullTransportInfoModels")
+
+
 class TicketsModel(AbstractBaseModel):
     """Chiptalar haqidagi asosiy ma’lumotlarni saqlaydi."""
     travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True)
     title = models.CharField(verbose_name=_("title"), max_length=255)
     price = models.BigIntegerField(verbose_name=_("price"))
-    departure_date = models.DateField(verbose_name=_("departure date"))
+    min_person = models.PositiveIntegerField(verbose_name=_("min person"))
+    max_person = models.PositiveIntegerField(verbose_name=_("max person"))
     departure = models.CharField(verbose_name=_("departure"), max_length=255)
     destination = models.CharField(verbose_name=_("destination"), max_length=255)
     #############
@@ -46,12 +61,12 @@ class TicketsModel(AbstractBaseModel):
     hotel_info = models.TextField(verbose_name=_("hotel info"))
     duration_days = models.IntegerField(verbose_name=_("duration days"))
     hotel_meals = models.TextField(verbose_name=_("hotel meals"), null=True, blank=True)
-    tariff = models.ManyToManyField(TariffModel, related_name="ticket_tariffs", verbose_name=_("tariff"))
+    tariff = models.ManyToManyField(FullTariff, related_name="ticket_tariffs", verbose_name=_("tariff"))
     slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True, null=True, blank=True)
     badge = models.ManyToManyField("tickets.BadgeModel", verbose_name=_("badge"), null=True, blank=True)
     visa_required = models.BooleanField(verbose_name=_("visa required"))
     image_banner = models.ImageField(verbose_name=_("banner image"), upload_to="images_banner/")
-    transports = models.ManyToManyField(TransportTicketModel, related_name="ticket_transport",
+    transports = models.ManyToManyField(FullTransportInfoModel, related_name="ticket_transport",
                                         verbose_name=_("transport"))
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_("updated at"), auto_now=True)
@@ -75,10 +90,11 @@ class TicketsModel(AbstractBaseModel):
         ticket = self.objects.create(
             title="mock",
             price=150000,
-            departure_date="2025-10-01",
             destination="mock",
             departure="mock",
             passenger_count=4,
+            min_person=4,
+            max_person=4,
             rating=4.5,
             hotel_info="mock",
             duration_days=15,
