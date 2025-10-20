@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import BadgeView, ExtraServicesView, PaidServicesView, TariffView, TicketorderView, GetOrderPdfView
+from .views import BadgeView, ExtraServicesView, PaidServicesView, TariffView, TicketorderView, GetOrderPdfView,TicketsCommentsViewSet
 from .views.hotel import HotelView
 from .views.tickets import TicketsView, GetTicketInfoOrderCreateView
 
@@ -14,6 +14,7 @@ router.register("tariff", TariffView, basename="tariff")
 router.register("tickets", TicketsView, basename="tickets")
 router.register("hotels", HotelView, basename="hotel")
 router.register("get-ticket-info", GetTicketInfoOrderCreateView, basename="get-ticket-info")
+router.register("ticket-comment", TicketsCommentsViewSet, basename="ticket-comment")
 urlpatterns = [
     path("", include(router.urls)),
     path("get-order-pdf/", GetOrderPdfView.as_view(), name="get-order-pdf"),

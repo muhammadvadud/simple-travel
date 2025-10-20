@@ -13,6 +13,7 @@ from core.apps.tickets.models import (
     TicketsItineraryModel,
     TicketsModel,
     TransportTicketModel,
+    FullTransportInfoModel
 )
 
 
@@ -38,7 +39,7 @@ class TicketsHotelMealsInline(admin.TabularInline):
 
 @admin.register(TicketsModel)
 class TicketsAdmin(ModelAdmin):
-    list_display = ("id", "title", "price", "departure_date", "destination", "passenger_count", "rating")
+    list_display = ("id", "title", "price", "departure_time", "destination", "passenger_count", "rating")
     inlines = [
         TicketsImagesInline,
         TicketsAmenitiesInline,
@@ -79,8 +80,16 @@ class TicketorderAdmin(ModelAdmin):
         "id",
         "__str__",
     )
+
+
 @admin.register(TransportTicketModel)
 class TransportTicketModelAdmin(ModelAdmin):
+    list_display = (
+        "id",
+        "__str__",
+    )
+@admin.register(FullTransportInfoModel)
+class FullTransportInfoModelAdmin(ModelAdmin):
     list_display = (
         "id",
         "__str__",
