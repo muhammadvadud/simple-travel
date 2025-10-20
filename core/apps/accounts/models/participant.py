@@ -13,7 +13,7 @@ class ParticipantModel(AbstractBaseModel):
     last_name = models.CharField(verbose_name=_("last name"), max_length=255)
     birth_date = models.DateField(verbose_name=_("birth date"))
     phone_number = models.CharField(verbose_name=_("phone number"), max_length=255)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("created by"), on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("created by"),related_name="participant", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.pk)

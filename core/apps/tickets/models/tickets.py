@@ -332,7 +332,7 @@ class TicketsCommentsModel(AbstractBaseModel):
 
 
 class TicketorderModel(AbstractBaseModel):
-    user = models.ForeignKey(User, verbose_name=_("user"), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("user"), related_name="orders", on_delete=models.CASCADE)
     departure = models.CharField(verbose_name=_("departure"), max_length=255)
     destination = models.CharField(verbose_name=_("destination"), max_length=255)
     departure_date = models.DateField(verbose_name=_("departure date"))
