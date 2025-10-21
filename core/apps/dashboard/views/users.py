@@ -4,6 +4,8 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import get_user_model
 from ..permission.users import IsModeratorOrOperator
 from core.apps.accounts.choices.user import RoleChoice
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, filters
 from core.apps.dashboard.serializers.users import (
     RetrieveUsersSerializer,
     FullInfoUsersList,
@@ -16,7 +18,8 @@ class UsersView(BaseViewSetMixin, ModelViewSet):
     serializer_class = FullInfoUsersList
     permission_classes = [IsModeratorOrOperator]
     http_method_names = ["get", "patch", "head", "options"]
-
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['phone', 'email', 'first_name', 'last_name']
     action_permission_classes = {}
     action_serializer_class = {
         "list": FullInfoUsersList,
