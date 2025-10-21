@@ -14,7 +14,7 @@ from core.apps.tickets.models import (
     TicketsItineraryModel,
     TicketsModel,
 )
-from core.apps.tickets.models.tariff import TariffModel
+from core.apps.tickets.models.tariff import TariffModel, FullTariff
 from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
 
 
@@ -22,6 +22,14 @@ class TicketsTariffSerializer(serializers.ModelSerializer):
     class Meta:
         model = TariffModel
         fields = ["name"]
+
+
+class TicketsFullTariffSerializer(serializers.ModelSerializer):
+    tariff = TicketsTariffSerializer(read_only=True)
+
+    class Meta:
+        model = FullTariff
+        fields = ["tariff", "price"]
 
 
 class CommentUserSerializer(UserSerializer):
@@ -94,7 +102,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     ticket_itinerary = TicketsItinerarySerializer(many=True, read_only=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, read_only=True)
     ticket_comments = TicketsCommentsSerializer(many=True, read_only=True)
-    tariff = TicketsTariffSerializer(many=True, read_only=True)
+    tariff = TicketsFullTariffSerializer(many=True, read_only=True)
     is_liked = serializers.SerializerMethodField()
     travel_agency_id = serializers.SerializerMethodField()
 

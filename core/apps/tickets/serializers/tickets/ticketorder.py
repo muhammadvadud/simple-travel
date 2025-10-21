@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from core.apps.tickets.models import TicketorderModel, TicketsModel, PaidServicesModel, ExtraServicesModel, \
-    TransportTicketModel
+    TransportTicketModel, FullTransportInfoModel
 
 from core.apps.accounts.models import ParticipantModel
 from core.apps.accounts.serializers.participant.participant import ListParticipantSerializer
 from core.apps.tickets.serializers import ListExtraServicesSerializer, ListPaidServicesSerializer
-from ..tickets.tickets import TicketsAmenitiesSerializer, TicketsTariffSerializer
+from ..tickets.tickets import TicketsAmenitiesSerializer, TicketsFullTariffSerializer
 from core.utils.order_pdf_creator import creator_pdf
 
 
@@ -110,10 +110,21 @@ class TransportSerializer(serializers.ModelSerializer):
         ]
 
 
+class FullTransportSerializer(serializers.ModelSerializer):
+    transport = TransportSerializer(read_only=True)
+
+    class Meta:
+        model = FullTransportInfoModel
+        fields = [
+            "transport",
+            "price"
+        ]
+
+
 class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
     ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
-    tariff = TicketsTariffSerializer(many=True, read_only=True)
-    transports = TransportSerializer(many=True, read_only=True)
+    tariff = TicketsFullTariffSerializer(many=True, read_only=True)
+    transports = FullTransportSerializer(many=True, read_only=True)
     extra_service = ListExtraServicesSerializer(source="ticket_extra_service", many=True, read_only=True)
     extra_paid_service = ListPaidServicesSerializer(source="ticket_extra_paid_service", many=True, read_only=True)
 

@@ -14,7 +14,8 @@ class User(auth_models.AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     validated_at = models.DateTimeField(null=True, blank=True)
-    travel_agency = models.ForeignKey(TravelAgency, null=True, blank=True, on_delete=models.SET_NULL)
+    travel_agency = models.ForeignKey(TravelAgency, related_name="admins",
+    null = True, blank = True, on_delete = models.SET_NULL)
     role = models.CharField(
         max_length=255,
         choices=RoleChoice,

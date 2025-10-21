@@ -68,6 +68,8 @@ class TicketsModel(AbstractBaseModel):
     image_banner = models.ImageField(verbose_name=_("banner image"), upload_to="images_banner/")
     transports = models.ManyToManyField(FullTransportInfoModel, related_name="ticket_transport",
                                         verbose_name=_("transport"))
+    sold_count = models.PositiveIntegerField(default=0, verbose_name=_("sold count"))
+    total_income = models.PositiveBigIntegerField(default=0, verbose_name=_("total income"))
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_("updated at"), auto_now=True)
 
