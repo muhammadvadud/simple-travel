@@ -24,6 +24,7 @@ class UsersView(BaseViewSetMixin, ModelViewSet):
     action_serializer_class = {
         "list": FullInfoUsersList,
         "retrieve": RetrieveUsersSerializer,
+        "partial_update": RetrieveUsersSerializer,
     }
 
     def list(self, request, *args, **kwargs):
