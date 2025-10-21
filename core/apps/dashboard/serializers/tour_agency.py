@@ -4,9 +4,23 @@ from core.apps.tickets.models import TicketsModel
 from django.db.models import Sum
 
 
+class TravelAgencyTicketsListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketsModel
+        fields = [
+            'id',
+            'title',
+            'departure',
+            'destination',
+            'sold_count',
+            'total_income',
+        ]
+
+
 class BaseTravelAgencySerializer(serializers.ModelSerializer):
     owner_user = serializers.SerializerMethodField()
     tour_count = serializers.SerializerMethodField()
+    tickets = TravelAgencyTicketsListSerializer(many=True, read_only=True)
 
     class Meta:
         model = TravelAgency
@@ -22,7 +36,8 @@ class BaseTravelAgencySerializer(serializers.ModelSerializer):
             'owner_user',
             'tour_count',
             'ticket_sold_count',
-            'total_income'
+            'total_income',
+            'tickets'
         ]
 
     def get_owner_user(self, obj):
