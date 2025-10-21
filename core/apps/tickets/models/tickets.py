@@ -37,7 +37,7 @@ class FullTransportInfoModel(AbstractBaseModel):
 
 class TicketsModel(AbstractBaseModel):
     """Chiptalar haqidagi asosiy ma’lumotlarni saqlaydi."""
-    travel_agency = models.ForeignKey(TravelAgency, on_delete=models.SET_NULL, null=True)
+    travel_agency = models.ForeignKey(TravelAgency,related_name="tickets", on_delete=models.SET_NULL, null=True)
     title = models.CharField(verbose_name=_("title"), max_length=255)
     price = models.BigIntegerField(verbose_name=_("price"))
     min_person = models.PositiveIntegerField(verbose_name=_("min person"))
