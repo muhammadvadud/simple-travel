@@ -41,6 +41,7 @@ class UserOrderSerializer(serializers.ModelSerializer):
             "extra_paid_service",
             "total_price",
             "order_status",
+            "transport",
         ]
 
     def get_travel_agency_id(self, obj):
@@ -67,6 +68,8 @@ class BaseUsersSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = [
             "id",
+            "first_name",
+            "last_name",
             "phone",
             "email",
             "avatar",
