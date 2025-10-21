@@ -56,6 +56,7 @@ class BaseTravelAgencySerializer(serializers.ModelSerializer):
 class ListTravelAgencySerializer(BaseTravelAgencySerializer):
     class Meta(BaseTravelAgencySerializer.Meta):
         fields = [
+            'id',
             'status',
             'custom_id',
             'name',
@@ -99,5 +100,3 @@ class FullListTravelAgencySerializer(serializers.Serializer):
 
 class RetrieveTravelAgencySerializer(BaseTravelAgencySerializer):
     class Meta(BaseTravelAgencySerializer.Meta): ...
-
-
