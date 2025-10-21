@@ -5,6 +5,7 @@ from core.apps.accounts.models.participant import ParticipantModel
 from core.apps.tickets.serializers import ListExtraServicesSerializer, ListPaidServicesSerializer
 from core.apps.accounts.serializers.participant.participant import RetrieveParticipantSerializer
 from django.db.models import Q
+from core.apps.accounts.choices.user import RoleChoice
 
 
 class OrderParticipantSerializer(serializers.ModelSerializer):
@@ -103,12 +104,16 @@ class FullInfoUsersList(serializers.Serializer):
 
     def get_user_register_phone(self, obj):
         User = get_user_model()
-        count = User.objects.filter(Q(phone__isnull=False) & ~Q(phone="")).count()
+        count = User.objects.filter(
+            Q(role=RoleChoice.USER) & Q(phone__isnull=False) & ~Q(phone="")
+        ).count()
         return count
 
     def get_user_register_email(self, obj):
         User = get_user_model()
-        count = User.objects.filter(Q(email__isnull=False) & ~Q(email="")).count()
+        count = User.objects.filter(
+            Q(role=RoleChoice.USER) & Q(email__isnull=False) & ~Q(email="")
+        ).count()
         return count
 
 
