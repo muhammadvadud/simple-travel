@@ -106,7 +106,6 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
     ticket_itinerary = TicketsItinerarySerializer(many=True, write_only=True, required=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, write_only=True, required=True)
 
-    # ticket_hotel = HotelSerializer(many=True, write_only=True, required=True)
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
             "id",
@@ -131,42 +130,50 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "hotel_info",
             "hotel_info_ru",
             "duration_days",
+            "rating",
             "hotel_meals",
             "hotel_meals_ru",
             "slug",
             "visa_required",
             "image_banner",
             "badge",
-            #######
             "ticket_images",
             "ticket_amenities",
             "ticket_included_services",
             "ticket_itinerary",
             "ticket_hotel_meals",
-
         ]
 
     def create(self, validated_data):
-        validated_data['travel_agency'] = self.context.get('request').user.travel_agency.id
-        ticket_images = self.validated_data.pop("ticket_images", [])
-        print(f"ticket_images>>>>>>>>>>>>>>>>>>{ticket_images}")
-        ticket_amenities = self.validated_data.pop("ticket_amenities", [])
-        print(f"ticket_amenities>>>>>>>>>>>>>>>>>>{ticket_amenities}")
-        ticket_included_services = self.validated_data.pop("ticket_included_services", [])
-        print(f"ticket_included_services>>>>>>>>>>>>>>>>>>{ticket_included_services}")
-        ticket_itinerary = self.validated_data.pop("ticket_itinerary", [])
-        print(f"ticket_itinerary>>>>>>>>>>>>>>>>>>{ticket_itinerary}")
-        ticket_hotel_meals = self.validated_data.pop("ticket_hotel_meals", [])
-        print(f"ticket_itinerary>>>>>>>>>>>>>>>>>>{ticket_hotel_meals}")
+        request = self.context.get('request')
+        validated_data['travel_agency'] = request.user.travel_agency
+
+        badge_data = validated_data.pop("badge", [])
+
+        ticket_images = validated_data.pop("ticket_images", [])
+        ticket_amenities = validated_data.pop("ticket_amenities", [])
+        ticket_included_services = validated_data.pop("ticket_included_services", [])
+        ticket_itinerary = validated_data.pop("ticket_itinerary", [])
+        ticket_hotel_meals = validated_data.pop("ticket_hotel_meals", [])
+
         ticket = TicketsModel.objects.create(**validated_data)
-        for ticket_image in ticket_images:
-            TicketsImagesModel.objects.create(image=ticket_image, ticket=ticket)
-        for ticket_amenities in ticket_amenities:
-            TicketsAmenitiesModel.objects.create(**ticket_amenities)
-        for ticket_included_services in ticket_included_services:
-            TicketsIncludedServicesModel.objects.create(**ticket_included_services)
-        for ticket_itinerary in ticket_itinerary:
-            TicketsItineraryModel.objects.create(**ticket_itinerary)
-        for ticket_hotel_meals in ticket_hotel_meals:
-            TicketsHotelMealsModel.objects.create(**ticket_hotel_meals)
+
+        if badge_data:
+            ticket.badge.set(badge_data)
+
+        for image in ticket_images:
+            TicketsImagesModel.objects.create(image=image, ticket=ticket)
+
+        for amenity in ticket_amenities:
+            TicketsAmenitiesModel.objects.create(ticket=ticket, **amenity)
+
+        for service in ticket_included_services:
+            TicketsIncludedServicesModel.objects.create(ticket=ticket, **service)
+
+        for itinerary in ticket_itinerary:
+            TicketsItineraryModel.objects.create(ticket=ticket, **itinerary)
+
+        for meal in ticket_hotel_meals:
+            TicketsHotelMealsModel.objects.create(ticket=ticket, **meal)
+
         return ticket
