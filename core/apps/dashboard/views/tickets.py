@@ -18,4 +18,5 @@ class TicketsViewSet(BaseViewSetMixin, ModelViewSet):
         "list": ListTicketsSerializer,
         "retrieve": RetrieveTicketsSerializer,
         "create": CreateTicketsSerializer,
+        "partial_update": RetrieveTicketsSerializer,
     }

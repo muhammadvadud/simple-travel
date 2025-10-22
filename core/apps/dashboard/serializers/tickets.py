@@ -73,9 +73,51 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     hotel_name = serializers.CharField(source="tickets__ticket_hotel__name", read_only=True)
     hotel_rating = serializers.FloatField(source="tickets__ticket_hotel__rating", read_only=True)
     hotel_aminates = serializers.CharField(source="tickets__ticket_amenities__name", read_only=True)
+    ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
+    ticket_images = serializers.ListField(
+        child=serializers.ImageField(),
+        read_only=True
+    )
+    ticket_included_services = TicketsIncludedServicesSerializer(many=True, read_only=True)
+    ticket_itinerary = TicketsItinerarySerializer(many=True, read_only=True)
+    ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, read_only=True)
 
     class Meta:
         model = TicketsModel
+        fields = [
+            "id",
+            "hotel_name",
+            "hotel_rating",
+            "hotel_aminates",
+            "title",
+            "price",
+            "min_person",
+            "max_person",
+            "departure",
+            "destination",
+            "departure_time",
+            "travel_time",
+            "location_name",
+            "passenger_count",
+            "languages",
+            "hotel_info",
+            "duration_days",
+            "rating",
+            "hotel_meals",
+            "slug",
+            "visa_required",
+            "image_banner",
+            "badge",
+            "ticket_images",
+            "ticket_amenities",
+            "ticket_included_services",
+            "ticket_itinerary",
+            "ticket_hotel_meals",
+        ]
+
+
+class ListTicketsSerializer(BaseTicketsSerializer):
+    class Meta(BaseTicketsSerializer.Meta):
         fields = [
             "id",
             "destination",
@@ -84,11 +126,9 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "price",
             "duration_days",
             "duration_days",
+            "hotel_rating",
+            "hotel_aminates",
         ]
-
-
-class ListTicketsSerializer(BaseTicketsSerializer):
-    class Meta(BaseTicketsSerializer.Meta): ...
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):
