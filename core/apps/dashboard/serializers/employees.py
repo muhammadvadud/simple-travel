@@ -32,6 +32,7 @@ class CreateEmployeesSerializer(BaseEmployeesSerializer):
             "first_name",
             "last_name",
             "phone",
+            "password"
             "role_status"
         ]
 
