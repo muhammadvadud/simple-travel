@@ -35,11 +35,21 @@ class CreateEmployeesSerializer(BaseEmployeesSerializer):
             "password",
             "role"
         ]
+        extra_kwargs = {
+            "password": {"write_only": True}
+        }
 
     def create(self, validated_data):
-        role_status = validated_data.pop("role", [])
+        role_status = validated_data.pop("role", None)
         if not role_status:
             raise serializers.ValidationError("Role status is required")
-        validated_data["role"] = role_status
+
+        password = validated_data.pop("password", None)
         user = get_user_model().objects.create(**validated_data)
+        user.role = role_status
+
+        if password:
+            user.set_password(password)
+            user.save()
+
         return user
