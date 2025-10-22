@@ -24,7 +24,7 @@ class RetrieveEmployeesSerializer(BaseEmployeesSerializer):
 
 
 class CreateEmployeesSerializer(BaseEmployeesSerializer):
-    role_status = serializers.CharField(write_only=True, required=True)
+    role = serializers.CharField(write_only=True, required=True)
 
     class Meta(BaseEmployeesSerializer.Meta):
         fields = [
@@ -32,12 +32,12 @@ class CreateEmployeesSerializer(BaseEmployeesSerializer):
             "first_name",
             "last_name",
             "phone",
-            "password"
-            "role_status"
+            "password",
+            "role"
         ]
 
     def create(self, validated_data):
-        role_status = validated_data.pop("role_status", [])
+        role_status = validated_data.pop("role", [])
         if not role_status:
             raise serializers.ValidationError("Role status is required")
         validated_data["role"] = role_status
