@@ -40,5 +40,5 @@ class CreateEmployeesSerializer(BaseEmployeesSerializer):
         if not role_status:
             raise serializers.ValidationError("Role status is required")
         validated_data["role"] = role_status
-        get_user_model().objects.create(**validated_data)
-        return
+        user = get_user_model().objects.create(**validated_data)
+        return user
