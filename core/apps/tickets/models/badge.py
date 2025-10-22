@@ -4,20 +4,8 @@ from django_core.models import AbstractBaseModel
 
 
 class BadgeModel(AbstractBaseModel):
-    Color_Choice = (
-        ("red", "red"),
-        ("green", "green"),
-        ("blue", "blue"),
-        ("yellow", "yellow"),
-        ("orange", "orange"),
-        ("purple", "purple"),
-        ("black", "black"),
-        ("white", "white"),
-        ("gray", "gray"),
-    )
-
     name = models.CharField(max_length=255, verbose_name=_("badge name"))
-    color = models.CharField(max_length=255, choices=Color_Choice, verbose_name=_("badge color"), default="red")
+    color = models.CharField(max_length=255, verbose_name=_("badge color"), default="#FFFFFF")
 
     def __str__(self):
         return str(self.pk)

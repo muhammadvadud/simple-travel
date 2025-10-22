@@ -1,8 +1,30 @@
 from rest_framework import serializers
 from core.apps.tickets.models import TicketsModel, TicketsImagesModel, TicketsAmenitiesModel, \
     TicketsIncludedServicesModel, \
-    TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel, TicketsHotelMealsModel
+    TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel, TicketsHotelMealsModel, \
+    TransportTicketModel, FullTransportInfoModel
 from core.apps.tickets.models.hotel import HotelModel
+
+
+class TransportTicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransportTicketModel
+        fields = [
+            "name",
+            "icon_name"
+        ]
+
+
+class FullTransportInfoSerializer(serializers.ModelSerializer):
+    full_info = TransportTicketSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = FullTransportInfoModel
+        fields = [
+            "price",
+            "full_info",
+
+        ]
 
 
 class HotelSerializer(serializers.ModelSerializer):
@@ -81,6 +103,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     ticket_included_services = TicketsIncludedServicesSerializer(many=True, read_only=True)
     ticket_itinerary = TicketsItinerarySerializer(many=True, read_only=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, read_only=True)
+    transports = FullTransportInfoSerializer(many=True, read_only=True)
 
     class Meta:
         model = TicketsModel
@@ -108,6 +131,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "visa_required",
             "image_banner",
             "badge",
+            "transports",
             "ticket_images",
             "ticket_amenities",
             "ticket_included_services",
@@ -177,6 +201,7 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "visa_required",
             "image_banner",
             "badge",
+            "tariff",
             "ticket_images",
             "ticket_amenities",
             "ticket_included_services",
