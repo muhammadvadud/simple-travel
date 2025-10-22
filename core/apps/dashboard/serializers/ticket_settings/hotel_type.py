@@ -1,0 +1,27 @@
+from rest_framework import serializers
+from core.apps.tickets.models import HotelTypeModel
+
+
+class BaseHotelTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelTypeModel
+        fields = [
+            "id",
+            "name",
+        ]
+
+
+class ListHotelTypeSerializer(BaseHotelTypeSerializer):
+    class Meta(BaseHotelTypeSerializer.Meta): ...
+
+
+class RetrieveHotelTypeSerializer(BaseHotelTypeSerializer):
+    class Meta(BaseHotelTypeSerializer.Meta): ...
+
+
+class CreateHotelTypeSerializer(BaseHotelTypeSerializer):
+    class Meta(BaseHotelTypeSerializer.Meta):
+        fields = [
+            "id",
+            "name",
+        ]
