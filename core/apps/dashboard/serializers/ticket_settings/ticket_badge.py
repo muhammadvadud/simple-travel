@@ -25,5 +25,6 @@ class CreateBadgeSerializer(BaseBadgeSerializer):
         fields = [
             "id",
             "name",
+            "name_ru",
             "color",
         ]

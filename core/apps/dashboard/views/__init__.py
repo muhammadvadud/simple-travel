@@ -4,3 +4,4 @@ from .users import *  # noqa
 from .tickets import *  # noqa
 from .ticket_settings import *  # noqa
 from .hotel import *  # noqa
+from .ticket_order import *  # noqa
