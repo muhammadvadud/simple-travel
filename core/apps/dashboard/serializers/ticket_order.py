@@ -1,15 +1,29 @@
 from rest_framework import serializers
 from core.apps.tickets.models import TicketorderModel, ExtraServicesModel, PaidServicesModel
-from core.apps.accounts.models import ParticipantModel
+from core.apps.accounts.models import ParticipantModel, ParticipantPasportImageModel
 from django.contrib.auth import get_user_model
 
+
+class ParticipantPasportImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParticipantPasportImageModel
+        fields = ['image']
+
+
 class ParticipantSerializer(serializers.ModelSerializer):
+    participant_pasport_image = ParticipantPasportImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = ParticipantModel
         fields = [
             "first_name",
             "last_name",
+            "birth_date",
+            "phone_number",
+            "gender",
+            "participant_pasport_image",
         ]
+
 
 class PaidServicesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,6 +43,19 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "first_name",
             "last_name",
+            "phone",
+            "email",
+            "validated_at",
+            "total_spent",
+        ]
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "first_name",
+            "last_name",
         ]
 
 
@@ -36,6 +63,7 @@ class BaseTicketOrderSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     extra_service = ExtraServicesModelSerializer(many=True, read_only=True)
     extra_paid_service = PaidServicesSerializer(many=True, read_only=True)
+    participant = ParticipantSerializer(many=True, read_only=True)
 
     class Meta:
         model = TicketorderModel
@@ -58,40 +86,29 @@ class BaseTicketOrderSerializer(serializers.ModelSerializer):
 
 
 class ListTicketOrderSerializer(BaseTicketOrderSerializer):
-    class Meta(BaseTicketOrderSerializer.Meta): ...
+    tour_name = serializers.SerializerMethodField()
+    user = UserListSerializer(read_only=True)
+
+    class Meta(BaseTicketOrderSerializer.Meta):
+        fields = [
+            "user",
+            "destination",
+            "total_price",
+            "order_status",
+            "tour_name",
+        ]
+
+    def get_tour_name(self, obj):
+        tour_name = obj.ticket.travel_agency.name
+        return tour_name
 
 
 class RetrieveTicketOrderSerializer(BaseTicketOrderSerializer):
     class Meta(BaseTicketOrderSerializer.Meta): ...
 
 
-class CreateTicketOrderSerializer(BaseTicketOrderSerializer):
-    role = serializers.CharField(write_only=True, required=True)
-
+class UpdateTicketOrderSerializer(BaseTicketOrderSerializer):
     class Meta(BaseTicketOrderSerializer.Meta):
         fields = [
-            "id",
-            "first_name",
-            "last_name",
-            "phone",
-            "password",
-            "role"
+            "order_status",
         ]
-        extra_kwargs = {
-            "password": {"write_only": True}
-        }
-
-    def create(self, validated_data):
-        role_status = validated_data.pop("role", None)
-        if not role_status:
-            raise serializers.ValidationError("Role status is required")
-
-        password = validated_data.pop("password", None)
-        user = get_user_model().objects.create(**validated_data)
-        user.role = role_status
-
-        if password:
-            user.set_password(password)
-            user.save()
-
-        return user

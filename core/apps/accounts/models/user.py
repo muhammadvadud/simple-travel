@@ -15,13 +15,13 @@ class User(auth_models.AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     validated_at = models.DateTimeField(null=True, blank=True)
     travel_agency = models.ForeignKey(TravelAgency, related_name="admins",
-    null = True, blank = True, on_delete = models.SET_NULL)
+                                      null=True, blank=True, on_delete=models.SET_NULL)
     role = models.CharField(
         max_length=255,
         choices=RoleChoice,
         default=RoleChoice.USER,
     )
-
+    total_spent = models.PositiveBigIntegerField(default=0)
     USERNAME_FIELD = "phone"
     objects = UserManager()
 

@@ -17,7 +17,13 @@ class ListTransportSerializer(BaseTransportSerializer):
 
 
 class RetrieveTransportSerializer(BaseTransportSerializer):
-    class Meta(BaseTransportSerializer.Meta): ...
+    class Meta(BaseTransportSerializer.Meta):
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+            "icon_name",
+        ]
 
 
 class CreateTransportSerializer(BaseTransportSerializer):
@@ -25,5 +31,6 @@ class CreateTransportSerializer(BaseTransportSerializer):
         fields = [
             "id",
             "name",
+            "name_ru",
             "icon_name",
         ]

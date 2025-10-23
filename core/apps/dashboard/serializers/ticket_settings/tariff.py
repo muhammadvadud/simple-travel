@@ -16,7 +16,12 @@ class ListTariffSerializer(BaseTariffSerializer):
 
 
 class RetrieveTariffSerializer(BaseTariffSerializer):
-    class Meta(BaseTariffSerializer.Meta): ...
+    class Meta(BaseTariffSerializer.Meta):
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+        ]
 
 
 class CreateTariffSerializer(BaseTariffSerializer):
@@ -24,4 +29,5 @@ class CreateTariffSerializer(BaseTariffSerializer):
         fields = [
             "id",
             "name",
+            "name_ru",
         ]

@@ -8,6 +8,7 @@ class BaseHotelTypeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "name_ru",
         ]
 
 
@@ -16,7 +17,12 @@ class ListHotelTypeSerializer(BaseHotelTypeSerializer):
 
 
 class RetrieveHotelTypeSerializer(BaseHotelTypeSerializer):
-    class Meta(BaseHotelTypeSerializer.Meta): ...
+    class Meta(BaseHotelTypeSerializer.Meta):
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+        ]
 
 
 class CreateHotelTypeSerializer(BaseHotelTypeSerializer):
@@ -24,4 +30,5 @@ class CreateHotelTypeSerializer(BaseHotelTypeSerializer):
         fields = [
             "id",
             "name",
+            "name_ru",
         ]
