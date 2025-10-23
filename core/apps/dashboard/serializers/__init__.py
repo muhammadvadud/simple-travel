@@ -6,3 +6,4 @@ from .ticket_settings import *  # noqa
 from .hotel import *  # noqa
 from .ticket_order import *  # noqa
 from .blog import *  # noqa
+from .faq import *  # noqa

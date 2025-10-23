@@ -2,7 +2,6 @@ from django_core.mixins import BaseViewSetMixin
 from rest_framework.viewsets import ModelViewSet
 from core.apps.blog.models import CategoryModel
 from drf_spectacular.utils import extend_schema
-from core.apps.accounts.choices.user import RoleChoice
 from ...permission.general_permission import IsModerator
 from ...serializers import ListCategorySerializer, CreateCategorySerializer, RetrieveCategorySerializer
 
