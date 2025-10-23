@@ -4,6 +4,7 @@ from core.apps.tickets.models.tickets import TicketsModel
 from drf_spectacular.utils import extend_schema
 from ..permission.tickets import IsModeratorOrTourAdmin
 from ..serializers.tickets import ListTicketsSerializer, RetrieveTicketsSerializer, CreateTicketsSerializer
+from core.apps.accounts.choices import RoleChoice
 
 
 @extend_schema(tags=["Dashboard-Tickets"])
@@ -20,3 +21,11 @@ class TicketsViewSet(BaseViewSetMixin, ModelViewSet):
         "create": CreateTicketsSerializer,
         "partial_update": RetrieveTicketsSerializer,
     }
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if hasattr(user, "role") and user.role == RoleChoice.TourAdmin:
+            return TicketsModel.objects.filter(created_by=user)
+
+        return TicketsModel.objects.all()
