@@ -198,6 +198,9 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
     ticket_itinerary = TicketsItinerarySerializer(many=True, write_only=True, required=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, write_only=True, required=True)
 
+    # yangi transport serializer
+    transports = WriteFullTransportInfoSerializer(many=True, write_only=True, required=False)
+
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
             "id",
@@ -235,19 +238,20 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "ticket_included_services",
             "ticket_itinerary",
             "ticket_hotel_meals",
+            "transports",  
         ]
 
     def create(self, validated_data):
-        request = self.context.get('request')
-        validated_data['travel_agency'] = request.user.travel_agency
+        request = self.context.get("request")
+        validated_data["travel_agency"] = request.user.travel_agency
 
         badge_data = validated_data.pop("badge", [])
-
         ticket_images = validated_data.pop("ticket_images", [])
         ticket_amenities = validated_data.pop("ticket_amenities", [])
         ticket_included_services = validated_data.pop("ticket_included_services", [])
         ticket_itinerary = validated_data.pop("ticket_itinerary", [])
         ticket_hotel_meals = validated_data.pop("ticket_hotel_meals", [])
+        transports = validated_data.pop("transports", [])
 
         ticket = TicketsModel.objects.create(**validated_data)
 
@@ -268,5 +272,8 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
 
         for meal in ticket_hotel_meals:
             TicketsHotelMealsModel.objects.create(ticket=ticket, **meal)
+
+        for transport in transports:
+            FullTransportInfoModel.objects.create(ticket=ticket, **transport)
 
         return ticket

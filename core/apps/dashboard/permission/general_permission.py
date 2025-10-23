@@ -15,3 +15,11 @@ class IsOperator(BasePermission):
         if request.user.is_authenticated and request.user.role == RoleChoice.Moderator:
             return True
         return False
+
+
+class IsModeratorOrTourAdminOrOperator(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated and request.user.role in (RoleChoice.Moderator, RoleChoice.TourAdmin,
+                                                                   RoleChoice.Operator):
+            return True
+        return False
