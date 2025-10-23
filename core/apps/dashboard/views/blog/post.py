@@ -1,0 +1,37 @@
+from django_core.mixins import BaseViewSetMixin
+from drf_spectacular.utils import extend_schema
+from core.apps.blog.permissions.post import IsModeratorOrReadOnly
+from rest_framework.viewsets import ModelViewSet
+from core.apps.blog.models import PostModel
+from core.apps.accounts.choices.user import RoleChoice
+from core.apps.dashboard.serializers.blog.post import (
+    ListPostSerializer,
+    RetrievePostSerializer,
+    UpdatePostSerializer,
+    CreatePostSerializer,
+)
+
+
+@extend_schema(tags=["Dashboard-Post"])
+class PostView(BaseViewSetMixin, ModelViewSet):
+    queryset = PostModel.objects.all()
+    serializer_class = ListPostSerializer
+    permission_classes = [IsModeratorOrReadOnly]
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    action_permission_classes = {}
+    action_serializer_class = {
+        "list": ListPostSerializer,
+        "retrieve": RetrievePostSerializer,
+        "create": CreatePostSerializer,
+        "partial_update": UpdatePostSerializer,
+    }
+
+    def get_queryset(self):
+        qs = PostModel.objects.all()
+        user = self.request.user
+
+        if user.is_authenticated and user.role == RoleChoice.Moderator:
+            return qs
+
+        return qs.filter(is_public=True)

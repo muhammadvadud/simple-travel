@@ -1,0 +1,29 @@
+from rest_framework import serializers
+from core.apps.blog.models import CategoryModel
+
+
+class BaseCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoryModel
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+        ]
+
+
+class ListCategorySerializer(BaseCategorySerializer):
+    class Meta(BaseCategorySerializer.Meta): ...
+
+
+class RetrieveCategorySerializer(BaseCategorySerializer):
+    class Meta(BaseCategorySerializer.Meta): ...
+
+
+class CreateCategorySerializer(BaseCategorySerializer):
+    class Meta(BaseCategorySerializer.Meta):
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+        ]
