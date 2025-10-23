@@ -17,7 +17,13 @@ class ListBadgeSerializer(BaseBadgeSerializer):
 
 
 class RetrieveBadgeSerializer(BaseBadgeSerializer):
-    class Meta(BaseBadgeSerializer.Meta): ...
+    class Meta(BaseBadgeSerializer.Meta):
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+            "color",
+        ]
 
 
 class CreateBadgeSerializer(BaseBadgeSerializer):
