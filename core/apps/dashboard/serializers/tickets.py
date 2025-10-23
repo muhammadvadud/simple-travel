@@ -3,7 +3,23 @@ from core.apps.tickets.models import TicketsModel, TicketsImagesModel, TicketsAm
     TicketsIncludedServicesModel, \
     TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel, TicketsHotelMealsModel, \
     TransportTicketModel, FullTransportInfoModel
-from core.apps.tickets.models.hotel import HotelModel
+from core.apps.tickets.models.hotel import HotelModel, HotelAmenitiesModel
+
+
+class TicketImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketsImagesModel
+        fields = [
+            "image"
+        ]
+
+
+class HotelAmenitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelAmenitiesModel
+        fields = [
+            "name",
+        ]
 
 
 class TransportTicketSerializer(serializers.ModelSerializer):
@@ -92,14 +108,12 @@ class TicketsAmenitiesSerializer(serializers.ModelSerializer):
 
 
 class BaseTicketsSerializer(serializers.ModelSerializer):
-    hotel_name = serializers.CharField(source="tickets__ticket_hotel__name", read_only=True)
-    hotel_rating = serializers.FloatField(source="tickets__ticket_hotel__rating", read_only=True)
-    hotel_aminates = serializers.CharField(source="tickets__ticket_amenities__name", read_only=True)
+    hotel_name = serializers.SerializerMethodField()
+    hotel_rating = serializers.SerializerMethodField()
+    hotel_amenities = serializers.SerializerMethodField()
+
     ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
-    ticket_images = serializers.ListField(
-        child=serializers.ImageField(),
-        read_only=True
-    )
+    ticket_images = TicketImagesSerializer(many=True, read_only=True)
     ticket_included_services = TicketsIncludedServicesSerializer(many=True, read_only=True)
     ticket_itinerary = TicketsItinerarySerializer(many=True, read_only=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, read_only=True)
@@ -111,7 +125,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "id",
             "hotel_name",
             "hotel_rating",
-            "hotel_aminates",
+            "hotel_amenities",
             "title",
             "price",
             "min_person",
@@ -139,6 +153,20 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "ticket_hotel_meals",
         ]
 
+    def get_hotel_name(self, obj):
+        hotel = obj.ticket_hotel.all().first()
+        return hotel.name if hotel else None
+
+    def get_hotel_rating(self, obj):
+        hotel = obj.ticket_hotel.all().first()
+        return hotel.rating if hotel else None
+
+    def get_hotel_amenities(self, obj):
+        hotel = obj.ticket_hotel.all().first()
+        if not hotel:
+            return []
+        return [a.name for a in hotel.hotel_amenities.all()]
+
 
 class ListTicketsSerializer(BaseTicketsSerializer):
     class Meta(BaseTicketsSerializer.Meta):
@@ -151,7 +179,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "duration_days",
             "duration_days",
             "hotel_rating",
-            "hotel_aminates",
+            "hotel_amenities",
         ]
 
 
@@ -175,7 +203,7 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "id",
             "hotel_name",
             "hotel_rating",
-            "hotel_aminates",
+            "hotel_amenities",
             "title",
             "title_ru",
             "price",
