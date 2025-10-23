@@ -150,15 +150,18 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
         return None
 
     def get_allow_comment(self, obj):
-        user = self.context['request'].user
-        check = TicketorderModel.objects.filter(
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+
+        if not user or not user.is_authenticated:
+            return False
+
+        return TicketorderModel.objects.filter(
             user=user,
             ticket_id=obj.id,
             order_status__in=["confirmed", "completed"]
         ).exists()
-        if check:
-            return True
-        return False
+
 
 class ListTicketsSerializer(BaseTicketsSerializer):
     ticket_images = serializers.SerializerMethodField()
