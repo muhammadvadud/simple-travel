@@ -24,6 +24,7 @@ class HotelTypeModel(models.Model):
 
 class HotelAmenitiesModel(AbstractBaseModel):
     name = models.CharField(max_length=255, verbose_name=_("name"))
+    icon_name = models.CharField(max_length=255, verbose_name=_("icon name"))
 
     def __str__(self):
         return self.name
@@ -32,6 +33,7 @@ class HotelAmenitiesModel(AbstractBaseModel):
     def _create_fake(self):
         return self.objects.create(
             name="mock",
+            icon_name="mock",
         )
 
     class Meta:

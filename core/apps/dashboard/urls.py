@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSet, TicketBadgeViewSet, \
-    TicketTariffViewSet, TicketTransportViewSet, HotelTypeViewSet
+    TicketTariffViewSet, TicketTransportViewSet, HotelTypeViewSet, HotelViewSet
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -11,6 +11,7 @@ router.register("employees", EmployeesViewSet, basename="employees")
 router.register("dashboard-tickets", TicketsViewSet, basename="dashboard-tickets")
 router.register("dashboard-tickets-settings-badge", TicketBadgeViewSet, basename="dashboard-tickets-settings-badge")
 router.register("dashboard-tickets-settings-tariff", TicketTariffViewSet, basename="dashboard-tickets-settings-tariff")
+router.register("dashboard-hotel", HotelViewSet, basename="dashboard-hotel")
 router.register("dashboard-tickets-settings-transport", TicketTransportViewSet,
                 basename="dashboard-tickets-settings-transport")
 router.register("dashboard-tickets-settings-hotel-type", HotelTypeViewSet,
