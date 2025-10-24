@@ -274,41 +274,40 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         if badge_data:
             ticket.badge.set(badge_data)
 
-        images_to_create = [
-            TicketsImagesModel(image=image, ticket=ticket) for image in ticket_images
-        ]
-        amenities_to_create = [
-            TicketsAmenitiesModel(ticket=ticket, **amenity) for amenity in ticket_amenities
-        ]
-        services_to_create = [
-            TicketsIncludedServicesModel(ticket=ticket, **service) for service in ticket_included_services
-        ]
-        itinerary_to_create = [
-            TicketsItineraryModel(ticket=ticket, **itinerary) for itinerary in ticket_itinerary
-        ]
-        meals_to_create = [
-            TicketsHotelMealsModel(ticket=ticket, **meal) for meal in ticket_hotel_meals
-        ]
-        transports_to_create = [
-            FullTransportInfoModel(ticket=ticket, **transport) for transport in transports
-        ]
-        tariffs_to_create = [
-            FullTariff(ticket=ticket, **tariff) for tariff in tariffs
-        ]
+        # Bulk yaratishlar
+        if ticket_images:
+            TicketsImagesModel.objects.bulk_create(
+                [TicketsImagesModel(image=image, ticket=ticket) for image in ticket_images]
+            )
+        if ticket_amenities:
+            TicketsAmenitiesModel.objects.bulk_create(
+                [TicketsAmenitiesModel(ticket=ticket, **amenity) for amenity in ticket_amenities]
+            )
+        if ticket_included_services:
+            TicketsIncludedServicesModel.objects.bulk_create(
+                [TicketsIncludedServicesModel(ticket=ticket, **service) for service in ticket_included_services]
+            )
+        if ticket_hotel_meals:
+            TicketsHotelMealsModel.objects.bulk_create(
+                [TicketsHotelMealsModel(ticket=ticket, **meal) for meal in ticket_hotel_meals]
+            )
+        if transports:
+            FullTransportInfoModel.objects.bulk_create(
+                [FullTransportInfoModel(ticket=ticket, **transport) for transport in transports]
+            )
+        if tariffs:
+            FullTariff.objects.bulk_create(
+                [FullTariff(ticket=ticket, **tariff) for tariff in tariffs]
+            )
 
-        if images_to_create:
-            TicketsImagesModel.objects.bulk_create(images_to_create)
-        if amenities_to_create:
-            TicketsAmenitiesModel.objects.bulk_create(amenities_to_create)
-        if services_to_create:
-            TicketsIncludedServicesModel.objects.bulk_create(services_to_create)
-        if itinerary_to_create:
-            TicketsItineraryModel.objects.bulk_create(itinerary_to_create)
-        if meals_to_create:
-            TicketsHotelMealsModel.objects.bulk_create(meals_to_create)
-        if transports_to_create:
-            FullTransportInfoModel.objects.bulk_create(transports_to_create)
-        if tariffs_to_create:
-            FullTariff.objects.bulk_create(tariffs_to_create)
+        for itinerary_data in ticket_itinerary:
+            itinerary_images = itinerary_data.pop("ticket_itinerary_image", [])
+            itinerary_destinations = itinerary_data.pop("ticket_itinerary_destinations", [])
+            itinerary = TicketsItineraryModel.objects.create(ticket=ticket, **itinerary_data)
+
+            for img in itinerary_images:
+                TicketsItineraryImagesModel.objects.create(ticket_itinerary=itinerary, **img)
+            for dest in itinerary_destinations:
+                TicketsItineraryDestinationsModel.objects.create(ticket_itinerary=itinerary, **dest)
 
         return ticket
