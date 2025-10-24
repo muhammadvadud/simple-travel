@@ -274,7 +274,6 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         if badge_data:
             ticket.badge.set(badge_data)
 
-        # Bulk yaratishlar
         if ticket_images:
             TicketsImagesModel.objects.bulk_create(
                 [TicketsImagesModel(image=image, ticket=ticket) for image in ticket_images]
@@ -306,8 +305,8 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             itinerary = TicketsItineraryModel.objects.create(ticket=ticket, **itinerary_data)
 
             for img in itinerary_images:
-                TicketsItineraryImagesModel.objects.create(ticket_itinerary=itinerary, **img)
+                TicketsItineraryImagesModel.objects.create(tickets_itinerary=itinerary, **img)
             for dest in itinerary_destinations:
-                TicketsItineraryDestinationsModel.objects.create(ticket_itinerary=itinerary, **dest)
+                TicketsItineraryDestinationsModel.objects.create(tickets_itinerary=itinerary, **dest)
 
         return ticket
