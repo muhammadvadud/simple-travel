@@ -291,9 +291,15 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
                 [TicketsHotelMealsModel(ticket=ticket, **meal) for meal in ticket_hotel_meals]
             )
         if transports:
-            FullTransportInfoModel.objects.bulk_create(
-                [FullTransportInfoModel(ticket=ticket, **transport) for transport in transports]
-            )
+            full_transports = []
+            for tr_data in transports:
+                full_transport = FullTransportInfoModel.objects.create(
+                    transport_id=tr_data["transport"],
+                    price=tr_data["price"]
+                )
+                full_transports.append(full_transport)
+
+            ticket.transports.set(full_transports)
         if tariffs:
             FullTariff.objects.bulk_create(
                 [FullTariff(**tariff) for tariff in tariffs]
