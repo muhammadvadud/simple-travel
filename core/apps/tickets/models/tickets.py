@@ -77,7 +77,6 @@ class TicketsModel(AbstractBaseModel):
         return str(self.pk)
 
     def save(self, *args, **kwargs):
-        creating = self.pk is None
         super().save(*args, **kwargs)
 
         new_slug = slugify(f"{self.title}-{self.pk}")

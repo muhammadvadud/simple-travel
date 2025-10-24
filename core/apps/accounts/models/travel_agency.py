@@ -1,19 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
+from ..choices.travel_agency import TravelAgencyStatusChoices
 
 
 class TravelAgency(AbstractBaseModel):
-    STATUS_CHOICES = [
-        ("pending", "Kutilmoqda"),
-        ("approved", "Tasdiqlangan"),
-        ("cancelled", "Bekor qilingan"),
-    ]
-
     status = models.CharField(
         max_length=255,
-        choices=STATUS_CHOICES,
-        default="pending",
+        choices=TravelAgencyStatusChoices,
+        default=TravelAgencyStatusChoices.PENDING,
         verbose_name=_("status"),
     )
     custom_id = models.CharField(
@@ -30,6 +25,7 @@ class TravelAgency(AbstractBaseModel):
     web_site = models.URLField(verbose_name=_('TravelAgency Website'))
     ticket_sold_count = models.PositiveIntegerField(default=0, verbose_name=_("ticket sold count"))
     total_income = models.PositiveBigIntegerField(default=0, verbose_name=_("total income"))
+
     def save(self, *args, **kwargs):
         if not self.id:
             super().save(*args, **kwargs)
@@ -76,5 +72,3 @@ class TravelAgencyDocuments(AbstractBaseModel):
         db_table = "travel_agency_document"
         verbose_name = _("TravelAgencyDocument")
         verbose_name_plural = _("TravelAgencyDocuments")
-
-
