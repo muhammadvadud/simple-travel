@@ -77,10 +77,13 @@ class TicketsModel(AbstractBaseModel):
         return str(self.pk)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            super().save(*args, **kwargs)
-        self.slug = slugify(f"{self.title}-{self.pk}")
+        creating = self.pk is None
         super().save(*args, **kwargs)
+
+        new_slug = slugify(f"{self.title}-{self.pk}")
+        if self.slug != new_slug:
+            self.slug = new_slug
+            self.__class__.objects.filter(pk=self.pk).update(slug=self.slug)
 
     @classmethod
     def _create_fake(self):
