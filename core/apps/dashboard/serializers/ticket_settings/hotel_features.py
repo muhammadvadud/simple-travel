@@ -6,6 +6,7 @@ class HotelFeatureTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelFeatureTypeModel
         fields = [
+            "id",
             "hotel_feature_type_name",
             "hotel_feature_type_name_ru"
         ]
