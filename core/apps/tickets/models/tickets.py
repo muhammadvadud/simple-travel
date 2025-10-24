@@ -37,7 +37,7 @@ class FullTransportInfoModel(AbstractBaseModel):
 
 class TicketsModel(AbstractBaseModel):
     """Chiptalar haqidagi asosiy ma’lumotlarni saqlaydi."""
-    travel_agency = models.ForeignKey(TravelAgency,related_name="tickets", on_delete=models.SET_NULL, null=True)
+    travel_agency = models.ForeignKey(TravelAgency, related_name="tickets", on_delete=models.SET_NULL, null=True)
     title = models.CharField(verbose_name=_("title"), max_length=255)
     price = models.BigIntegerField(verbose_name=_("price"))
     min_person = models.PositiveIntegerField(verbose_name=_("min person"))
@@ -77,8 +77,9 @@ class TicketsModel(AbstractBaseModel):
         return str(self.pk)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
+        if not self.pk:
+            super().save(*args, **kwargs)
+        self.slug = slugify(f"{self.title}-{self.pk}")
         super().save(*args, **kwargs)
 
     @classmethod
