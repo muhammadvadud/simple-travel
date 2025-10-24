@@ -5,26 +5,26 @@ from rest_framework.viewsets import ModelViewSet
 from core.apps.blog.models import PostModel
 from core.apps.accounts.choices.user import RoleChoice
 from core.apps.dashboard.serializers.blog.post import (
-    ListPostSerializer,
-    RetrievePostSerializer,
-    UpdatePostSerializer,
-    CreatePostSerializer,
+    ListDashboardPostSerializer,
+    RetrieveDashboardPostSerializer,
+    UpdateDashboardPostSerializer,
+    CreateDashboardPostSerializer,
 )
 
 
 @extend_schema(tags=["Dashboard-Post"])
 class PostView(BaseViewSetMixin, ModelViewSet):
     queryset = PostModel.objects.all()
-    serializer_class = ListPostSerializer
+    serializer_class = ListDashboardPostSerializer
     permission_classes = [IsModeratorOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
     action_permission_classes = {}
     action_serializer_class = {
-        "list": ListPostSerializer,
-        "retrieve": RetrievePostSerializer,
-        "create": CreatePostSerializer,
-        "partial_update": UpdatePostSerializer,
+        "list": ListDashboardPostSerializer,
+        "retrieve": RetrieveDashboardPostSerializer,
+        "create": CreateDashboardPostSerializer,
+        "partial_update": UpdateDashboardPostSerializer,
     }
 
     def get_queryset(self):

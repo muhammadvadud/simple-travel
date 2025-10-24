@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.apps.tickets.models import TariffModel
 
 
-class BaseTariffSerializer(serializers.ModelSerializer):
+class BaseDashboardTariffSerializer(serializers.ModelSerializer):
     class Meta:
         model = TariffModel
         fields = [
@@ -11,21 +11,23 @@ class BaseTariffSerializer(serializers.ModelSerializer):
         ]
 
 
-class ListTariffSerializer(BaseTariffSerializer):
-    class Meta(BaseTariffSerializer.Meta): ...
+class ListDashboardTariffSerializer(BaseDashboardTariffSerializer):
+    class Meta(BaseDashboardTariffSerializer.Meta):
+        ref_name = "ListDashboardTariff"
 
 
-class RetrieveTariffSerializer(BaseTariffSerializer):
-    class Meta(BaseTariffSerializer.Meta):
+class RetrieveDashboardTariffSerializer(BaseDashboardTariffSerializer):
+    class Meta(BaseDashboardTariffSerializer.Meta):
         fields = [
             "id",
             "name",
             "name_ru",
         ]
+        ref_name = "RetrieveDashboardTariff"
 
 
-class CreateTariffSerializer(BaseTariffSerializer):
-    class Meta(BaseTariffSerializer.Meta):
+class CreateDashboardTariffSerializer(BaseDashboardTariffSerializer):
+    class Meta(BaseDashboardTariffSerializer.Meta):
         fields = [
             "id",
             "name",

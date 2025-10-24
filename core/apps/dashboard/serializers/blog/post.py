@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.apps.blog.models import TagModel, PostModel, CategoryModel, PostimagesModel
 
 
-class PostImageSerializer(serializers.ModelSerializer):
+class DashboardPostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostimagesModel
         fields = [
@@ -31,10 +31,10 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
 
-class BasePostSerializer(serializers.ModelSerializer):
+class BaseDashboardPostSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     tag = TagSerializer(many=True, read_only=True)
-    post_images = PostImageSerializer(many=True, read_only=True)
+    post_images = DashboardPostImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = PostModel
@@ -52,15 +52,17 @@ class BasePostSerializer(serializers.ModelSerializer):
         ]
 
 
-class ListPostSerializer(BasePostSerializer):
-    class Meta(BasePostSerializer.Meta): ...
+class ListDashboardPostSerializer(BaseDashboardPostSerializer):
+    class Meta(BaseDashboardPostSerializer.Meta):
+        ref_name = "ListDashboardPost"
 
 
-class RetrievePostSerializer(BasePostSerializer):
-    class Meta(BasePostSerializer.Meta): ...
+class RetrieveDashboardPostSerializer(BaseDashboardPostSerializer):
+    class Meta(BaseDashboardPostSerializer.Meta):
+        ref_name = "RetrieveDashboardPost"
 
 
-class CreatePostSerializer(BasePostSerializer):
+class CreateDashboardPostSerializer(BaseDashboardPostSerializer):
     post_images = serializers.ListField(
         child=serializers.ImageField(),
         write_only=True,
@@ -90,6 +92,7 @@ class CreatePostSerializer(BasePostSerializer):
             "post_text",
             "post_text_ru",
         ]
+        ref_name = "CreateDashboardPost"
 
     def validate(self, data):
         if len(data['post_images']) != len(data['post_text']) and len(data['post_images']) != len(data['post_text_ru']):
@@ -106,14 +109,15 @@ class CreatePostSerializer(BasePostSerializer):
         post = PostModel.objects.create(**validated_data)
         if post_images:
             for image in post_images:
-                PostimagesModel.objects.create(post=post, image=image, text=texts.pop(0), text_ru=texts_ru.pop(0))
+                PostimagesModel.objects.create(post=post, image=image, text=texts.pop(0),
+                                               text_ru=texts_ru.pop(0))
         if post_tags:
             for tag in post_tags:
                 TagModel.objects.create(post=post, name=tag)
         return post
 
 
-class UpdatePostSerializer(BasePostSerializer):
+class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
     post_images = serializers.ListField(
         child=serializers.ImageField(),
         write_only=True,
@@ -140,6 +144,7 @@ class UpdatePostSerializer(BasePostSerializer):
             "post_text",
             "post_text_ru",
         ]
+        ref_name = "UpdateDashboardPost"
 
     def validate(self, data):
         post_images = data.get('post_images')

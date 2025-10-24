@@ -4,21 +4,21 @@ from core.apps.accounts.models import SupportModel
 from drf_spectacular.utils import extend_schema
 from core.apps.accounts.choices.user import RoleChoice
 from ..permission.general_permission import IsModeratorOrTourAdminOrOperator
-from ..serializers.support import ListSupportSerializer, RetrieveSupportSerializer
+from ..serializers.support import ListDashboardSupportSerializer, RetrieveDashboardSupportSerializer
 
 
 @extend_schema(tags=["Dashboard-Support"])
 class SupportViewSet(BaseViewSetMixin, ModelViewSet):
     queryset = SupportModel.objects.all()
-    serializer_class = ListSupportSerializer
+    serializer_class = ListDashboardSupportSerializer
     permission_classes = [IsModeratorOrTourAdminOrOperator]
     http_method_names = ["get", "patch", "delete", "head", "options"]
 
     action_permission_classes = {}
     action_serializer_class = {
-        "list": ListSupportSerializer,
-        "retrieve": RetrieveSupportSerializer,
-        "partial_update": RetrieveSupportSerializer,
+        "list": ListDashboardSupportSerializer,
+        "retrieve": RetrieveDashboardSupportSerializer,
+        "partial_update": RetrieveDashboardSupportSerializer,
     }
 
     def get_queryset(self):

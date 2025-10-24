@@ -199,7 +199,8 @@ class ListTicketsSerializer(BaseTicketsSerializer):
 
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):
-    class Meta(BaseTicketsSerializer.Meta): ...
+    class Meta(BaseTicketsSerializer.Meta):
+        ref_name = "RetrieveDashboardTickets"
 
 
 class CreateTicketsSerializer(BaseTicketsSerializer):
@@ -212,7 +213,6 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
     ticket_included_services = TicketsIncludedServicesSerializer(many=True, write_only=True, required=True)
     ticket_itinerary = TicketsItinerarySerializer(many=True, write_only=True, required=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, write_only=True, required=True)
-
     transports = WriteFullTransportInfoSerializer(many=True, write_only=True, required=False)
     tariff = FullTariffSerializer(many=True, write_only=True, required=True)
 
@@ -257,8 +257,8 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         ]
 
     def create(self, validated_data):
-        request = self.context.get('request')
-        validated_data['travel_agency'] = request.user.travel_agency
+        request = self.context.get("request")
+        validated_data["travel_agency"] = getattr(request.user, "travel_agency", None)
 
         badge_data = validated_data.pop("badge", [])
         ticket_images = validated_data.pop("ticket_images", [])
@@ -274,25 +274,41 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         if badge_data:
             ticket.badge.set(badge_data)
 
-        for image in ticket_images:
-            TicketsImagesModel.objects.create(image=image, ticket=ticket)
+        images_to_create = [
+            TicketsImagesModel(image=image, ticket=ticket) for image in ticket_images
+        ]
+        amenities_to_create = [
+            TicketsAmenitiesModel(ticket=ticket, **amenity) for amenity in ticket_amenities
+        ]
+        services_to_create = [
+            TicketsIncludedServicesModel(ticket=ticket, **service) for service in ticket_included_services
+        ]
+        itinerary_to_create = [
+            TicketsItineraryModel(ticket=ticket, **itinerary) for itinerary in ticket_itinerary
+        ]
+        meals_to_create = [
+            TicketsHotelMealsModel(ticket=ticket, **meal) for meal in ticket_hotel_meals
+        ]
+        transports_to_create = [
+            FullTransportInfoModel(ticket=ticket, **transport) for transport in transports
+        ]
+        tariffs_to_create = [
+            FullTariff(ticket=ticket, **tariff) for tariff in tariffs
+        ]
 
-        for amenity in ticket_amenities:
-            TicketsAmenitiesModel.objects.create(ticket=ticket, **amenity)
-
-        for service in ticket_included_services:
-            TicketsIncludedServicesModel.objects.create(ticket=ticket, **service)
-
-        for itinerary in ticket_itinerary:
-            TicketsItineraryModel.objects.create(ticket=ticket, **itinerary)
-
-        for meal in ticket_hotel_meals:
-            TicketsHotelMealsModel.objects.create(ticket=ticket, **meal)
-
-        for transport in transports:
-            FullTransportInfoModel.objects.create(ticket=ticket, **transport)
-
-        for tariff in tariffs:
-            FullTariff.objects.create(ticket=ticket, **tariff)
+        if images_to_create:
+            TicketsImagesModel.objects.bulk_create(images_to_create)
+        if amenities_to_create:
+            TicketsAmenitiesModel.objects.bulk_create(amenities_to_create)
+        if services_to_create:
+            TicketsIncludedServicesModel.objects.bulk_create(services_to_create)
+        if itinerary_to_create:
+            TicketsItineraryModel.objects.bulk_create(itinerary_to_create)
+        if meals_to_create:
+            TicketsHotelMealsModel.objects.bulk_create(meals_to_create)
+        if transports_to_create:
+            FullTransportInfoModel.objects.bulk_create(transports_to_create)
+        if tariffs_to_create:
+            FullTariff.objects.bulk_create(tariffs_to_create)
 
         return ticket

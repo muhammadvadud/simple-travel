@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.apps.accounts.models import SupportModel
 
 
-class BaseSupportSerializer(serializers.ModelSerializer):
+class BaseDashboardSupportSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupportModel
         fields = [
@@ -13,9 +13,9 @@ class BaseSupportSerializer(serializers.ModelSerializer):
         ]
 
 
-class ListSupportSerializer(BaseSupportSerializer):
-    class Meta(BaseSupportSerializer.Meta): ...
+class ListDashboardSupportSerializer(BaseDashboardSupportSerializer):
+    class Meta(BaseDashboardSupportSerializer.Meta): ...
 
 
-class RetrieveSupportSerializer(BaseSupportSerializer):
-    class Meta(BaseSupportSerializer.Meta): ...
+class RetrieveDashboardSupportSerializer(BaseDashboardSupportSerializer):
+    class Meta(BaseDashboardSupportSerializer.Meta): ...
