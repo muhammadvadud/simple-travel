@@ -297,7 +297,7 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             )
         if tariffs:
             FullTariff.objects.bulk_create(
-                [FullTariff(ticket=ticket, **tariff) for tariff in tariffs]
+                [FullTariff(**tariff) for tariff in tariffs]
             )
 
         for itinerary_data in ticket_itinerary:
