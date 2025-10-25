@@ -7,6 +7,16 @@ from core.apps.tickets.models.hotel import (
 )
 
 
+class HotelAmenitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelAmenitiesModel
+        fields = [
+            "name",
+            "name_ru",
+            "icon_name"
+        ]
+
+
 class BaseHotelSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelModel
@@ -42,11 +52,7 @@ class RetrieveHotelSerializer(BaseHotelSerializer):
 
 
 class CreateHotelSerializer(serializers.ModelSerializer):
-    hotel_amenities = serializers.PrimaryKeyRelatedField(
-        queryset=HotelAmenitiesModel.objects.all(),
-        many=True,
-        required=False
-    )
+    hotel_amenities = HotelAmenitiesSerializer(many=True, write_only=True)
 
     hotel_type = serializers.PrimaryKeyRelatedField(
         queryset=HotelTypeModel.objects.all(),
@@ -79,8 +85,9 @@ class CreateHotelSerializer(serializers.ModelSerializer):
 
         hotel = HotelModel.objects.create(**validated_data)
 
-        if amenities:
-            hotel.hotel_amenities.set(amenities)
+        for amenity in amenities:
+            obj, created = HotelAmenitiesModel.objects.get_or_create(**amenity)
+            hotel.hotel_amenities.add(obj)
 
         if hotel_type:
             hotel.hotel_type.set(hotel_type)
