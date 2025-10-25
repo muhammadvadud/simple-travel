@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSet, TicketBadgeViewSet, \
     TicketTariffViewSet, TicketTransportViewSet, HotelTypeViewSet, HotelViewSet, TicketOrderViewSet, PostView, \
     CategoryViewSet, FaqViewSet, FaqCategoryViewSet, SupportViewSet, TravelAgencyRequestViewSet, HotelFeatureViewSet, \
-    HotelFeatureTypeViewSet
+    HotelFeatureTypeViewSet, SiteSettingsViewSet
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -21,6 +21,7 @@ router.register("dashboard-faq", FaqViewSet, basename="dashboard-faq")
 router.register("dashboard-faq-category", FaqCategoryViewSet, basename="dashboard-faq-category")
 router.register("dashboard-support", SupportViewSet, basename="dashboard-support")
 router.register("dashboard-ticket-hotel-feature", HotelFeatureViewSet, basename="dashboard-ticket-hotel-feature")
+router.register("dashboard-site-settings", SiteSettingsViewSet, basename="dashboard-site-settings")
 router.register("dashboard-ticket-hotel-feature-type", HotelFeatureTypeViewSet,
                 basename="dashboard-ticket-hotel-feature-type")
 router.register("dashboard-travel-agency-request", TravelAgencyRequestViewSet,

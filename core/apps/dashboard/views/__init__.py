@@ -9,3 +9,4 @@ from .blog import *  # noqa
 from .faq import *  # noqa
 from .support import *  # noqa
 from .agency_request import *  # noqa
+from .site_settings import *  # noqa

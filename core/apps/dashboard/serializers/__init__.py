@@ -8,3 +8,4 @@ from .ticket_order import *  # noqa
 from .blog import *  # noqa
 from .faq import *  # noqa
 from .agency_request import *  # noqa
+from .site_settings import *  # noqa
