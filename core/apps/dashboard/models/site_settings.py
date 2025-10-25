@@ -28,3 +28,25 @@ class SiteSettings(AbstractBaseModel):
         db_table = 'site_settings'
         verbose_name = _('Site Settings')
         verbose_name_plural = _('Site Settings')
+
+
+class SiteSeo(AbstractBaseModel):
+    title = models.CharField(verbose_name=_('Title'), max_length=255)
+    description = models.TextField(verbose_name=_('Description'))
+    keywords = models.TextField(verbose_name=_('Keywords'))
+    og_title = models.CharField(verbose_name=_('Og Title'), max_length=255)
+    og_description = models.TextField(verbose_name=_('Og Description'))
+    og_image = models.ImageField(verbose_name=_('Og Image'), upload_to='site_settings/')
+
+    def __str__(self):
+        return self.pk
+
+    def save(self, *args, **kwargs):
+        if not self.pk and SiteSeo.objects.exists():
+            raise ValidationError("Faqat bitta Seo yozuvi bo‘lishi mumkin.")
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'site_seo'
+        verbose_name = _('Site Seo')
+        verbose_name_plural = _('Site Seo')

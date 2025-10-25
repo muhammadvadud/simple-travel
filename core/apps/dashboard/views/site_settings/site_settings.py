@@ -2,8 +2,8 @@ from django_core.mixins import BaseViewSetMixin
 from rest_framework.viewsets import ModelViewSet
 from core.apps.dashboard.models import SiteSettings
 from drf_spectacular.utils import extend_schema
-from ..permission.general_permission import IsModerator
-from ..serializers.site_settings import ListSiteSettingsSerializer, CreateSiteSettingsSerializer, \
+from core.apps.dashboard.permission.general_permission import IsModerator
+from core.apps.dashboard.serializers.site_settings import ListSiteSettingsSerializer, CreateSiteSettingsSerializer, \
     RetrieveSiteSettingsSerializer
 
 
