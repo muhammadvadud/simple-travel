@@ -223,7 +223,10 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, write_only=True, required=True)
     transports = WriteFullTransportInfoSerializer(many=True, write_only=True, required=False)
     tariff = FullTariffSerializer(many=True, write_only=True, required=True)
-    badge = serializers.ListSerializer(child=serializers.IntegerField(), many=True, required=True)
+    badge = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=True
+    )
 
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
