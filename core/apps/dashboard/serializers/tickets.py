@@ -133,6 +133,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     ticket_itinerary = TicketsItinerarySerializer(many=True, read_only=True)
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, read_only=True)
     transports = FullTransportInfoSerializer(many=True, read_only=True)
+    tariff = FullTariffSerializer(many=True, write_only=True, required=True)
 
     class Meta:
         model = TicketsModel
@@ -142,20 +143,26 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "hotel_rating",
             "hotel_amenities",
             "title",
+            "title_ru",
             "price",
             "min_person",
             "max_person",
             "departure",
+            "departure_ru",
             "destination",
+            "destination_ru",
             "departure_time",
             "travel_time",
             "location_name",
+            "location_name_ru",
             "passenger_count",
             "languages",
             "hotel_info",
+            "hotel_info_ru",
             "duration_days",
             "rating",
             "hotel_meals",
+            "hotel_meals_ru",
             "slug",
             "visa_required",
             "image_banner",
@@ -166,6 +173,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "ticket_included_services",
             "ticket_itinerary",
             "ticket_hotel_meals",
+            "tariff",
         ]
 
     def get_hotel_name(self, obj):

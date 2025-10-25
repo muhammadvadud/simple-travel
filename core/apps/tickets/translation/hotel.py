@@ -8,7 +8,6 @@ from core.apps.tickets.models import HotelModel, HotelTypeModel, HotelAmenitiesM
 class HotelTranslation(TranslationOptions):
     fields = [
         "name",
-        "meal_plan"
     ]
 
 
