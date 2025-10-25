@@ -208,7 +208,44 @@ class ListTicketsSerializer(BaseTicketsSerializer):
 
 class RetrieveTicketsSerializer(BaseTicketsSerializer):
     class Meta(BaseTicketsSerializer.Meta):
-        ref_name = "RetrieveDashboardTickets"
+        fields = [
+            "id",
+            "hotel_name",
+            "hotel_rating",
+            "hotel_amenities",
+            "title",
+            "title_ru",
+            "price",
+            "min_person",
+            "max_person",
+            "departure",
+            "departure_ru",
+            "destination",
+            "destination_ru",
+            "departure_time",
+            "travel_time",
+            "location_name",
+            "location_name_ru",
+            "passenger_count",
+            "languages",
+            "hotel_info",
+            "hotel_info_ru",
+            "duration_days",
+            "rating",
+            "hotel_meals",
+            "hotel_meals_ru",
+            "slug",
+            "visa_required",
+            "image_banner",
+            "badge",
+            "transports",
+            "ticket_images",
+            "ticket_amenities",
+            "ticket_included_services",
+            "ticket_itinerary",
+            "ticket_hotel_meals",
+            "tariff",
+        ]
 
 
 class CreateTicketsSerializer(BaseTicketsSerializer):
