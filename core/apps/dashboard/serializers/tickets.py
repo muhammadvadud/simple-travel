@@ -276,10 +276,19 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         ticket_hotel_meals = validated_data.pop("ticket_hotel_meals", [])
         transports = validated_data.pop("transports", [])
         tariffs = validated_data.pop("tariff", [])
+        print(badge_data)
+        print(ticket_images)
+        print(ticket_amenities)
+        print(ticket_included_services)
+        print(ticket_itinerary)
+        print(ticket_hotel_meals)
+        print(transports)
+        print(tariffs)
 
         ticket = TicketsModel.objects.create(**validated_data)
 
         if badge_data:
+            print(f"ishlayapti badge {badge_data}")
             ticket.badge.set(badge_data)
 
         if ticket_images:
@@ -309,9 +318,12 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
 
             ticket.transports.set(full_transports)
         if tariffs:
-            FullTariff.objects.bulk_create(
-                [FullTariff(**tariff) for tariff in tariffs]
-            )
+            full_tariffs = []
+            for tariff_data in tariffs:
+                full_tariff = FullTariff.objects.create(**tariff_data)
+                full_tariffs.append(full_tariff)
+
+            ticket.tariff.set(full_tariffs)
 
         for itinerary_data in ticket_itinerary:
             itinerary_images = itinerary_data.pop("ticket_itinerary_image", [])
