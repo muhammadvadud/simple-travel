@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.apps.tickets.models import TicketsModel, TicketsImagesModel, TicketsAmenitiesModel, \
     TicketsIncludedServicesModel, \
     TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel, TicketsHotelMealsModel, \
-    TransportTicketModel, FullTransportInfoModel, FullTariff, TariffModel
+    TransportTicketModel, FullTransportInfoModel, FullTariff, TariffModel, BadgeModel
 from core.apps.tickets.models.hotel import HotelModel, HotelAmenitiesModel
 
 
@@ -223,9 +223,11 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
     ticket_hotel_meals = TicketsHotelMealsSerializer(many=True, write_only=True, required=True)
     transports = WriteFullTransportInfoSerializer(many=True, write_only=True, required=False)
     tariff = FullTariffSerializer(many=True, write_only=True, required=True)
+
     badge = serializers.ListField(
         child=serializers.IntegerField(),
-        required=True
+        required=False,
+        write_only=True
     )
 
     class Meta(BaseTicketsSerializer.Meta):
@@ -268,75 +270,165 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "transports",
         ]
 
+    def validate_badge(self, value):
+        """
+        Badge ID listini tekshiradi — mavjud bo'lmagan idlar bo'lsa ValidationError.
+        """
+        from core.apps.tickets.models import BadgeModel
+
+        if not isinstance(value, (list, tuple)):
+            raise serializers.ValidationError("badge maydoni ro'yxat bo'lishi kerak.")
+
+        existing_ids = set(BadgeModel.objects.filter(id__in=value).values_list("id", flat=True))
+        missing = set(value) - existing_ids
+        if missing:
+            raise serializers.ValidationError(f"Ushbu badge ID(lar) topilmadi: {sorted(missing)}")
+        return value
+
+    def _safe_pop_field(self, data: dict, field_name: str, default=None):
+
+        val = data.pop(field_name, default)
+
+        if val is None:
+            return default
+
+        if isinstance(val, (list, tuple)):
+            return list(val)
+
+        if hasattr(val, "all") and callable(getattr(val, "all")):
+            try:
+                qs = val.all()
+            except Exception:
+                return default
+
+            if field_name == "badge":
+                try:
+                    return list(qs.values_list("id", flat=True))
+                except Exception:
+                    return [getattr(obj, "id", None) for obj in list(qs) if getattr(obj, "id", None) is not None]
+
+            return []
+
+        return default
+
     def create(self, validated_data):
+        from core.apps.tickets.models import (
+            BadgeModel,
+            TicketsImagesModel,
+            TicketsAmenitiesModel,
+            TicketsIncludedServicesModel,
+            TicketsItineraryModel,
+            TicketsItineraryImagesModel,
+            TicketsItineraryDestinationsModel,
+            TicketsHotelMealsModel,
+            FullTransportInfoModel,
+            FullTariff,
+            TicketsModel,
+        )
+
         request = self.context.get("request")
         validated_data["travel_agency"] = getattr(request.user, "travel_agency", None)
 
-        badge_data = validated_data.pop("badge", [])
-        ticket_images = validated_data.pop("ticket_images", [])
-        ticket_amenities = validated_data.pop("ticket_amenities", [])
-        ticket_included_services = validated_data.pop("ticket_included_services", [])
-        ticket_itinerary = validated_data.pop("ticket_itinerary", [])
-        ticket_hotel_meals = validated_data.pop("ticket_hotel_meals", [])
-        transports = validated_data.pop("transports", [])
-        tariffs = validated_data.pop("tariff", [])
-        print(badge_data)
-        print(ticket_images)
-        print(ticket_amenities)
-        print(ticket_included_services)
-        print(ticket_itinerary)
-        print(ticket_hotel_meals)
-        print(transports)
-        print(tariffs)
-
+        # Xavfsiz pop — manager/descriptor tushib qolsa ham boshqaramiz
+        badge_data = self._safe_pop_field(validated_data, "badge", default=[])
+        ticket_images = self._safe_pop_field(validated_data, "ticket_images", default=[])
+        ticket_amenities = self._safe_pop_field(validated_data, "ticket_amenities", default=[])
+        ticket_included_services = self._safe_pop_field(validated_data, "ticket_included_services", default=[])
+        ticket_itinerary = self._safe_pop_field(validated_data, "ticket_itinerary", default=[])
+        ticket_hotel_meals = self._safe_pop_field(validated_data, "ticket_hotel_meals", default=[])
+        transports = self._safe_pop_field(validated_data, "transports", default=[])
+        tariffs = self._safe_pop_field(validated_data, "tariff", default=[])
         ticket = TicketsModel.objects.create(**validated_data)
 
         if badge_data:
-            print(f"ishlayapti badge {badge_data}")
-            ticket.badge.set(badge_data)
+            existing_badges = BadgeModel.objects.filter(id__in=badge_data)
+            if existing_badges.exists():
+                ticket.badge.set(existing_badges)
+            else:
+                raise serializers.ValidationError({"badge": "Yuborilgan badge ID(lar) topilmadi yoki mavjud emas."})
 
         if ticket_images:
             TicketsImagesModel.objects.bulk_create(
                 [TicketsImagesModel(image=image, ticket=ticket) for image in ticket_images]
             )
+
         if ticket_amenities:
             TicketsAmenitiesModel.objects.bulk_create(
                 [TicketsAmenitiesModel(ticket=ticket, **amenity) for amenity in ticket_amenities]
             )
+
         if ticket_included_services:
             TicketsIncludedServicesModel.objects.bulk_create(
                 [TicketsIncludedServicesModel(ticket=ticket, **service) for service in ticket_included_services]
             )
+
         if ticket_hotel_meals:
             TicketsHotelMealsModel.objects.bulk_create(
                 [TicketsHotelMealsModel(ticket=ticket, **meal) for meal in ticket_hotel_meals]
             )
+
         if transports:
             full_transports = []
             for tr_data in transports:
+                if not isinstance(tr_data, dict):
+                    continue
+
+                transport_value = tr_data.get("transport")
+
+                if isinstance(transport_value, dict):
+                    transport_id = transport_value.get("id")
+                elif hasattr(transport_value, "id"):
+                    transport_id = transport_value.id
+                else:
+                    transport_id = transport_value
+
                 full_transport = FullTransportInfoModel.objects.create(
-                    transport_id=tr_data["transport"],
-                    price=tr_data["price"]
+                    transport_id=transport_id,
+                    price=tr_data.get("price")
                 )
                 full_transports.append(full_transport)
 
-            ticket.transports.set(full_transports)
+            if full_transports:
+                ticket.transports.set(full_transports)
+
         if tariffs:
             full_tariffs = []
             for tariff_data in tariffs:
-                full_tariff = FullTariff.objects.create(**tariff_data)
+                if not isinstance(tariff_data, dict):
+                    continue
+
+                tariff_value = tariff_data.get("tariff")
+
+                if hasattr(tariff_value, "id"):
+                    tariff_id = tariff_value.id
+                else:
+                    tariff_id = tariff_value
+
+                full_tariff = FullTariff.objects.create(
+                    tariff_id=tariff_id,
+                    price=tariff_data.get("price")
+                )
                 full_tariffs.append(full_tariff)
 
-            ticket.tariff.set(full_tariffs)
-
+            if full_tariffs:
+                ticket.tariff.set(full_tariffs)
         for itinerary_data in ticket_itinerary:
-            itinerary_images = itinerary_data.pop("ticket_itinerary_image", [])
-            itinerary_destinations = itinerary_data.pop("ticket_itinerary_destinations", [])
+            if not isinstance(itinerary_data, dict):
+                continue
+
+            itinerary_images = itinerary_data.pop("ticket_itinerary_image", []) or []
+            itinerary_destinations = itinerary_data.pop("ticket_itinerary_destinations", []) or []
             itinerary = TicketsItineraryModel.objects.create(ticket=ticket, **itinerary_data)
 
-            for img in itinerary_images:
-                TicketsItineraryImagesModel.objects.create(tickets_itinerary=itinerary, **img)
-            for dest in itinerary_destinations:
-                TicketsItineraryDestinationsModel.objects.create(tickets_itinerary=itinerary, **dest)
+            if itinerary_images:
+                TicketsItineraryImagesModel.objects.bulk_create(
+                    [TicketsItineraryImagesModel(tickets_itinerary=itinerary, **img) for img in itinerary_images]
+                )
+
+            if itinerary_destinations:
+                TicketsItineraryDestinationsModel.objects.bulk_create(
+                    [TicketsItineraryDestinationsModel(tickets_itinerary=itinerary, **dest) for dest in
+                     itinerary_destinations]
+                )
 
         return ticket

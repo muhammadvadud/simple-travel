@@ -63,7 +63,7 @@ class TicketsModel(AbstractBaseModel):
     hotel_meals = models.TextField(verbose_name=_("hotel meals"), null=True, blank=True)
     tariff = models.ManyToManyField(FullTariff, related_name="ticket_tariffs", verbose_name=_("tariff"))
     slug = models.SlugField(verbose_name=_("slug"), max_length=255, unique=True, null=True, blank=True)
-    badge = models.ManyToManyField("tickets.BadgeModel", verbose_name=_("badge"), null=True, blank=True)
+    badge = models.ManyToManyField("tickets.BadgeModel", verbose_name=_("badge"),  blank=True)
     visa_required = models.BooleanField(verbose_name=_("visa required"))
     image_banner = models.ImageField(verbose_name=_("banner image"), upload_to="images_banner/")
     transports = models.ManyToManyField(FullTransportInfoModel, related_name="ticket_transport",
