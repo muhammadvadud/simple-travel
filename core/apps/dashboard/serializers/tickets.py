@@ -741,28 +741,28 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
                 instance.badge.clear()
 
         if ticket_images is not None:
-            instance.ticketimages.all().delete()
+            instance.ticket_images.all().delete()
             if ticket_images:
                 TicketsImagesModel.objects.bulk_create(
                     [TicketsImagesModel(image=image, ticket=instance) for image in ticket_images]
                 )
 
         if ticket_amenities is not None:
-            instance.ticketsamenities.all().delete()
+            instance.ticket_amenities.all().delete()
             if ticket_amenities:
                 TicketsAmenitiesModel.objects.bulk_create(
                     [TicketsAmenitiesModel(ticket=instance, **amenity) for amenity in ticket_amenities]
                 )
 
         if ticket_included_services is not None:
-            instance.ticketsincludedservices.all().delete()
+            instance.ticket_included_services.all().delete()
             if ticket_included_services:
                 TicketsIncludedServicesModel.objects.bulk_create(
                     [TicketsIncludedServicesModel(ticket=instance, **service) for service in ticket_included_services]
                 )
 
         if ticket_hotel_meals is not None:
-            instance.ticketshotelmeals.all().delete()
+            instance.ticket_hotel_meals.all().delete()
             if ticket_hotel_meals:
                 TicketsHotelMealsModel.objects.bulk_create(
                     [TicketsHotelMealsModel(ticket=instance, **meal) for meal in ticket_hotel_meals]
@@ -825,21 +825,21 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
                     instance.tariff.set(full_tariffs)
 
         if extra_service is not None:
-            instance.extraservices.all().delete()
+            instance.extra_service.all().delete()
             if extra_service:
                 ExtraServicesModel.objects.bulk_create(
-                    [ExtraServicesModel(ticket=instance, **meal) for meal in extra_service]
+                    [ExtraServicesModel(ticket=instance, **service) for service in extra_service]
                 )
 
         if paid_extra_service is not None:
-            instance.paidservices.all().delete()
+            instance.paid_extra_service.all().delete()
             if paid_extra_service:
                 PaidServicesModel.objects.bulk_create(
-                    [PaidServicesModel(ticket=instance, **meal) for meal in paid_extra_service]
+                    [PaidServicesModel(ticket=instance, **service) for service in paid_extra_service]
                 )
 
         if ticket_itinerary is not None:
-            instance.ticketsitinerary.all().delete()
+            instance.ticket_itinerary.all().delete()
 
             for itinerary_data in ticket_itinerary:
                 if not isinstance(itinerary_data, dict):
