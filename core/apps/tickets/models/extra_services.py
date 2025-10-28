@@ -6,7 +6,7 @@ from ..models.tickets import TicketsModel
 
 class ExtraServicesModel(AbstractBaseModel):
     name = models.CharField(verbose_name=_("name"), max_length=255)
-    ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), related_name="ticket_extra_service",
+    ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), related_name="extra_service",
                                on_delete=models.CASCADE)
 
     def __str__(self):
@@ -28,7 +28,7 @@ class ExtraServicesModel(AbstractBaseModel):
 class PaidServicesModel(AbstractBaseModel):
     name = models.CharField(verbose_name=_("name"), max_length=255)
     price = models.IntegerField(verbose_name=_("price"))
-    ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), related_name="ticket_extra_paid_service",
+    ticket = models.ForeignKey(TicketsModel, verbose_name=_("ticket"), related_name="paid_extra_service",
                                on_delete=models.CASCADE)
 
     def __str__(self):
