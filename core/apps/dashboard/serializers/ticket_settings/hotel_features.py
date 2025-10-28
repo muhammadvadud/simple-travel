@@ -32,12 +32,20 @@ class BaseHotelFeatureSerializer(serializers.ModelSerializer):
             "id",
             "feature_name",
             "feature_name_ru",
+            "feature_name_uz",
             "feature_type",
         ]
 
 
 class ListHotelFeatureSerializer(BaseHotelFeatureSerializer):
-    class Meta(BaseHotelFeatureSerializer.Meta): ...
+    class Meta(BaseHotelFeatureSerializer.Meta):
+        fields = [
+            "id",
+            "feature_name",
+            "feature_name_ru",
+            "feature_name_uz",
+            "feature_type",
+        ]
 
 
 class RetrieveHotelFeatureSerializer(BaseHotelFeatureSerializer):

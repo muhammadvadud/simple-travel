@@ -19,5 +19,5 @@ class HotelViewSet(BaseViewSetMixin, ModelViewSet):
     }
     action_serializer_class = {
         "create": CreateHotelSerializer,
-        "partial_update": RetrieveHotelSerializer,
+        "partial_update": CreateHotelSerializer,
     }
