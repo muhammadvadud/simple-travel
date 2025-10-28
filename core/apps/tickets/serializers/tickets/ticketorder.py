@@ -65,8 +65,6 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
     class Meta(BaseTicketorderSerializer.Meta):
         fields = [
             "id",
-            "departure",
-            "destination",
             "departure_date",
             "arrival_time",
             "participant",
@@ -85,16 +83,25 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
         else:
             raise serializers.ValidationError({"user": "User is required"})
 
+        ticket = validated_data.get("ticket")
+        if ticket:
+            validated_data["departure"] = ticket.departure
+            validated_data["departure_uz"] = ticket.departure_uz
+            validated_data["departure_ru"] = ticket.departure_ru
+            validated_data["destination"] = ticket.destination
+            validated_data["destination_uz"] = ticket.destination_uz
+            validated_data["destination_ru"] = ticket.destination_ru
+
         participants_data = validated_data.pop("participant", [])
         extra_services_data = validated_data.pop("extra_service", [])
         extra_paid_services_data = validated_data.pop("extra_paid_service", [])
+
         ticketorder = TicketorderModel.objects.create(**validated_data)
+
         if participants_data:
             ticketorder.participant.set(participants_data)
-
         if extra_services_data:
             ticketorder.extra_service.set(extra_services_data)
-
         if extra_paid_services_data:
             ticketorder.extra_paid_service.set(extra_paid_services_data)
 
