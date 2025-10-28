@@ -3,7 +3,9 @@ from rest_framework.viewsets import ModelViewSet
 from core.apps.accounts.models import SupportModel
 from drf_spectacular.utils import extend_schema
 from core.apps.accounts.choices.user import RoleChoice
+from django_filters.rest_framework import DjangoFilterBackend
 from ..permission.general_permission import IsModeratorOrTourAdminOrOperator
+from ..filters.support import SupportFilter
 from ..serializers.support import ListDashboardSupportSerializer, RetrieveDashboardSupportSerializer
 
 
@@ -13,7 +15,8 @@ class SupportViewSet(BaseViewSetMixin, ModelViewSet):
     serializer_class = ListDashboardSupportSerializer
     permission_classes = [IsModeratorOrTourAdminOrOperator]
     http_method_names = ["get", "patch", "delete", "head", "options"]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = SupportFilter
     action_permission_classes = {}
     action_serializer_class = {
         "list": ListDashboardSupportSerializer,
