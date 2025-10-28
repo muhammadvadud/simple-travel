@@ -36,7 +36,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class BaseDashboardPostSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    tag = TagSerializer(many=True, read_only=True)
+    post_tags = TagSerializer(many=True, read_only=True)
     post_images = DashboardPostImageSerializer(many=True, read_only=True)
 
     class Meta:
@@ -52,7 +52,7 @@ class BaseDashboardPostSerializer(serializers.ModelSerializer):
             "text_uz",
             "is_public",
             "category",
-            "tag",
+            "post_tags",
             "post_images",
         ]
 
@@ -63,8 +63,7 @@ class ListDashboardPostSerializer(BaseDashboardPostSerializer):
 
 
 class RetrieveDashboardPostSerializer(BaseDashboardPostSerializer):
-    class Meta(BaseDashboardPostSerializer.Meta):
-        ref_name = "RetrieveDashboardPost"
+    class Meta(BaseDashboardPostSerializer.Meta): ...
 
 
 class CreateDashboardPostSerializer(BaseDashboardPostSerializer):
@@ -73,9 +72,9 @@ class CreateDashboardPostSerializer(BaseDashboardPostSerializer):
         write_only=True,
         required=False
     )
-    post_text = serializers.ListField(child=serializers.CharField(), write_only=True)
-    post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True)
-    post_tags = serializers.ListField(child=serializers.CharField(), write_only=True)
+    post_text = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
+    post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
+    post_tags = TagSerializer(many=True, write_only=True, required=True)
     category = serializers.PrimaryKeyRelatedField(
         queryset=CategoryModel.objects.all()
     )
@@ -89,36 +88,37 @@ class CreateDashboardPostSerializer(BaseDashboardPostSerializer):
             "image",
             "text",
             "text_ru",
-            "is_public",
             "category",
-            "tag",
             "post_images",
             "post_tags",
             "post_text",
             "post_text_ru",
         ]
-        ref_name = "CreateDashboardPost"
 
     def validate(self, data):
-        if len(data['post_images']) != len(data['post_text']) and len(data['post_images']) != len(data['post_text_ru']):
+        post_images = data.get('post_images', [])
+        post_text = data.get('post_text', [])
+
+        if (len(post_images) != len(post_text)):
             raise serializers.ValidationError(
-                detail={"post_text": "image teng emas"}
+                detail={"post_text": "image, text va text_ru uzunligi teng bo‘lishi kerak"}
             )
         return data
 
     def create(self, validated_data):
         post_images = validated_data.pop("post_images", [])
+
         texts = validated_data.pop("post_text", [])
         texts_ru = validated_data.pop("post_text_ru", [])
         post_tags = validated_data.pop("post_tags", [])
         post = PostModel.objects.create(**validated_data)
         if post_images:
-            for image in post_images:
-                PostimagesModel.objects.create(post=post, image=image, text=texts.pop(0),
-                                               text_ru=texts_ru.pop(0))
+            for image in post_images: PostimagesModel.objects.create(post=post, image=image, text=texts.pop(0),
+                                                                     text_ru=texts_ru.pop(0))
         if post_tags:
-            for tag in post_tags:
-                TagModel.objects.create(post=post, name=tag)
+            TagModel.objects.bulk_create(
+                [TagModel(post=post, **tags) for tags in post_tags]
+            )
         return post
 
 
@@ -128,8 +128,8 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
         write_only=True,
         required=False
     )
-    post_text = serializers.ListField(child=serializers.CharField(), write_only=True)
-    post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True)
+    post_text = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
+    post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
     post_tags = serializers.ListField(child=serializers.CharField(), write_only=True)
 
     class Meta:
@@ -143,7 +143,6 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
             "text_ru",
             "is_public",
             "category",
-            "tag",
             "post_images",
             "post_tags",
             "post_text",
