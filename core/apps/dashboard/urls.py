@@ -4,7 +4,8 @@ from rest_framework.routers import DefaultRouter
 from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSet, TicketBadgeViewSet, \
     TicketTariffViewSet, TicketTransportViewSet, HotelTypeViewSet, HotelViewSet, TicketOrderViewSet, PostView, \
     CategoryViewSet, FaqViewSet, FaqCategoryViewSet, SupportViewSet, TravelAgencyRequestViewSet, HotelFeatureViewSet, \
-    HotelFeatureTypeViewSet, SiteSettingsViewSet, SiteSeoViewSet, OffertaViewSet, HelpPageViewSet
+    HotelFeatureTypeViewSet, SiteSettingsViewSet, SiteSeoViewSet, OffertaViewSet, HelpPageViewSet, \
+    UpdateFeaturedTicketAPIView
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -33,4 +34,9 @@ router.register("dashboard-tickets-settings-transport", TicketTransportViewSet,
                 basename="dashboard-tickets-settings-transport")
 router.register("dashboard-tickets-settings-hotel-type", HotelTypeViewSet,
                 basename="dashboard-tickets-settings-hotel-type")
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("dashboard-ticket-featured/<int:id>/<int:value>/", UpdateFeaturedTicketAPIView.as_view(),
+         name="dashboard-ticket-featured"),
+
+]
