@@ -5,6 +5,8 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "CAMELIZE_NAMES": True,
     "POSTPROCESSING_HOOKS": ["config.conf.spectacular.custom_postprocessing_hook"],
+    'SWAGGER_UI_SETTINGS': {'docExpansion': 'none',
+                            },
 }
 
 

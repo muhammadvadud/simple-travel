@@ -3,21 +3,14 @@ Base celery tasks
 """
 
 import logging
-import os
-from importlib import import_module
-
 from celery import shared_task
-from config.env import env
-from django.utils.translation import gettext as _
 from django.core.mail import send_mail, EmailMultiAlternatives
 from config.env import env
 
 
 @shared_task
 def EmailSendConfirm(email, code):
-    print("ishlayapti")
     try:
-        print("ishlayapti1")
         message = f"""\
                 Hurmatli foydalanuvchi,
                 
@@ -41,7 +34,6 @@ def EmailSendConfirm(email, code):
                 С уважением,
                 Команда Simple Travel
                 """
-        print("ishlayapti2")
         res = send_mail(
             subject="Confirm code",
             message=message,
@@ -49,8 +41,6 @@ def EmailSendConfirm(email, code):
             recipient_list=[f"{email}"],
             fail_silently=False,
         )
-        print("ishlayapti3")
-        print(res)
         logging.info("Sms send: %s-%s" % (email, code))
     except Exception as e:
         logging.error(
