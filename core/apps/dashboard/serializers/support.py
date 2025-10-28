@@ -10,6 +10,7 @@ class BaseDashboardSupportSerializer(serializers.ModelSerializer):
             "name",
             "phone_number",
             "travel_agency",
+            "status"
         ]
 
 

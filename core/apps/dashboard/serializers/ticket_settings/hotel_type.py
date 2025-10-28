@@ -9,6 +9,7 @@ class BaseHotelTypeSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
         ]
 
 
@@ -22,6 +23,7 @@ class RetrieveHotelTypeSerializer(BaseHotelTypeSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
         ]
 
 

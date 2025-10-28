@@ -9,6 +9,7 @@ class DashboardPostImageSerializer(serializers.ModelSerializer):
             "image",
             "text",
             "text_ru",
+            "text_uz",
         ]
 
 
@@ -19,6 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
         ]
 
 
@@ -28,6 +30,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "name_ru",
+            "name_uz",
         ]
 
 
@@ -42,9 +45,11 @@ class BaseDashboardPostSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "title_ru",
+            "title_uz",
             "image",
             "text",
             "text_ru",
+            "text_uz",
             "is_public",
             "category",
             "tag",

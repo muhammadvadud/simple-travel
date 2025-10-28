@@ -22,6 +22,7 @@ class RetrieveBadgeSerializer(BaseBadgeSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
             "color",
         ]
 

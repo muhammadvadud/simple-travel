@@ -19,8 +19,10 @@ class BaseFaqSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "title_ru",
+            "title_uz",
             "text",
             "text_ru",
+            "text_uz",
             "category",
         ]
 
@@ -41,8 +43,10 @@ class RetrieveFaqSerializer(BaseFaqSerializer):
             "id",
             "title",
             "title_ru",
+            "title_uz",
             "text",
             "text_ru",
+            "text_uz",
             "category",
         ]
 

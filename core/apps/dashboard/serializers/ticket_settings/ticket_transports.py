@@ -22,6 +22,7 @@ class RetrieveTransportSerializer(BaseTransportSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
             "icon_name",
         ]
 

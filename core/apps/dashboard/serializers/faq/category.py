@@ -9,6 +9,7 @@ class BaseFaqCategorySerializer(serializers.ModelSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
         ]
 
 

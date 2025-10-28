@@ -8,7 +8,8 @@ class BaseDashboardTariffSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-        ]
+            "name_ru",
+            "name_uz", ]
 
 
 class ListDashboardTariffSerializer(BaseDashboardTariffSerializer):
@@ -22,6 +23,7 @@ class RetrieveDashboardTariffSerializer(BaseDashboardTariffSerializer):
             "id",
             "name",
             "name_ru",
+            "name_uz",
         ]
         ref_name = "RetrieveDashboardTariff"
 
