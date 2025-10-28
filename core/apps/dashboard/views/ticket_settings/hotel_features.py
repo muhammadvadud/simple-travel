@@ -8,7 +8,7 @@ from core.apps.dashboard.permission.general_permission import IsModerator
 from django_filters.rest_framework import DjangoFilterBackend
 from core.apps.dashboard.serializers.ticket_settings.hotel_features import (
     ListHotelFeatureSerializer, CreateHotelFeatureSerializer, RetrieveHotelFeatureSerializer,
-    HotelFeatureTypeSerializer
+    HotelFeatureTypeSerializer, HotelFeatureTypeWriteSerializer
 )
 
 
@@ -40,6 +40,6 @@ class HotelFeatureTypeViewSet(BaseViewSetMixin, ModelViewSet):
     action_permission_classes = {}
     action_serializer_class = {
         "list": HotelFeatureTypeSerializer,
-        "create": HotelFeatureTypeSerializer,
-        "partial_update": HotelFeatureTypeSerializer,
+        "create": HotelFeatureTypeWriteSerializer,
+        "partial_update": HotelFeatureTypeWriteSerializer,
     }

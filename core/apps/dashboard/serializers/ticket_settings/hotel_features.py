@@ -2,13 +2,24 @@ from rest_framework import serializers
 from core.apps.tickets.models import HotelFeatureModel, HotelFeatureTypeModel
 
 
-class HotelFeatureTypeSerializer(serializers.ModelSerializer):
+class HotelFeatureTypeWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelFeatureTypeModel
         fields = [
             "id",
             "hotel_feature_type_name",
             "hotel_feature_type_name_ru"
+        ]
+
+
+class HotelFeatureTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelFeatureTypeModel
+        fields = [
+            "id",
+            "hotel_feature_type_name",
+            "hotel_feature_type_name_ru",
+            "hotel_feature_type_name_uz"
         ]
 
 

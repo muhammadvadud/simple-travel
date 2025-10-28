@@ -3,7 +3,8 @@ from rest_framework.viewsets import ModelViewSet
 from core.apps.tickets.models.tickets import TicketsModel
 from drf_spectacular.utils import extend_schema
 from ..permission.tickets import IsModeratorOrTourAdmin
-from ..serializers.tickets import ListTicketsSerializer, RetrieveTicketsSerializer, CreateTicketsSerializer
+from ..serializers.tickets import ListTicketsSerializer, RetrieveTicketsSerializer, CreateTicketsSerializer, \
+    UpdateTicketsSerializer
 from core.apps.accounts.choices import RoleChoice
 
 
@@ -19,7 +20,7 @@ class TicketsViewSet(BaseViewSetMixin, ModelViewSet):
         "list": ListTicketsSerializer,
         "retrieve": RetrieveTicketsSerializer,
         "create": CreateTicketsSerializer,
-        "partial_update": RetrieveTicketsSerializer,
+        "partial_update": UpdateTicketsSerializer,
     }
 
     def get_queryset(self):
