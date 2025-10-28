@@ -274,7 +274,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     ticket_itinerary = TicketsItineraryReadSerializer(many=True, read_only=True)
     ticket_hotel_meals = TicketsHotelMealsReadSerializer(many=True, read_only=True)
     transports = FullTransportInfoReadSerializer(many=True, read_only=True)
-    tariff = FullTariffReadSerializer(many=True, write_only=True, required=True)
+    tariff = FullTariffReadSerializer(many=True, read_only=True)
     extra_service = ExtraServicesReadSerializer(many=True, read_only=True)
     paid_extra_service = PaidExtraServicesReadSerializer(many=True, read_only=True)
 
