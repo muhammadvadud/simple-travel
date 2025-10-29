@@ -2,6 +2,8 @@ from rest_framework import serializers
 from core.apps.tickets.models import TicketorderModel, ExtraServicesModel, PaidServicesModel
 from core.apps.accounts.models import ParticipantModel, ParticipantPasportImageModel
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
+from core.apps.tickets.choices.order import OrderStatusChoices
 
 
 class ParticipantPasportImageSerializer(serializers.ModelSerializer):
@@ -124,6 +126,12 @@ class ListTicketOrderSerializer(BaseTicketOrderSerializer):
 class FullTicketOrderSerializer(serializers.Serializer):
     orders = ListTicketOrderSerializer(many=True, read_only=True)
     total_income = serializers.SerializerMethodField()
+    awaiting_payments = serializers.SerializerMethodField()
+    awaiting_payments_count = serializers.SerializerMethodField()
+    confirmed_order = serializers.SerializerMethodField()
+    pending_confirmation = serializers.SerializerMethodField()
+    completed_order = serializers.SerializerMethodField()
+    cancelled_order = serializers.SerializerMethodField()
 
     def get_total_income(self, obj):
         if isinstance(obj, dict) and "orders" in obj:
@@ -145,6 +153,100 @@ class FullTicketOrderSerializer(serializers.Serializer):
                 seen_agencies.add(agency.id)
 
         return total_income
+
+    def get_awaiting_payments(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        if hasattr(queryset, "filter"):
+            return (
+                    queryset.filter(order_status=OrderStatusChoices.PENDING_PAYMENT)
+                    .aggregate(total=Sum("total_price"))
+                    .get("total") or 0
+            )
+
+        total_pending = 0
+        for order in queryset:
+            if getattr(order, "order_status", None) == OrderStatusChoices.PENDING_PAYMENT:
+                total_pending += getattr(order, "total_price", 0) or 0
+        return total_pending
+
+    def get_awaiting_payments_count(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        if hasattr(queryset, "filter"):
+            return queryset.filter(order_status=OrderStatusChoices.PENDING_PAYMENT).count()
+
+        count = 0
+        for order in queryset:
+            if getattr(order, "order_status", None) == OrderStatusChoices.PENDING_PAYMENT:
+                count += 1
+        return count
+
+    def get_confirmed_order(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        if hasattr(queryset, "filter"):
+            return queryset.filter(order_status=OrderStatusChoices.CONFIRMED).count()
+
+        count = 0
+        for order in queryset:
+            if getattr(order, "order_status", None) == OrderStatusChoices.CONFIRMED:
+                count += 1
+        return count
+
+    def get_pending_confirmation(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        if hasattr(queryset, "filter"):
+            return queryset.filter(order_status=OrderStatusChoices.PENDING_CONFIRMATION).count()
+
+        count = 0
+        for order in queryset:
+            if getattr(order, "order_status", None) == OrderStatusChoices.PENDING_CONFIRMATION:
+                count += 1
+        return count
+
+    def get_completed_order(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        if hasattr(queryset, "filter"):
+            return queryset.filter(order_status=OrderStatusChoices.COMPLETED).count()
+
+        count = 0
+        for order in queryset:
+            if getattr(order, "order_status", None) == OrderStatusChoices.COMPLETED:
+                count += 1
+        return count
+
+    def get_cancelled_order(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        if hasattr(queryset, "filter"):
+            return queryset.filter(order_status=OrderStatusChoices.CANCELLED).count()
+
+        count = 0
+        for order in queryset:
+            if getattr(order, "order_status", None) == OrderStatusChoices.CANCELLED:
+                count += 1
+        return count
 
 
 class RetrieveTicketOrderSerializer(BaseTicketOrderSerializer):

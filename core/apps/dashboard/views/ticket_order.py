@@ -25,7 +25,7 @@ class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, "role") and user.role == RoleChoice.TourAdmin:
-            return TicketorderModel.objects.filter(ticket__tour__agency__id=user.travel_agency)
+            return TicketorderModel.objects.filter(ticket__travel_agency__id=user.travel_agency.id)
         return TicketorderModel.objects.all()
 
     def list(self, request, *args, **kwargs):
@@ -36,6 +36,4 @@ class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
             context={"request": request}
         )
         response = self.get_paginated_response(serializer.data)
-        print('ishlayapti2')
-        print(serializer.data)
         return response
