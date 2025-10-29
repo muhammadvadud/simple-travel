@@ -26,12 +26,10 @@ class SupportViewSet(BaseViewSetMixin, ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated and user.role == RoleChoice.TourAdmin:
-            queryset = SupportModel.objects.filter(travel_agency=user.travel_agency)
-            return queryset
-        elif user.is_authenticated and user.role == RoleChoice.Operator:
-            queryset = SupportModel.objects.filter(travel_agency=user.travel_agency)
-        else:
-            queryset = SupportModel.objects.all()
+        if user.role == RoleChoice.TourAdmin:
+            return SupportModel.objects.filter(travel_agency=user.travel_agency)
 
-        return queryset
+        elif user.role == RoleChoice.Operator:
+            return SupportModel.objects.filter(travel_agency__isnull=True)
+
+        return SupportModel.objects.all()

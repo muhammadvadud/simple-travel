@@ -135,6 +135,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "tariff",
             "is_liked",
             "allow_comment",
+            "featured_tickets",
         ]
 
     def get_is_liked(self, obj):
@@ -187,6 +188,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "badge",
             "visa_required",
             "is_liked",
+            "featured_tickets",
         ]
 
     def get_ticket_images(self, obj):

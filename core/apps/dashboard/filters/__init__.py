@@ -1,1 +1,7 @@
 from .hotel_feature import *  # noqa
+from .hotel import *  # noqa
+from .banner import *  # noqa
+from .ticket import *  # noqa
+from .faq import *  # noqa
+from .support import *  # noqa
+from .agency_request import *  # noqa

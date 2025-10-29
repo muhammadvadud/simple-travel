@@ -50,6 +50,7 @@ class TicketsFilter(filters.FilterSet):
             "max_departure_date",
             "passenger_count",
             "hotel_name",
+            "featured_tickets",
         ]
 
     def filter_cheapest(self, queryset, name, value):

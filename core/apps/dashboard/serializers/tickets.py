@@ -312,6 +312,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "hotel_meals",
             "hotel_meals_ru",
             "hotel_meals_uz",
+            "featured_tickets",
             "slug",
             "visa_required",
             "image_banner",
@@ -353,6 +354,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "price",
             "duration_days",
             "duration_days",
+            "featured_tickets",
             "hotel_rating",
             "hotel_amenities",
         ]

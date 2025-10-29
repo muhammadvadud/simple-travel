@@ -4,7 +4,32 @@ from core.apps.tickets.models.hotel import (
     HotelAmenitiesModel,
     HotelTypeModel,
     HotelFeatureModel,
+    HotelFeatureTypeModel
 )
+
+
+class HotelFeatureTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelFeatureTypeModel
+        fields = [
+            "id",
+            "hotel_feature_type_name_ru",
+            "hotel_feature_type_name_uz",
+        ]
+
+
+class HotelFeatureSerializer(serializers.ModelSerializer):
+    feature_type = HotelFeatureTypeSerializer(read_only=True)
+
+    class Meta:
+        model = HotelFeatureModel
+        fields = ["id", "feature_name", "feature_name_uz", "feature_name_ru", "feature_type"]
+
+
+class HotelTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelTypeModel
+        fields = ["id", "name", "name_ru", "name_uz"]
 
 
 class HotelAmenitiesSerializer(serializers.ModelSerializer):
@@ -13,6 +38,7 @@ class HotelAmenitiesSerializer(serializers.ModelSerializer):
         fields = [
             "name",
             "name_ru",
+            "name_uz",
             "icon_name"
         ]
 
@@ -24,12 +50,17 @@ class BaseHotelSerializer(serializers.ModelSerializer):
 
 
 class ListHotelSerializer(BaseHotelSerializer):
+    hotel_amenities = HotelAmenitiesSerializer(many=True, read_only=True)
+    hotel_type = HotelTypeSerializer(many=True, read_only=True)
+    hotel_features = HotelFeatureSerializer(many=True, read_only=True)
+
     class Meta(BaseHotelSerializer.Meta):
         fields = [
             "id",
             "name",
             "rating",
             "meal_plan",
+            "ticket",
             "hotel_type",
             "hotel_amenities",
             "hotel_features",
