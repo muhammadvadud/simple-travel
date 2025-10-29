@@ -8,6 +8,6 @@ class IsModeratorOrTourAdmin(BasePermission):
         if request.user.is_authenticated and request.user.role in (
                 RoleChoice.Moderator,
                 RoleChoice.TourAdmin,
-                RoleChoice.Operator,):
+                RoleChoice.Buxgalter,):
             return True
         return False

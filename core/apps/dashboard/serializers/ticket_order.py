@@ -51,12 +51,23 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserListSerializer(serializers.ModelSerializer):
+    contact = serializers.SerializerMethodField()
+
     class Meta:
         model = get_user_model()
         fields = [
             "first_name",
             "last_name",
+            "contact",
         ]
+
+    def get_contact(self, obj):
+        phone_number = obj.phone
+        email = obj.email
+        if phone_number:
+            return phone_number
+        else:
+            return email
 
 
 class BaseTicketOrderSerializer(serializers.ModelSerializer):
@@ -86,8 +97,9 @@ class BaseTicketOrderSerializer(serializers.ModelSerializer):
 
 
 class ListTicketOrderSerializer(BaseTicketOrderSerializer):
-    tour_name = serializers.SerializerMethodField()
     user = UserListSerializer(read_only=True)
+    tour_name = serializers.SerializerMethodField()
+    tour_id = serializers.SerializerMethodField()
 
     class Meta(BaseTicketOrderSerializer.Meta):
         fields = [
@@ -97,11 +109,42 @@ class ListTicketOrderSerializer(BaseTicketOrderSerializer):
             "total_price",
             "order_status",
             "tour_name",
+            "tour_id",
         ]
 
     def get_tour_name(self, obj):
         tour_name = obj.ticket.travel_agency.name
         return tour_name
+
+    def get_tour_id(self, obj):
+        tour_id = obj.ticket.travel_agency.id
+        return tour_id
+
+
+class FullTicketOrderSerializer(serializers.Serializer):
+    orders = ListTicketOrderSerializer(many=True, read_only=True)
+    total_income = serializers.SerializerMethodField()
+
+    def get_total_income(self, obj):
+        if isinstance(obj, dict) and "orders" in obj:
+            queryset = obj["orders"]
+        else:
+            queryset = obj
+
+        seen_agencies = set()
+        total_income = 0
+
+        for order in queryset:
+            try:
+                agency = order.ticket.travel_agency
+            except AttributeError:
+                continue
+
+            if agency and agency.id not in seen_agencies:
+                total_income += agency.total_income or 0
+                seen_agencies.add(agency.id)
+
+        return total_income
 
 
 class RetrieveTicketOrderSerializer(BaseTicketOrderSerializer):

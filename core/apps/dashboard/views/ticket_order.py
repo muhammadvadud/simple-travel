@@ -5,19 +5,19 @@ from drf_spectacular.utils import extend_schema
 from core.apps.accounts.choices.user import RoleChoice
 from ..permission.tickets import IsModeratorOrTourAdmin
 from ..serializers.ticket_order import ListTicketOrderSerializer, RetrieveTicketOrderSerializer, \
-    UpdateTicketOrderSerializer
+    UpdateTicketOrderSerializer, FullTicketOrderSerializer
 
 
 @extend_schema(tags=["Dashboard-Ticket-Order"])
 class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
     queryset = TicketorderModel.objects.all()
-    serializer_class = ListTicketOrderSerializer
+    serializer_class = FullTicketOrderSerializer
     permission_classes = [IsModeratorOrTourAdmin]
     http_method_names = ["get", "patch", "head", "options"]
 
     action_permission_classes = {}
     action_serializer_class = {
-        "list": ListTicketOrderSerializer,
+        "list": FullTicketOrderSerializer,
         "retrieve": RetrieveTicketOrderSerializer,
         "partial_update": UpdateTicketOrderSerializer,
     }
@@ -27,3 +27,15 @@ class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
         if hasattr(user, "role") and user.role == RoleChoice.TourAdmin:
             return TicketorderModel.objects.filter(ticket__tour__agency__id=user.travel_agency)
         return TicketorderModel.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        pagination_queryset = self.paginate_queryset(queryset)
+        serializer = FullTicketOrderSerializer(
+            {"orders": pagination_queryset},
+            context={"request": request}
+        )
+        response = self.get_paginated_response(serializer.data)
+        print('ishlayapti2')
+        print(serializer.data)
+        return response
