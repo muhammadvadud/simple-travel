@@ -132,8 +132,8 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
     ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
     tariff = TicketsFullTariffSerializer(many=True, read_only=True)
     transports = FullTransportSerializer(many=True, read_only=True)
-    extra_service = ListExtraServicesSerializer(source="ticket_extra_service", many=True, read_only=True)
-    extra_paid_service = ListPaidServicesSerializer(source="ticket_extra_paid_service", many=True, read_only=True)
+    extra_service = ListExtraServicesSerializer(many=True, read_only=True)
+    extra_paid_service = ListPaidServicesSerializer(many=True, read_only=True)
 
     class Meta:
         model = TicketsModel
