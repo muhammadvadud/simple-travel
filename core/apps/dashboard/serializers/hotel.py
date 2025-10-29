@@ -128,13 +128,25 @@ class CreateHotelSerializer(serializers.ModelSerializer):
         return hotel
 
     def update(self, instance, validated_data):
-        amenities = validated_data.pop("hotel_amenities", None)
+        amenities = validated_data.pop("hotel_amenities", [])
+        hotel_type = validated_data.pop("hotel_type", [])
+        features = validated_data.pop("hotel_features", [])
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        if amenities is not None:
-            instance.hotel_amenities.set(amenities)
+        if amenities:
+            amenity_objs = []
+            for amenity in amenities:
+                obj, created = HotelAmenitiesModel.objects.get_or_create(**amenity)
+                amenity_objs.append(obj)
+            instance.hotel_amenities.set(amenity_objs)
+
+        if hotel_type:
+            instance.hotel_type.set(hotel_type)
+
+        if features:
+            instance.hotel_features.set(features)
 
         return instance
