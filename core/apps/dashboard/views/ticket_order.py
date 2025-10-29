@@ -15,9 +15,7 @@ class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
     permission_classes = [IsModeratorOrTourAdmin]
     http_method_names = ["get", "patch", "head", "options"]
 
-    action_permission_classes = {
-
-    }
+    action_permission_classes = {}
     action_serializer_class = {
         "list": ListTicketOrderSerializer,
         "retrieve": RetrieveTicketOrderSerializer,

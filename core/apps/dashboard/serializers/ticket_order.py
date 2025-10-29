@@ -91,6 +91,7 @@ class ListTicketOrderSerializer(BaseTicketOrderSerializer):
 
     class Meta(BaseTicketOrderSerializer.Meta):
         fields = [
+            "id",
             "user",
             "destination",
             "total_price",
