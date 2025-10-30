@@ -353,6 +353,7 @@ class TicketorderModel(AbstractBaseModel):
                                                 null=True, blank=True)
     order_status = models.CharField(verbose_name=_("order status"), max_length=255, choices=OrderStatusChoices,
                                     default=OrderStatusChoices.PENDING_PAYMENT)
+
     total_price = models.BigIntegerField(verbose_name=_("total price"))
 
     def __str__(self):

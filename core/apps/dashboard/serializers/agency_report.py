@@ -13,6 +13,7 @@ class TravelAgencyDocumentsSerializer(serializers.ModelSerializer):
 
 class BaseDashboardTravelAgencyReportSerializer(serializers.ModelSerializer):
     travel_agency_documents = TravelAgencyDocumentsSerializer(many=True, read_only=True)
+    ticket_count = serializers.SerializerMethodField()
 
     class Meta:
         model = TravelAgency
@@ -28,6 +29,10 @@ class BaseDashboardTravelAgencyReportSerializer(serializers.ModelSerializer):
             "paid",
             "pending",
         ]
+
+    def get_ticket_count(self, obj):
+        count = TicketsModel.objects.filter(travel_agency=obj).count()
+        return count
 
 
 class ListDashboardTravelAgencyReportSerializer(BaseDashboardTravelAgencyReportSerializer):

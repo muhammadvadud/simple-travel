@@ -6,3 +6,4 @@ from .faq import *  # noqa
 from .support import *  # noqa
 from .agency_request import *  # noqa
 from .ticket_order import *  # noqa
+from .site_settings import *  # noqa
