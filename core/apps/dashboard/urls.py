@@ -5,7 +5,7 @@ from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSe
     TicketTariffViewSet, TicketTransportViewSet, HotelTypeViewSet, HotelViewSet, TicketOrderViewSet, PostView, \
     CategoryViewSet, FaqViewSet, FaqCategoryViewSet, SupportViewSet, TravelAgencyRequestViewSet, HotelFeatureViewSet, \
     HotelFeatureTypeViewSet, SiteSettingsViewSet, SiteSeoViewSet, OffertaViewSet, HelpPageViewSet, \
-    UpdateFeaturedTicketAPIView, BannerViewSet
+    UpdateFeaturedTicketAPIView, BannerViewSet, TravelAgencyReportViewSet
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -27,6 +27,8 @@ router.register("dashboard-site-seo", SiteSeoViewSet, basename="dashboard-site-s
 router.register("dashboard-site-offerta", OffertaViewSet, basename="dashboard-site-offerta")
 router.register("dashboard-site-help-page", HelpPageViewSet, basename="dashboard-site-help-page")
 router.register("dashboard-site-banner", BannerViewSet, basename="dashboard-site-banner")
+router.register("dashboard-site-travel-agency-report", TravelAgencyReportViewSet,
+                basename="dashboard-site-travel-agency-report")
 router.register("dashboard-ticket-hotel-feature-type", HotelFeatureTypeViewSet,
                 basename="dashboard-ticket-hotel-feature-type")
 router.register("dashboard-travel-agency-request", TravelAgencyRequestViewSet,
