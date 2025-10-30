@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from click_up.models import ClickTransaction
 from core.apps.tickets.models.tickets import TicketorderModel
 from core.apps.tickets.choices.order import OrderStatusChoices
+from core.apps.dashboard.models import AgencyReport
 
 
 @extend_schema(tags=["payments"])
@@ -34,6 +35,7 @@ class ClickWebhookAPIView(ClickWebhook):
             transaction_id = params.click_trans_id
             transaction = ClickTransaction.objects.filter(transaction_id=transaction_id).first()
             order = TicketorderModel.objects.get(id=transaction.account_id)
+            AgencyReport.delete_report(order)
             order.order_status = OrderStatusChoices.CANCELLED
             order.save()
         except TicketorderModel.DoesNotExist:
