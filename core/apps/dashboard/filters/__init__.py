@@ -5,3 +5,4 @@ from .ticket import *  # noqa
 from .faq import *  # noqa
 from .support import *  # noqa
 from .agency_request import *  # noqa
+from .ticket_order import *  # noqa

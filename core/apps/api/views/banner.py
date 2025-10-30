@@ -2,7 +2,9 @@ from django_core.mixins import BaseViewSetMixin
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from django_filters.rest_framework import DjangoFilterBackend
 
+from core.apps.api.filters import BannerFilter
 from core.apps.api.models import BannerModel
 from core.apps.api.serializers.banner import CreateBannerSerializer, ListBannerSerializer, RetrieveBannerSerializer
 
@@ -12,7 +14,8 @@ class BannerView(BaseViewSetMixin, ReadOnlyModelViewSet):
     queryset = BannerModel.objects.all()
     serializer_class = ListBannerSerializer
     permission_classes = [AllowAny]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BannerFilter
     action_permission_classes = {}
     action_serializer_class = {
         "list": ListBannerSerializer,

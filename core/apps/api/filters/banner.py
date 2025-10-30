@@ -9,5 +9,5 @@ class BannerFilter(filters.FilterSet):
     class Meta:
         model = BannerModel
         fields = [
-            "name",
+            "position",
         ]

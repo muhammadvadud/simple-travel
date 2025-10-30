@@ -8,7 +8,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from core.apps.dashboard.permission.general_permission import IsModerator
 from core.apps.dashboard.serializers.site_settings import ListBannerSerializer, CreateBannerSerializer, \
     RetrieveBannerSerializer
-from rest_framework.response import Response
 
 
 @extend_schema(tags=["Dashboard-Banner"])

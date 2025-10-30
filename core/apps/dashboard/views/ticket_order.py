@@ -3,7 +3,9 @@ from rest_framework.viewsets import ModelViewSet
 from core.apps.tickets.models.tickets import TicketorderModel
 from drf_spectacular.utils import extend_schema
 from core.apps.accounts.choices.user import RoleChoice
+from ..filters import TicketOrderFilter
 from ..permission.tickets import IsModeratorOrTourAdmin
+from django_filters.rest_framework import DjangoFilterBackend
 from ..serializers.ticket_order import ListTicketOrderSerializer, RetrieveTicketOrderSerializer, \
     UpdateTicketOrderSerializer, FullTicketOrderSerializer
 
@@ -14,7 +16,8 @@ class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
     serializer_class = FullTicketOrderSerializer
     permission_classes = [IsModeratorOrTourAdmin]
     http_method_names = ["get", "patch", "head", "options"]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TicketOrderFilter
     action_permission_classes = {}
     action_serializer_class = {
         "list": FullTicketOrderSerializer,
