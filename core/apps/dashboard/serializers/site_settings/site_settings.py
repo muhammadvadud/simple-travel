@@ -18,6 +18,8 @@ class BaseSiteSettingsSerializer(serializers.ModelSerializer):
             "email",
             "main_phone",
             "other_phone",
+            "linkedin",
+            "telegram_chat",
         ]
 
 

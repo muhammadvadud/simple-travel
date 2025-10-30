@@ -39,10 +39,7 @@ class AgencyReport(models.Model):
         return f"{self.travel_agency.name} — {self.total_income} so‘m ({self.created_at:%Y-%m-%d})"
 
     @classmethod
-    def create_report(cls, agency, order, total_income):
-        """
-        To‘lov muvaffaqiyatli yakunlanganda hisobot yaratish.
-        """
+    def create_report(cls, agency, order, total_income, payment_method):
         percentage = agency.share_percentage
         platform_share = total_income * percentage // 100
         agency_share = total_income - platform_share
@@ -54,36 +51,36 @@ class AgencyReport(models.Model):
             platform_share=platform_share,
             agency_share=agency_share,
             percentage_at_time=percentage,
+            payment_method=payment_method,
         )
 
         agency.total_income += total_income
         agency.platform_income += platform_share
         agency.pending += agency_share
-        agency.save(update_fields=["total_income", "platform_income", "pending"])
+        agency.ticket_sold_count += 1
+        agency.save(update_fields=["total_income", "platform_income", "pending", "ticket_sold_count"])
 
         return report
 
     @classmethod
     def delete_report(cls, order):
-        """
-        To‘lov bekor qilinsa, order bo‘yicha hisobotni o‘chirish.
-        """
         try:
             report = cls.objects.get(order=order)
         except cls.DoesNotExist:
-            return None
+            return False
 
         agency = report.travel_agency
 
         agency.total_income -= report.total_income
         agency.platform_income -= report.platform_share
         agency.pending -= report.agency_share
+        agency.ticket_sold_count = max(0, agency.ticket_sold_count - 1)
 
         agency.total_income = max(0, agency.total_income)
         agency.platform_income = max(0, agency.platform_income)
         agency.pending = max(0, agency.pending)
 
-        agency.save(update_fields=["total_income", "platform_income", "pending"])
+        agency.save(update_fields=["total_income", "platform_income", "pending", "ticket_sold_count"])
 
         report.delete()
         return True

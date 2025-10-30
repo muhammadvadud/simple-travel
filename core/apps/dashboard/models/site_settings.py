@@ -9,15 +9,17 @@ class SiteSettings(AbstractBaseModel):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=_('Latitude'))
     longitude = models.DecimalField(max_digits=9, decimal_places=6, verbose_name=_('Longitude'))
     telegram = models.CharField(verbose_name=_('Telegram'), max_length=255, blank=True, null=True)
+    telegram_chat = models.CharField(verbose_name=_('Telegram'), max_length=255, blank=True, null=True)
     instagram = models.CharField(verbose_name=_('Instagram'), max_length=255, blank=True, null=True)
     facebook = models.CharField(verbose_name=_('Facebook'), max_length=255, blank=True, null=True)
     twitter = models.CharField(verbose_name=_('Twitter'), max_length=255, blank=True, null=True)
+    linkedin = models.CharField(verbose_name=_('Linkedin'), max_length=255, blank=True, null=True)
     email = models.EmailField(verbose_name=_('Email'), blank=True, null=True)
     main_phone = models.CharField(verbose_name=_('Main Phone'), max_length=255, blank=True, null=True)
     other_phone = models.CharField(verbose_name=_('Other Phone'), max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
     def save(self, *args, **kwargs):
         if not self.pk and SiteSettings.objects.exists():
