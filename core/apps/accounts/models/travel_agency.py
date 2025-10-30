@@ -26,7 +26,7 @@ class TravelAgency(AbstractBaseModel):
     ticket_sold_count = models.PositiveIntegerField(default=0, verbose_name=_("ticket sold count"))
     total_income = models.PositiveBigIntegerField(default=0, verbose_name=_("total income"))
     paid = models.PositiveBigIntegerField(default=0, verbose_name=_("Paid"))
-    pending = models.PositiveBigIntegerField(default=0, verbose_name=_("Paid"))
+    pending = models.PositiveBigIntegerField(default=0, verbose_name=_("Pending"))
 
     def save(self, *args, **kwargs):
         if not self.id:

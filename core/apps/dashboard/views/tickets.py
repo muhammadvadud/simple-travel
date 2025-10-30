@@ -12,7 +12,7 @@ from ..filters.ticket import TicketFilter
 
 @extend_schema(tags=["Dashboard-Tickets"])
 class TicketsViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TicketsModel.objects.all()
+    queryset = TicketsModel.objects.all().order_by("-id")
     serializer_class = ListTicketsSerializer
     permission_classes = [IsModeratorOrTourAdmin]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
