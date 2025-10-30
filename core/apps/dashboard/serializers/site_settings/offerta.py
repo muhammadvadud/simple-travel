@@ -8,7 +8,11 @@ class BaseOffertaSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "title_uz",
+            "title_ru",
             "content",
+            "content_uz",
+            "content_ru",
             "person_type",
             "is_active",
         ]
@@ -24,3 +28,14 @@ class RetrieveOffertaSerializer(BaseOffertaSerializer):
 
 class CreateOffertaSerializer(BaseOffertaSerializer):
     class Meta(BaseOffertaSerializer.Meta): ...
+
+
+class PublicOffertaSerializer(BaseOffertaSerializer):
+    class Meta(BaseOffertaSerializer.Meta):
+        fields = [
+            "id",
+            "title",
+            "content",
+            "person_type",
+            "is_active",
+        ]

@@ -39,7 +39,7 @@ class SiteSeo(AbstractBaseModel):
     og_image = models.ImageField(verbose_name=_('Og Image'), upload_to='site_settings/')
 
     def __str__(self):
-        return self.pk
+        return self.title
 
     def save(self, *args, **kwargs):
         if not self.pk and SiteSeo.objects.exists():

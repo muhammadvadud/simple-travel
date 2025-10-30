@@ -8,7 +8,11 @@ class BaseHelpPageSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "title_uz",
+            "title_ru",
             "content",
+            "content_uz",
+            "content_ru",
             "page_type",
             "is_active",
         ]
@@ -24,3 +28,14 @@ class RetrieveHelpPageSerializer(BaseHelpPageSerializer):
 
 class CreateHelpPageSerializer(BaseHelpPageSerializer):
     class Meta(BaseHelpPageSerializer.Meta): ...
+
+
+class PublicHelpPageSerializer(BaseHelpPageSerializer):
+    class Meta(BaseHelpPageSerializer.Meta):
+        fields = [
+            "id",
+            "title",
+            "content",
+            "page_type",
+            "is_active",
+        ]

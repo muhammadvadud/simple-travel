@@ -9,10 +9,20 @@ class BaseSiteSeoSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "title_uz",
+            "title_ru",
             "description",
+            "description_uz",
+            "description_ru",
             "keywords",
+            "keywords_uz",
+            "keywords_ru",
             "og_title",
+            "og_title_uz",
+            "og_title_ru",
             "og_description",
+            "og_description_uz",
+            "og_description_ru",
             "og_image",
         ]
 
@@ -32,3 +42,16 @@ class CreateSiteSeoSerializer(BaseSiteSeoSerializer):
         if not self.instance and SiteSeo.objects.exists():
             raise ValidationError("Faqat bitta SiteSeo yozuvi bo‘lishi mumkin.")
         return attrs
+
+
+class PublicSiteSeoSerializer(BaseSiteSeoSerializer):
+    class Meta(BaseSiteSeoSerializer.Meta):
+        fields = [
+            "id",
+            "title",
+            "description",
+            "keywords",
+            "og_title",
+            "og_description",
+            "og_image",
+        ]
