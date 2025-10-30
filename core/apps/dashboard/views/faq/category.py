@@ -8,7 +8,7 @@ from ...serializers import ListFaqCategorySerializer, RetrieveFaqCategorySeriali
 
 @extend_schema(tags=["Dashboard-FaqCategory"])
 class FaqCategoryViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = FaqCategoryModel.objects.all()
+    queryset = FaqCategoryModel.objects.all().order_by("-id")
     serializer_class = ListFaqCategorySerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

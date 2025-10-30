@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.ticket_settings import (
 
 @extend_schema(tags=["Ticket Settings Badge"])
 class TicketBadgeViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = BadgeModel.objects.all()
+    queryset = BadgeModel.objects.all().order_by("-id")
     serializer_class = ListBadgeSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

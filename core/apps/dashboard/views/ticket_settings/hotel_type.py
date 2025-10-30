@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.ticket_settings.hotel_type import (
 
 @extend_schema(tags=["Ticket Settings Hotel Type"])
 class HotelTypeViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = HotelTypeModel.objects.all()
+    queryset = HotelTypeModel.objects.all().order_by("-id")
     serializer_class = ListHotelTypeSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

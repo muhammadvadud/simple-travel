@@ -11,7 +11,7 @@ from ..serializers.support import ListDashboardSupportSerializer, RetrieveDashbo
 
 @extend_schema(tags=["Dashboard-Support"])
 class SupportViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = SupportModel.objects.all()
+    queryset = SupportModel.objects.all().order_by("-id")
     serializer_class = ListDashboardSupportSerializer
     permission_classes = [IsModeratorOrTourAdminOrOperator]
     http_method_names = ["get", "patch", "delete", "head", "options"]

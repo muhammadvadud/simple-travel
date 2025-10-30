@@ -8,7 +8,7 @@ from ...serializers import ListCategorySerializer, CreateCategorySerializer, Ret
 
 @extend_schema(tags=["Dashboard-Category"])
 class CategoryViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = CategoryModel.objects.all()
+    queryset = CategoryModel.objects.all().order_by("-id")
     serializer_class = ListCategorySerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

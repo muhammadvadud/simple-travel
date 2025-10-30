@@ -11,7 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 @extend_schema(tags=["Dashboard-Faq"])
 class FaqViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = FaqModel.objects.all()
+    queryset = FaqModel.objects.all().order_by("-id")
     serializer_class = ListFaqSerializer
     permission_classes = [IsModerator]
     filter_backends = [DjangoFilterBackend]

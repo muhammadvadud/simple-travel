@@ -14,7 +14,7 @@ from core.apps.dashboard.serializers.blog.post import (
 
 @extend_schema(tags=["Dashboard-Post"])
 class PostView(BaseViewSetMixin, ModelViewSet):
-    queryset = PostModel.objects.all()
+    queryset = PostModel.objects.all().order_by("-id")
     serializer_class = ListDashboardPostSerializer
     permission_classes = [IsModeratorOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']

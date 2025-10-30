@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.ticket_settings.ticket_transports import (
 
 @extend_schema(tags=["Ticket Settings Transport"])
 class TicketTransportViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TransportTicketModel.objects.all()
+    queryset = TransportTicketModel.objects.all().order_by("-id")
     serializer_class = ListTransportSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

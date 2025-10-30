@@ -9,7 +9,7 @@ from ..serializers.employees import ListEmployeesSerializer, CreateEmployeesSeri
 
 @extend_schema(tags=["Dashboard-Employees"])
 class EmployeesViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = get_user_model().objects.filter(role__in=[RoleChoice.Buxgalter, RoleChoice.Operator])
+    queryset = get_user_model().objects.filter(role__in=[RoleChoice.Buxgalter, RoleChoice.Operator]).order_by("-id")
     serializer_class = ListEmployeesSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

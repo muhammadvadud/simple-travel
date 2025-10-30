@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.site_settings import ListHelpPageSerializer
 
 @extend_schema(tags=["Dashboard-HelpPage"])
 class HelpPageViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = HelpPage.objects.all()
+    queryset = HelpPage.objects.all().order_by("-id")
     serializer_class = ListHelpPageSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

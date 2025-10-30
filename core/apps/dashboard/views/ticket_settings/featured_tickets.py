@@ -10,8 +10,6 @@ from drf_spectacular.utils import extend_schema
 @extend_schema(tags=["TicketFeatured"])
 class UpdateFeaturedTicketAPIView(APIView):
     permission_classes = [IsModerator]
-
-
     def post(self, request, *args, **kwargs):
         ticket_id = kwargs.get("id")
         value = kwargs.get("value")

@@ -13,7 +13,7 @@ from rest_framework.response import Response
 
 @extend_schema(tags=["Dashboard-Banner"])
 class BannerViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = BannerModel.objects.all()
+    queryset = BannerModel.objects.all().order_by("-id")
     serializer_class = ListBannerSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

@@ -14,7 +14,7 @@ from core.apps.dashboard.serializers.ticket_settings.hotel_features import (
 
 @extend_schema(tags=["Ticket Settings Hotel Features"])
 class HotelFeatureViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = HotelFeatureModel.objects.all()
+    queryset = HotelFeatureModel.objects.all().order_by("-id")
     serializer_class = ListHotelFeatureSerializer
     permission_classes = [IsModerator]
     filter_backends = [DjangoFilterBackend]

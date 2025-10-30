@@ -9,7 +9,7 @@ from ..permission.tour_agency import IsModerator, IsOperatorOrModerator
 
 @extend_schema(tags=["Dashboard-TourAgency"])
 class TourAgencyViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TravelAgency.objects.all()
+    queryset = TravelAgency.objects.all().order_by("-id")
     serializer_class = FullListTravelAgencySerializer
     permission_classes = [IsOperatorOrModerator]
     http_method_names = ['get', 'patch', 'delete', 'head', 'options']

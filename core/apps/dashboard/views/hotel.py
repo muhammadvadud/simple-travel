@@ -11,7 +11,7 @@ from ..serializers.hotel import RetrieveHotelSerializer, CreateHotelSerializer, 
 
 @extend_schema(tags=["Dashboard-Hotel"])
 class HotelViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = HotelModel.objects.all()
+    queryset = HotelModel.objects.all().order_by("-id")
     serializer_class = CreateHotelSerializer
     permission_classes = [IsModeratorOrTourAdmin]
     http_method_names = ["get", "post", "patch", "head", "options"]

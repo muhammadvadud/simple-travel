@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.site_settings import ListOffertaSerializer,
 
 @extend_schema(tags=["Dashboard-Offerta"])
 class OffertaViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = Offerta.objects.all()
+    queryset = Offerta.objects.all().order_by("-id")
     serializer_class = ListOffertaSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

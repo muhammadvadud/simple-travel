@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.ticket_settings.tariff import (
 
 @extend_schema(tags=["Ticket Settings Tariff"])
 class TicketTariffViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TariffModel.objects.all()
+    queryset = TariffModel.objects.all().order_by("-id")
     serializer_class = ListDashboardTariffSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

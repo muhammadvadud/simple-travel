@@ -10,7 +10,7 @@ from core.apps.dashboard.serializers.site_settings import ListSiteSettingsSerial
 
 @extend_schema(tags=["Dashboard-SiteSettings"])
 class SiteSettingsViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = SiteSettings.objects.all()
+    queryset = SiteSettings.objects.all().order_by("-id")
     serializer_class = ListSiteSettingsSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]

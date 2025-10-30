@@ -10,7 +10,7 @@ from ..serializers.ticket_order import ListTicketOrderSerializer, RetrieveTicket
 
 @extend_schema(tags=["Dashboard-Ticket-Order"])
 class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TicketorderModel.objects.all()
+    queryset = TicketorderModel.objects.all().order_by("-id")
     serializer_class = FullTicketOrderSerializer
     permission_classes = [IsModeratorOrTourAdmin]
     http_method_names = ["get", "patch", "head", "options"]
