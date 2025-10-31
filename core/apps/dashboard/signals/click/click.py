@@ -33,7 +33,3 @@ def handle_click_transaction(sender, instance, created, **kwargs):
             payment_method=AgencyReportPaymentChoices.CLICK,
         )
 
-    elif instance.state in [ClickTransaction.CANCELED, ClickTransaction.CANCELED_DURING_INIT]:
-        print("❌ Click_up to'lovi bekor qilindi:", instance.transaction_id)
-
-        AgencyReport.delete_report(order)
