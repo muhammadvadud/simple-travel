@@ -123,8 +123,8 @@ class RetrieveDashboardTravelAgencyReportSerializer(BaseDashboardTravelAgencyRep
             "platform_income",
             "total_booking_count",
             "rating",
-            "orders",  # 🆕 qo‘shildi
-            "comments",  # 🆕 qo‘shildi
+            "orders",
+            "comments",
         ]
 
     def get_total_booking_count(self, obj):

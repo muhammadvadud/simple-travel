@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django_core.models.base import AbstractBaseModel
+from django.db import transaction
+from django.core.exceptions import ValidationError
 
 
 class TravelAgencyPaymentModel(AbstractBaseModel):
@@ -33,3 +35,42 @@ class TravelAgencyPaymentModel(AbstractBaseModel):
 
     def __str__(self):
         return f"{self.travel_agency.name} — {self.amount} so‘m"
+
+    @transaction.atomic
+    def create_report(self):
+        """Model yaratilganda agentlikning balansini yangilaydi"""
+        agency = self.travel_agency
+        if not agency:
+            return
+
+        if (agency.pending or 0) < self.amount:
+            raise ValidationError(
+                {"amount": _("To‘lov summasi agentlikning mavjud 'pending' balansidan katta bo‘lishi mumkin emas.")}
+            )
+
+        agency.pending = (agency.pending or 0) - self.amount
+        agency.paid = (agency.paid or 0) + self.amount
+        agency.save(update_fields=["pending", "paid"])
+
+    @transaction.atomic
+    def delete_report(self):
+        """To‘lov o‘chirilganda balansni teskari hisoblaydi"""
+        agency = self.travel_agency
+        if not agency:
+            return
+
+        agency.pending = (agency.pending or 0) + self.amount
+        agency.paid = (agency.paid or 0) - self.amount
+        agency.save(update_fields=["pending", "paid"])
+
+    def save(self, *args, **kwargs):
+        """Model yaratilganda avtomatik hisobot yaratish"""
+        is_new = self._state.adding
+        super().save(*args, **kwargs)
+        if is_new:
+            self.create_report()
+
+    def delete(self, *args, **kwargs):
+        """Model o‘chirilganda avtomatik hisobotni teskari qilish"""
+        self.delete_report()
+        super().delete(*args, **kwargs)
