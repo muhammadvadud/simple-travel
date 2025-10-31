@@ -35,6 +35,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "user",
             "total_price",
             "departure_date",
+            "order_status",
             "arrival_time",
             "created_at",
         ]
@@ -130,9 +131,6 @@ class RetrieveDashboardTravelAgencyReportSerializer(BaseDashboardTravelAgencyRep
     def get_total_booking_count(self, obj):
         return TicketorderModel.objects.filter(
             ticket__travel_agency=obj
-        ).filter(
-            Q(order_status=OrderStatusChoices.COMPLETED) |
-            Q(order_status=OrderStatusChoices.CONFIRMED)
         ).count()
 
     def get_rating(self, obj):
