@@ -60,6 +60,15 @@ class AgencyReport(models.Model):
         agency.ticket_sold_count += 1
         agency.save(update_fields=["total_income", "platform_income", "pending", "ticket_sold_count"])
 
+        ticket = report.order.ticket
+
+        ticket.total_income += report.total_income
+        ticket.sold_count += 1
+        ticket.save(update_fields=["total_income", "sold_count"])
+
+        user = order.user
+        user.total_spent += total_income
+        user.save(update_fields=["total_spent"])
         return report
 
     @classmethod
@@ -70,6 +79,8 @@ class AgencyReport(models.Model):
             return False
 
         agency = report.travel_agency
+        ticket = report.order.ticket
+        user = report.order.user
 
         agency.total_income -= report.total_income
         agency.platform_income -= report.platform_share
@@ -79,6 +90,15 @@ class AgencyReport(models.Model):
         agency.total_income = max(0, agency.total_income)
         agency.platform_income = max(0, agency.platform_income)
         agency.pending = max(0, agency.pending)
+
+        ticket.total_income -= report.total_income
+        ticket.total_income = max(0, ticket.total_income)
+        ticket.sold_count = max(0, ticket.sold_count - 1)
+        ticket.save(update_fields=["total_income", "sold_count"])
+
+        user.total_spent -= agency.total_income
+        user.total_spent = max(0, user.total_spent)
+        user.save(update_fields=["total_spent"])
 
         agency.save(update_fields=["total_income", "platform_income", "pending", "ticket_sold_count"])
 
