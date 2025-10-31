@@ -5,7 +5,8 @@ from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSe
     TicketTariffViewSet, TicketTransportViewSet, HotelTypeViewSet, HotelViewSet, TicketOrderViewSet, PostView, \
     CategoryViewSet, FaqViewSet, FaqCategoryViewSet, SupportViewSet, TravelAgencyRequestViewSet, HotelFeatureViewSet, \
     HotelFeatureTypeViewSet, SiteSettingsViewSet, SiteSeoViewSet, OffertaViewSet, HelpPageViewSet, \
-    UpdateFeaturedTicketAPIView, BannerViewSet, TravelAgencyReportViewSet, TravelAgencyPaymentsViewSet
+    UpdateFeaturedTicketAPIView, BannerViewSet, TravelAgencyReportViewSet, TravelAgencyPaymentsViewSet, \
+    TourAdminViewSet
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -39,6 +40,8 @@ router.register("dashboard-tickets-settings-transport", TicketTransportViewSet,
                 basename="dashboard-tickets-settings-transport")
 router.register("dashboard-tickets-settings-hotel-type", HotelTypeViewSet,
                 basename="dashboard-tickets-settings-hotel-type")
+router.register("dashboard-tour-admin", TourAdminViewSet,
+                basename="dashboard-tour-admin")
 urlpatterns = [
     path("", include(router.urls)),
     path("dashboard-ticket-featured/<int:id>/<int:value>/", UpdateFeaturedTicketAPIView.as_view(),

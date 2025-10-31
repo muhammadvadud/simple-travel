@@ -11,3 +11,4 @@ from .agency_request import *  # noqa
 from .site_settings import *  # noqa
 from .agency_report import *  # noqa
 from .agency_payments import *  # noqa
+from .tour_admin_create import *  # noqa
