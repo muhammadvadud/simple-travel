@@ -30,6 +30,6 @@ class TicketsViewSet(BaseViewSetMixin, ModelViewSet):
         user = self.request.user
 
         if hasattr(user, "role") and user.role == RoleChoice.TourAdmin:
-            return TicketsModel.objects.filter(created_by=user)
+            return TicketsModel.objects.filter(travel_agency=user.travel_agency)
 
         return TicketsModel.objects.all()
