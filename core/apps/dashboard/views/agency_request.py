@@ -13,7 +13,7 @@ from ..serializers.agency_request import ListDashboardTravelAgencyRequestSeriali
 
 @extend_schema(tags=["Dashboard-TravelAgency-Request"])
 class TravelAgencyRequestViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TravelAgency.objects.filter(status=TravelAgencyStatusChoices.PENDING).order_by("-id")
+    queryset = TravelAgency.objects.all().order_by("-id")
     serializer_class = ListDashboardTravelAgencyRequestSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "patch", "head", "options"]
@@ -26,3 +26,10 @@ class TravelAgencyRequestViewSet(BaseViewSetMixin, ModelViewSet):
         "retrieve": RetrieveDashboardTravelAgencyRequestSerializer,
         "partial_update": RetrieveDashboardTravelAgencyRequestSerializer,
     }
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.action == "list":
+            qs = qs.filter(status=TravelAgencyStatusChoices.PENDING)
+
+            return qs
