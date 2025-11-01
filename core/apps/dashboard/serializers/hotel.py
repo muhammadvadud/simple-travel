@@ -83,8 +83,11 @@ class RetrieveHotelSerializer(BaseHotelSerializer):
 
 
 class CreateHotelSerializer(serializers.ModelSerializer):
-    hotel_amenities = HotelAmenitiesSerializer(many=True, write_only=True)
-
+    hotel_amenities = serializers.PrimaryKeyRelatedField(
+        queryset=HotelAmenitiesModel.objects.all(),
+        many=True,
+        required=False
+    )
     hotel_type = serializers.PrimaryKeyRelatedField(
         queryset=HotelTypeModel.objects.all(),
         many=True,
@@ -116,9 +119,8 @@ class CreateHotelSerializer(serializers.ModelSerializer):
 
         hotel = HotelModel.objects.create(**validated_data)
 
-        for amenity in amenities:
-            obj, created = HotelAmenitiesModel.objects.get_or_create(**amenity)
-            hotel.hotel_amenities.add(obj)
+        if amenities:
+            hotel.hotel_amenities.set(amenities)
 
         if hotel_type:
             hotel.hotel_type.set(hotel_type)
@@ -137,11 +139,7 @@ class CreateHotelSerializer(serializers.ModelSerializer):
         instance.save()
 
         if amenities:
-            amenity_objs = []
-            for amenity in amenities:
-                obj, created = HotelAmenitiesModel.objects.get_or_create(**amenity)
-                amenity_objs.append(obj)
-            instance.hotel_amenities.set(amenity_objs)
+            instance.hotel_amenities.set(amenities)
 
         if hotel_type:
             instance.hotel_type.set(hotel_type)

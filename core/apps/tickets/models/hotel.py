@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_core.models import AbstractBaseModel
-from .tickets import TicketsModel
+from .tickets import TicketsModel, TicketsAmenitiesModel
 
 
 class HotelTypeModel(models.Model):
@@ -22,6 +22,7 @@ class HotelTypeModel(models.Model):
         verbose_name_plural = _("HotelTypeModels")
 
 
+# >>>>>>>>>>>>>>Hozircha ishlatilmaydi
 class HotelAmenitiesModel(AbstractBaseModel):
     name = models.CharField(max_length=255, verbose_name=_("name"))
     icon_name = models.CharField(max_length=255, verbose_name=_("icon name"))
@@ -41,6 +42,8 @@ class HotelAmenitiesModel(AbstractBaseModel):
         verbose_name = _("Hotel Amenity")
         verbose_name_plural = _("Hotel Amenities")
 
+
+# >>>>>>>>>>>>>>
 
 class HotelFeatureTypeModel(AbstractBaseModel):
     hotel_feature_type_name = models.CharField(verbose_name=_("hotel feature type name"), max_length=255)
@@ -97,7 +100,7 @@ class HotelModel(AbstractBaseModel):
     meal_plan = models.CharField(verbose_name=_("meal plan"), choices=MEAL_PLAN_CHOICES, max_length=255,
                                  default="breakfast")
     hotel_type = models.ManyToManyField(HotelTypeModel, verbose_name=_("hotel type"))
-    hotel_amenities = models.ManyToManyField(HotelAmenitiesModel, verbose_name=_("hotel amenities"))
+    hotel_amenities = models.ManyToManyField(TicketsAmenitiesModel, blank=True, verbose_name=_("hotel amenities"))
     hotel_features = models.ManyToManyField(HotelFeatureModel, verbose_name=_("hotel features"), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

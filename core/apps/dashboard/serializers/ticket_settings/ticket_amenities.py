@@ -8,7 +8,9 @@ class BaseTicketsAmenitiesSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            "color",
+            "name_ru",
+            "name_uz",
+            "icon_name",
         ]
 
 
@@ -23,7 +25,7 @@ class RetrieveTicketsAmenitiesSerializer(BaseTicketsAmenitiesSerializer):
             "name",
             "name_ru",
             "name_uz",
-            "color",
+            "icon_name",
         ]
 
 
@@ -33,5 +35,5 @@ class CreateTicketsAmenitiesSerializer(BaseTicketsAmenitiesSerializer):
             "id",
             "name",
             "name_ru",
-            "color",
+            "icon_name",
         ]
