@@ -20,5 +20,4 @@ class TravelAgencyPaymentsViewSet(BaseViewSetMixin, ModelViewSet):
         "list": ListTravelAgencyPaymentsSerializer,
         "retrieve": RetrieveTravelAgencyPaymentsSerializer,
         "create": CreateTravelAgencyPaymentsSerializer,
-        "partial_update": UpdateTravelAgencyPaymentsSerializer,
     }
