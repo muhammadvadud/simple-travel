@@ -87,7 +87,7 @@ class TicketsIncludedServicesSerializer(serializers.ModelSerializer):
 class TicketsAmenitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsAmenitiesModel
-        fields = ["name", "icon_name"]
+        fields = ["id", "name", "icon_name"]
 
 
 class TicketsImageSerializer(serializers.ModelSerializer):
@@ -166,7 +166,6 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
 
 class ListTicketsSerializer(BaseTicketsSerializer):
     ticket_images = serializers.SerializerMethodField()
-    ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
     badge = ListBadgeSerializer(many=True, read_only=True)
     is_liked = serializers.SerializerMethodField()
 

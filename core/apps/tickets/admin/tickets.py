@@ -22,11 +22,6 @@ class TicketsImagesInline(admin.TabularInline):
     extra = 1
 
 
-class TicketsAmenitiesInline(admin.TabularInline):
-    model = TicketsAmenitiesModel
-    extra = 1
-
-
 class TicketsIncludedServicesInline(admin.TabularInline):
     model = TicketsIncludedServicesModel
     extra = 1
@@ -42,7 +37,6 @@ class TicketsAdmin(ModelAdmin):
     list_display = ("id", "title", "price", "departure_time", "destination", "passenger_count", "rating")
     inlines = [
         TicketsImagesInline,
-        TicketsAmenitiesInline,
         TicketsIncludedServicesInline,
         TicketsHotelMealsInline,
     ]
@@ -88,8 +82,18 @@ class TransportTicketModelAdmin(ModelAdmin):
         "id",
         "__str__",
     )
+
+
 @admin.register(FullTransportInfoModel)
 class FullTransportInfoModelAdmin(ModelAdmin):
+    list_display = (
+        "id",
+        "__str__",
+    )
+
+
+@admin.register(TicketsAmenitiesModel)
+class TicketsAmenitiesModelAdmin(ModelAdmin):
     list_display = (
         "id",
         "__str__",

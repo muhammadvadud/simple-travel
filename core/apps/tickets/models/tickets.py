@@ -71,6 +71,7 @@ class TicketsModel(AbstractBaseModel):
     featured_tickets = models.BooleanField(default=False, verbose_name=_("featured tickets"))
     sold_count = models.PositiveIntegerField(default=0, verbose_name=_("sold count"))
     total_income = models.PositiveBigIntegerField(default=0, verbose_name=_("total income"))
+    ticket_amenities = models.ManyToManyField("tickets.TicketsAmenitiesModel", blank=True, verbose_name=_("amenities"))
     created_at = models.DateTimeField(verbose_name=_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name=_("updated at"), auto_now=True)
 
@@ -153,9 +154,6 @@ class TicketsAmenitiesModel(AbstractBaseModel):
 
     name = models.CharField(verbose_name=_("name"), max_length=255)
     icon_name = models.CharField(verbose_name=_("icon name"), max_length=255)
-    ticket = models.ForeignKey(
-        TicketsModel, verbose_name=_("ticket"), related_name="ticket_amenities", on_delete=models.CASCADE
-    )
 
     def __str__(self):
         return str(self.pk)
@@ -164,7 +162,7 @@ class TicketsAmenitiesModel(AbstractBaseModel):
     def _create_fake(self):
         return self.objects.create(
             name="mock",
-            ticket=TicketsModel._create_fake(),
+            icon_name="mock",
         )
 
     class Meta:

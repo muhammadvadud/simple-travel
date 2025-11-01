@@ -254,13 +254,13 @@ class TicketsIncludedServicesWriteSerializer(serializers.ModelSerializer):
 class TicketsAmenitiesReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsAmenitiesModel
-        fields = ['name', 'name_ru', 'name_uz', 'icon_name']
+        fields = ['id', 'name', 'name_ru', 'name_uz', 'icon_name']
 
 
-class TicketsAmenitiesWriteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TicketsAmenitiesModel
-        fields = ['name', 'name_ru', 'icon_name']
+# class TicketsAmenitiesWriteSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TicketsAmenitiesModel
+#         fields = ['name', 'name_ru', 'icon_name']
 
 
 class BaseTicketsSerializer(serializers.ModelSerializer):
@@ -370,20 +370,24 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         write_only=True,
         required=True
     )
-    ticket_amenities = TicketsAmenitiesWriteSerializer(many=True, write_only=True, required=True)
-    ticket_included_services = TicketsIncludedServicesWriteSerializer(many=True, write_only=True, required=True)
-    ticket_itinerary = TicketsItineraryWriteSerializer(many=True, write_only=True, required=True)
-    ticket_hotel_meals = TicketsHotelMealsWriteSerializer(many=True, write_only=True, required=True)
+    ticket_included_services = TicketsIncludedServicesWriteSerializer(many=True, write_only=True, required=False)
+    ticket_itinerary = TicketsItineraryWriteSerializer(many=True, write_only=True, required=False)
+    ticket_hotel_meals = TicketsHotelMealsWriteSerializer(many=True, write_only=True, required=False)
     transports = FullTransportInfoWriteSerializer(many=True, write_only=True, required=False)
-    tariff = FullTariffWriteSerializer(many=True, write_only=True, required=True)
+    tariff = FullTariffWriteSerializer(many=True, write_only=True, required=False)
 
     badge = serializers.ListField(
         child=serializers.IntegerField(),
         required=False,
         write_only=True
     )
-    extra_service = ExtraServicesWriteSerializer(many=True, write_only=True)
-    paid_extra_service = PaidExtraServicesWriteSerializer(many=True, write_only=True)
+    ticket_amenities = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False,
+        write_only=True
+    )
+    extra_service = ExtraServicesWriteSerializer(many=True, write_only=True, required=False)
+    paid_extra_service = PaidExtraServicesWriteSerializer(many=True, write_only=True, required=False)
 
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
@@ -433,13 +437,22 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         """
         from core.apps.tickets.models import BadgeModel
 
-        if not isinstance(value, (list, tuple)):
-            raise serializers.ValidationError("badge maydoni ro'yxat bo'lishi kerak.")
-
         existing_ids = set(BadgeModel.objects.filter(id__in=value).values_list("id", flat=True))
         missing = set(value) - existing_ids
         if missing:
             raise serializers.ValidationError(f"Ushbu badge ID(lar) topilmadi: {sorted(missing)}")
+        return value
+
+    def validate_ticket_amenities(self, value):
+        """
+         Ticket Amentinies  ID listini tekshiradi — mavjud bo'lmagan idlar bo'lsa ValidationError.
+         """
+        from core.apps.tickets.models import TicketsAmenitiesModel
+
+        existing_ids = set(TicketsAmenitiesModel.objects.filter(id__in=value).values_list("id", flat=True))
+        missing = set(value) - existing_ids
+        if missing:
+            raise serializers.ValidationError(f"Ushbu Qulaylik ID(lar) topilmadi: {sorted(missing)}")
         return value
 
     def _safe_pop_field(self, data: dict, field_name: str, default=None):
@@ -472,7 +485,6 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
         from core.apps.tickets.models import (
             BadgeModel,
             TicketsImagesModel,
-            TicketsAmenitiesModel,
             TicketsIncludedServicesModel,
             TicketsItineraryModel,
             TicketsItineraryImagesModel,
@@ -511,10 +523,13 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             )
 
         if ticket_amenities:
-            TicketsAmenitiesModel.objects.bulk_create(
-                [TicketsAmenitiesModel(ticket=ticket, **amenity) for amenity in ticket_amenities]
-            )
+            existing_ticket_amenities = TicketsAmenitiesModel.objects.filter(id__in=ticket_amenities)
+            if existing_ticket_amenities.exists():
 
+                ticket.ticket_amenities.set(existing_ticket_amenities)
+            else:
+                raise serializers.ValidationError(
+                    {"ticket_amenities": "Yuborilgan Qulaylik  ID(lar) topilmadi yoki mavjud emas."})
         if ticket_included_services:
             TicketsIncludedServicesModel.objects.bulk_create(
                 [TicketsIncludedServicesModel(ticket=ticket, **service) for service in ticket_included_services]
@@ -606,7 +621,6 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
         write_only=True,
         required=False
     )
-    ticket_amenities = TicketsAmenitiesWriteSerializer(many=True, write_only=True, required=False)
     ticket_included_services = TicketsIncludedServicesWriteSerializer(many=True, write_only=True, required=False)
     ticket_itinerary = TicketsItineraryWriteSerializer(many=True, write_only=True, required=False)
     ticket_hotel_meals = TicketsHotelMealsWriteSerializer(many=True, write_only=True, required=False)
@@ -614,6 +628,11 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
     tariff = FullTariffWriteSerializer(many=True, write_only=True, required=False)
 
     badge = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False,
+        write_only=True
+    )
+    ticket_amenities = serializers.ListField(
         child=serializers.IntegerField(),
         required=False,
         write_only=True
@@ -669,13 +688,22 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
         """
         from core.apps.tickets.models import BadgeModel
 
-        if not isinstance(value, (list, tuple)):
-            raise serializers.ValidationError("badge maydoni ro'yxat bo'lishi kerak.")
-
         existing_ids = set(BadgeModel.objects.filter(id__in=value).values_list("id", flat=True))
         missing = set(value) - existing_ids
         if missing:
             raise serializers.ValidationError(f"Ushbu badge ID(lar) topilmadi: {sorted(missing)}")
+        return value
+
+    def validate_ticket_amenities(self, value):
+        """
+         Ticket Amentinies  ID listini tekshiradi — mavjud bo'lmagan idlar bo'lsa ValidationError.
+         """
+        from core.apps.tickets.models import TicketsAmenitiesModel
+
+        existing_ids = set(TicketsAmenitiesModel.objects.filter(id__in=value).values_list("id", flat=True))
+        missing = set(value) - existing_ids
+        if missing:
+            raise serializers.ValidationError(f"Ushbu Qulaylik ID(lar) topilmadi: {sorted(missing)}")
         return value
 
     def _safe_pop_field(self, data: dict, field_name: str, default=None):
@@ -750,11 +778,15 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
                 )
 
         if ticket_amenities is not None:
-            instance.ticket_amenities.all().delete()
             if ticket_amenities:
-                TicketsAmenitiesModel.objects.bulk_create(
-                    [TicketsAmenitiesModel(ticket=instance, **amenity) for amenity in ticket_amenities]
-                )
+                existing_ticket_amenities = TicketsAmenitiesModel.objects.filter(id__in=ticket_amenities)
+                if existing_ticket_amenities.exists():
+                    instance.ticket_amenities.set(existing_ticket_amenities)
+                else:
+                    raise serializers.ValidationError(
+                        {"badge": "Yuborilgan qulayliklar ID(lar) topilmadi yoki mavjud emas."})
+            else:
+                instance.ticket_amenities.clear()
 
         if ticket_included_services is not None:
             instance.ticket_included_services.all().delete()
