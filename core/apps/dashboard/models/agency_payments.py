@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django_core.models.base import AbstractBaseModel
 from django.db import transaction
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 
 
 class TravelAgencyPaymentModel(AbstractBaseModel):
