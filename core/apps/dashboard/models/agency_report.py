@@ -40,7 +40,7 @@ class AgencyReport(models.Model):
 
     @classmethod
     def create_report(cls, agency, order, total_income, payment_method):
-        percentage = agency.share_percentage
+        percentage = int(agency.share_percentage or 0)
         platform_share = total_income * percentage // 100
         agency_share = total_income - platform_share
 
