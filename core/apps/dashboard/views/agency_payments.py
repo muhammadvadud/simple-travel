@@ -13,7 +13,7 @@ class TravelAgencyPaymentsViewSet(BaseViewSetMixin, ModelViewSet):
     queryset = TravelAgencyPaymentModel.objects.all()
     serializer_class = ListTravelAgencyPaymentsSerializer
     permission_classes = [IsModeratorOrBuxgalter]
-    http_method_names = ["get", "post", "patch", "delete", "head", "options"]
+    http_method_names = ["get", "post", "delete", "head", "options"]
 
     action_permission_classes = {}
     action_serializer_class = {
