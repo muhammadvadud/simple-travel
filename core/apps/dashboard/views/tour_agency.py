@@ -5,11 +5,12 @@ from core.apps.accounts.models.travel_agency import TravelAgency
 from ..serializers.tour_agency import FullListTravelAgencySerializer, RetrieveTravelAgencySerializer, \
     BaseTravelAgencySerializer
 from ..permission.tour_agency import IsModerator, IsOperatorOrModerator
+from core.apps.accounts.choices.travel_agency import TravelAgencyStatusChoices
 
 
 @extend_schema(tags=["Dashboard-TourAgency"])
 class TourAgencyViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = TravelAgency.objects.all().order_by("-id")
+    queryset = TravelAgency.objects.filter(status=TravelAgencyStatusChoices.APPROVED).order_by("-id")
     serializer_class = FullListTravelAgencySerializer
     permission_classes = [IsOperatorOrModerator]
     http_method_names = ['get', 'patch', 'delete', 'head', 'options']

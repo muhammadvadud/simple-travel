@@ -10,7 +10,7 @@ from ..serializers import ListDashboardTravelAgencyReportSerializer, \
 
 @extend_schema(tags=["Dashboard-TravelAgency-Report"])
 class TravelAgencyReportViewSet(BaseViewSetMixin, ReadOnlyModelViewSet):
-    queryset = TravelAgency.objects.all().order_by("-id")
+    queryset = TravelAgency.objects.filter(status="approved").order_by("-id")
     serializer_class = ListDashboardTravelAgencyReportSerializer
     permission_classes = [IsModeratorOrBuxgalter]
     action_permission_classes = {}

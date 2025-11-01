@@ -76,13 +76,13 @@ class FullListTravelAgencySerializer(serializers.Serializer):
     total_income = serializers.SerializerMethodField()
 
     def get_all_tour_agency(self, obj):
-        tour_agency = TravelAgency.objects.all().count()
+        tour_agency = TravelAgency.objects.filter(status='approved').count()
         if not tour_agency:
             return None
         return tour_agency
 
     def get_activate_tour_agency(self, obj):
-        tour_agency = TravelAgency.objects.filter(status='approved').count()
+        tour_agency = TravelAgency.objects.filter(status='cancelled').count()
         if not tour_agency:
             return None
         return tour_agency
