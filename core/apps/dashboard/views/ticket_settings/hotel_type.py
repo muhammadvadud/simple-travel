@@ -2,7 +2,7 @@ from django_core.mixins import BaseViewSetMixin
 from rest_framework.viewsets import ModelViewSet
 from drf_spectacular.utils import extend_schema
 from core.apps.tickets.models import HotelTypeModel
-from core.apps.dashboard.permission.general_permission import IsModerator
+from core.apps.dashboard.permission import IsModerator, IsModeratorOrTourAdminOrOperator
 from core.apps.dashboard.serializers.ticket_settings.hotel_type import (
     ListHotelTypeSerializer, RetrieveHotelTypeSerializer, CreateHotelTypeSerializer
 )
@@ -15,7 +15,10 @@ class HotelTypeViewSet(BaseViewSetMixin, ModelViewSet):
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
 
-    action_permission_classes = {}
+    action_permission_classes = {
+        "list": [IsModeratorOrTourAdminOrOperator],
+        "retrieve": [IsModeratorOrTourAdminOrOperator]
+    }
     action_serializer_class = {
         "list": ListHotelTypeSerializer,
         "retrieve": RetrieveHotelTypeSerializer,

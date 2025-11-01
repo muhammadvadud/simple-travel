@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema
 
 from core.apps.dashboard.filters import HotelFeatureFilter
 from core.apps.tickets.models import HotelFeatureModel, HotelFeatureTypeModel
-from core.apps.dashboard.permission.general_permission import IsModerator
+from core.apps.dashboard.permission import IsModerator, IsModeratorOrTourAdminOrOperator
 from django_filters.rest_framework import DjangoFilterBackend
 from core.apps.dashboard.serializers.ticket_settings.hotel_features import (
     ListHotelFeatureSerializer, CreateHotelFeatureSerializer, RetrieveHotelFeatureSerializer,
@@ -21,7 +21,10 @@ class HotelFeatureViewSet(BaseViewSetMixin, ModelViewSet):
     filterset_class = HotelFeatureFilter
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
 
-    action_permission_classes = {}
+    action_permission_classes = {
+        "list": [IsModeratorOrTourAdminOrOperator],
+        "retrieve": [IsModeratorOrTourAdminOrOperator]
+    }
     action_serializer_class = {
         "list": ListHotelFeatureSerializer,
         "retrieve": RetrieveHotelFeatureSerializer,
@@ -37,7 +40,10 @@ class HotelFeatureTypeViewSet(BaseViewSetMixin, ModelViewSet):
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
 
-    action_permission_classes = {}
+    action_permission_classes = {
+        "list": [IsModeratorOrTourAdminOrOperator],
+        "retrieve": [IsModeratorOrTourAdminOrOperator]
+    }
     action_serializer_class = {
         "list": HotelFeatureTypeSerializer,
         "create": HotelFeatureTypeWriteSerializer,
