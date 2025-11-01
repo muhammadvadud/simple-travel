@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from core.apps.tickets.models.hotel import (
+from core.apps.tickets.models import (
     HotelModel,
-    HotelAmenitiesModel,
+    TicketsAmenitiesModel,
     HotelTypeModel,
     HotelFeatureModel,
     HotelFeatureTypeModel
@@ -34,7 +34,7 @@ class HotelTypeSerializer(serializers.ModelSerializer):
 
 class HotelAmenitiesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HotelAmenitiesModel
+        model = TicketsAmenitiesModel
         fields = [
             "name",
             "name_ru",
@@ -84,7 +84,7 @@ class RetrieveHotelSerializer(BaseHotelSerializer):
 
 class CreateHotelSerializer(serializers.ModelSerializer):
     hotel_amenities = serializers.PrimaryKeyRelatedField(
-        queryset=HotelAmenitiesModel.objects.all(),
+        queryset=TicketsAmenitiesModel.objects.all(),
         many=True,
         required=False
     )

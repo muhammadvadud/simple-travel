@@ -23,24 +23,24 @@ class HotelTypeModel(models.Model):
 
 
 # >>>>>>>>>>>>>>Hozircha ishlatilmaydi
-class HotelAmenitiesModel(AbstractBaseModel):
-    name = models.CharField(max_length=255, verbose_name=_("name"))
-    icon_name = models.CharField(max_length=255, verbose_name=_("icon name"))
-
-    def __str__(self):
-        return self.name
-
-    @classmethod
-    def _create_fake(self):
-        return self.objects.create(
-            name="mock",
-            icon_name="mock",
-        )
-
-    class Meta:
-        db_table = "hotel_amenities"
-        verbose_name = _("Hotel Amenity")
-        verbose_name_plural = _("Hotel Amenities")
+# class HotelAmenitiesModel(AbstractBaseModel):
+#     name = models.CharField(max_length=255, verbose_name=_("name"))
+#     icon_name = models.CharField(max_length=255, verbose_name=_("icon name"))
+#
+#     def __str__(self):
+#         return self.name
+#
+#     @classmethod
+#     def _create_fake(self):
+#         return self.objects.create(
+#             name="mock",
+#             icon_name="mock",
+#         )
+#
+#     class Meta:
+#         db_table = "hotel_amenities"
+#         verbose_name = _("Hotel Amenity")
+#         verbose_name_plural = _("Hotel Amenities")
 
 
 # >>>>>>>>>>>>>>

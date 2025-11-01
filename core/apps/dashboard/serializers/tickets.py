@@ -5,7 +5,7 @@ from core.apps.tickets.models import (
     TicketsHotelMealsModel, TransportTicketModel, FullTransportInfoModel, FullTariff,
     PaidServicesModel, ExtraServicesModel
 )
-from core.apps.tickets.models.hotel import HotelModel, HotelAmenitiesModel
+from core.apps.tickets.models import HotelModel
 
 
 # ------------------ PAID / EXTRA SERVICES ------------------
@@ -88,7 +88,7 @@ class TicketImagesWriteSerializer(serializers.ModelSerializer):
 
 class HotelAmenitiesReadSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HotelAmenitiesModel
+        model = TicketsAmenitiesModel
         fields = [
             "name",
             "name_ru",
@@ -98,7 +98,7 @@ class HotelAmenitiesReadSerializer(serializers.ModelSerializer):
 
 class HotelAmenitiesWriteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HotelAmenitiesModel
+        model = TicketsAmenitiesModel
         fields = ["name", "name_ru"]
 
 
