@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class BaseOrderStatusHistorySerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
 
     class Meta:
         model = OrderStatusHistoryModel
@@ -26,6 +27,7 @@ class BaseOrderStatusHistorySerializer(serializers.ModelSerializer):
             "order",
             "old_status",
             "new_status",
+            "created_at",
         ]
 
 
