@@ -11,7 +11,7 @@ from ...serializers import ListOrderStatusHistorySerializer, RetrieveOrderStatus
 
 @extend_schema(tags=["Dashboard-Order-Status-History-Payments"])
 class OrderStatusHistoryPaymentsViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = OrderStatusHistoryModel.objects.all()
+    queryset = OrderStatusHistoryModel.objects.all().order_by("-id")
     serializer_class = ListOrderStatusHistorySerializer
     permission_classes = [IsAllAdmins]
     http_method_names = ["get", "post", "head", "options"]
