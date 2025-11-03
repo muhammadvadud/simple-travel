@@ -149,7 +149,7 @@ jobs:
               "PAYME_KEY=${{ secrets.PAYME_KEY }}" \
               "CLICK_SERVICE_ID=${{ vars.CLICK_SERVICE_ID }}" \
               "CLICK_MERCHANT_ID=${{ vars.CLICK_MERCHANT_ID }}" \
-              "CLICK_SECRET_KEY=${{ secrets.CLICK_SECRET_KEY }}" \ 
+              "CLICK_SECRET_KEY=${{ secrets.CLICK_SECRET_KEY }}" \
               "DB_NAME=${{ vars.DB_NAME }}" \
               "DB_HOST=${{ vars.DB_HOST }}" \
               "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
