@@ -28,8 +28,8 @@ class TicketOrderViewSet(BaseViewSetMixin, ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, "role") and user.role == RoleChoice.TourAdmin:
-            return TicketorderModel.objects.filter(ticket__travel_agency__id=user.travel_agency.id)
-        return TicketorderModel.objects.all()
+            return TicketorderModel.objects.filter(ticket__travel_agency__id=user.travel_agency.id).order_by("-id")
+        return TicketorderModel.objects.all().order_by("-id")
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
