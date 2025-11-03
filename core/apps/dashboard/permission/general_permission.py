@@ -39,3 +39,11 @@ class IsModeratorOrTourAdminOrBuxgalter(BasePermission):
                                                                    RoleChoice.Buxgalter):
             return True
         return False
+
+
+class IsAllAdmins(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated and request.user.role in (RoleChoice.Moderator, RoleChoice.Buxgalter,
+                                                                   RoleChoice.TourAdmin, RoleChoice.Operator):
+            return True
+        return False
