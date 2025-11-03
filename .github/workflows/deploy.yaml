@@ -153,7 +153,9 @@ jobs:
               "DB_NAME=${{ vars.DB_NAME }}" \
               "DB_HOST=${{ vars.DB_HOST }}" \
               "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
-              "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}"
+              "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" \
+              "ALLOWED_HOSTS=127.0.0.1,web,api.simpletravel.uz" \
+              "CSRF_TRUSTED_ORIGINS=http://127.0.0.1:8081,https://api.simpletravel.uz"
 
             export PORT=8000
             docker stack deploy -c stack.yaml ${{ env.PROJECT_NAME }}
