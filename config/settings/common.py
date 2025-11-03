@@ -1,3 +1,4 @@
+#type: ignore
 import os
 import pathlib
 from typing import List, Union
@@ -66,7 +67,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-if env.bool("SILK_ENEBLED", False):
+if env.bool("SILK_ENABLED", False):
     MIDDLEWARE += [
         "silk.middleware.SilkyMiddleware",
     ]

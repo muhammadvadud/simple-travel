@@ -1,28 +1,33 @@
 {
- "template": "https://github.com/JscorpTech/django",
- "commit": "8de1cd6688d4f4747415488a878bc6775b1c44b6",
- "checkout": null,
- "context": {
-  "cookiecutter": {
-   "cacheops": true,
-   "silk": true,
-   "storage": true,
-   "rosetta": true,
-   "channels": true,
-   "ckeditor": true,
-   "modeltranslation": true,
-   "parler": false,
-   "project_name": "simple-travel",
-   "settings_module": "config.settings.local",
-   "runner": "wsgi",
-   "script": "entrypoint.sh",
-   "key": "key",
-   "port": "8081",
-   "phone": "998888112309",
-   "password": "2309",
-   "max_line_length": "120",
-   "project_slug": "simple_travel"
-  }
- },
- "directory": null
+  "template": "https://github.com/JscorpTech/django",
+  "commit": "3f63c04ef93dd5123aac0845c0a27c97ba464e31",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "simple-travel",
+      "project_slug": "simple_travel",
+      "settings_module": "config.settings.local",
+      "runner": "wsgi",
+      "celery": "no",
+      "cache": "no",
+      "script": "entrypoint.sh",
+      "key": "key",
+      "port": "8081",
+      "phone": "998888112309",
+      "password": "2309",
+      "max_line_length": "120",
+      "silk": true,
+      "storage": true,
+      "channels": true,
+      "rosetta": true,
+      "cacheops": true,
+      "ckeditor": true,
+      "modeltranslation": true,
+      "parler": false,
+      "version": "0.1.1",
+      "_template": "https://github.com/JscorpTech/django",
+      "_commit": "3f63c04ef93dd5123aac0845c0a27c97ba464e31"
+    }
+  },
+  "directory": null
 }
