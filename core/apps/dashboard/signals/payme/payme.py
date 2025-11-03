@@ -25,10 +25,10 @@ def handle_payme_transaction(sender, instance, created, **kwargs):
 
     if instance.state == PaymeTransactions.SUCCESSFULLY:
         print("✅ Payme to'lovi muvaffaqiyatli yakunlandi:", instance.transaction_id)
-
+        real_amount = int(instance.amount) // 100
         AgencyReport.create_report(
             agency=agency,
-            total_income=int(instance.amount),
+            total_income=real_amount,
             order=order,
             payment_method=AgencyReportPaymentChoices.PAYME
         )
