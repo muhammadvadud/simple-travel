@@ -4,6 +4,7 @@ from core.apps.dashboard.models import AgencyPayoutRequestModel
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from ..filters.agency_payout_request import AgencyPayoutRequestFilter
+from core.apps.accounts.choices.user import RoleChoice
 from ..permission.general_permission import IsModeratorOrTourAdminOrBuxgalter, IsTourAdmin
 from ..serializers.agency_payout_request import ListTravelAgencyPayOutRequestSerializer, \
     CreateTravelAgencyPayOutRequestSerializer, RetrieveTravelAgencyPayOutRequestSerializer, \
@@ -27,3 +28,10 @@ class TravelAgencyPayOutRequestViewSet(BaseViewSetMixin, ModelViewSet):
         "create": CreateTravelAgencyPayOutRequestSerializer,
         "partial_update": UpdateTravelAgencyPayOutRequestSerializer,
     }
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == RoleChoice.TourAdmin:
+            return AgencyPayoutRequestModel.objects.filter(travel_agency=user.travel_agency)
+        else:
+            return AgencyPayoutRequestModel.objects.all()

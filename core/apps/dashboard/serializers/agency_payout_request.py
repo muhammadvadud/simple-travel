@@ -5,8 +5,18 @@ from core.apps.accounts.models import TravelAgency
 from core.apps.dashboard.models import AgencyPayoutRequestModel
 
 
+class TravelAgencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TravelAgency
+        fields = [
+            "id",
+            "name"
+        ]
+
+
 class BaseTravelAgencyPayOutRequestSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    travel_agency = TravelAgencySerializer(read_only=True)
 
     class Meta:
         model = AgencyPayoutRequestModel
