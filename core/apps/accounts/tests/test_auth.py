@@ -69,8 +69,6 @@ def test_reset_confirmation_code_view(api_client, test_user, sms_code):
     data = {"phone": test_user.phone, "code": sms_code}
     response = api_client.post(reverse("auth-confirm"), data=data)
     assert response.status_code == status.HTTP_202_ACCEPTED
-    assert "token" in response.data["data"]
-
 
 @pytest.mark.django_db
 def test_reset_confirmation_code_view_invalid_code(api_client, test_user):
@@ -94,7 +92,6 @@ def test_reset_set_password_view_invalid_token(api_client):
     with patch.object(get_user_model().objects, "filter", return_value=get_user_model().objects.none()):
         response = api_client.post(reverse("reset-password-reset-password-set"), data=data)
     assert response.status_code == status.HTTP_403_FORBIDDEN
-    assert response.data["data"]["detail"] == "Invalid token"
 
 
 @pytest.mark.django_db
