@@ -42,9 +42,10 @@ class UserService(sms.SmsService):
             user.set_unusable_password()
             user.save()
 
-    def send_confirmation(self, phone) -> bool:
+    def send_confirmation(self, phone, lang='uz') -> bool:
         try:
-            self.send_confirm(phone)
+            self.send_confirm(phone, lang)
+
             return True
         except exceptions.SmsException as e:
             raise PermissionDenied(_("Qayta sms yuborish uchun kuting: {}").format(e.kwargs.get("expired")))

@@ -1,4 +1,4 @@
-#type: ignore
+# type: ignore
 """
 Base celery tasks
 """
@@ -13,7 +13,7 @@ from django.utils.translation import gettext as _
 
 
 @shared_task
-def SendConfirm(phone, code):
+def SendConfirm(phone, code, lang):
     """Tasdiqlash ko'dini yuborish
 
     Args:
@@ -23,13 +23,20 @@ def SendConfirm(phone, code):
     Raises:
         Exception: [TODO:description]
     """
+    print("ishlayapti-SendConfirm1")
+
+    lang = str(lang)
+    OTP_MESSAGE_UZ = f"simpletravel.uz saytida parolni tiklash kodi: {code} "
+    OTP_MESSAGE_RU = f"Kod vosstanovleniya parolya na sayte simpletravel.uz: {code}"
     try:
         service = getattr(
             import_module(os.getenv("OTP_MODULE")), os.getenv("OTP_SERVICE")
         )()
-        service.send_sms(
-            phone, env.str("OTP_MESSAGE", _("Sizning Tasdiqlash ko'dingiz: %(code)s")) % {"code": code}
-        )
+        if lang.lower() == "ru":
+            message = OTP_MESSAGE_RU
+        else:
+            message = OTP_MESSAGE_UZ
+        service.send_sms(phone, message)
         logging.info("Sms send: %s-%s" % (phone, code))
     except Exception as e:
         logging.error(

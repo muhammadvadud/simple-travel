@@ -10,7 +10,7 @@ from core.apps.accounts.models.user import EmailCodeConfirm
 
 class SmsService:
     @staticmethod
-    def send_confirm(phone):
+    def send_confirm(phone, lang):
         """Tasdiqlash ko'dini yuborish
 
         Args:
@@ -20,6 +20,7 @@ class SmsService:
             exceptions.SmsException: [TODO:description]
         """
         # TODO: Deploy this change when deploying -> code = random.randint(1000, 9999) # noqa
+
         if env.bool("OTP_PROD", False):
             code = "".join(str(random.randint(0, 9)) for _ in range(env.int("OTP_SIZE", 4)))
         else:
@@ -44,7 +45,7 @@ class SmsService:
         )  # noqa
         sms_confirm.save()
 
-        SendConfirm.delay(phone, code)
+        SendConfirm.delay(phone, code, lang)
         return True
 
     @staticmethod

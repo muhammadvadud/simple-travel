@@ -17,12 +17,13 @@ class ConsoleEmailService:
 class SMTPEmailService:
     """SMTP orqali haqiqiy email yuboruvchi servis"""
 
-    def __init__(self, host=None, port=None, username=None, password=None, use_tls=True):
+    def __init__(self, host=None, port=None, username=None, password=None, use_tls=True, use_ssl=False):
         self.host = host or env("EMAIL_HOST")
-        self.port = port or env.int("EMAIL_PORT", 465)
+        self.port = port or env.int("EMAIL_PORT")
         self.username = username or env("EMAIL_HOST_USER")
         self.password = password or env("EMAIL_HOST_PASSWORD")
-        self.use_tls = use_tls
+        self.use_tls = env.bool("EMAIL_USE_TLS", True)
+        self.use_ssl = env.bool("EMAIL_USE_SSL", False)
 
     def send_email(self, to_email, subject, message):
         msg = MIMEMultipart()
@@ -30,25 +31,17 @@ class SMTPEmailService:
         msg["To"] = to_email
         msg["Subject"] = subject
         msg.attach(MIMEText(message, "plain"))
-        print("ishlayapti_Bosh")
         try:
-            print("ishlayapti11")
-            print(self.host, self.port)
-            print("ishlayapti1112")
-            server = smtplib.SMTP(self.host, self.port)
-            print("ishlayapti12")
-            if self.use_tls:
-                print("ishlayapti34")
-                server.starttls()
-            print("ishlayapti")
+            if self.use_ssl:
+                server = smtplib.SMTP_SSL(self.host, self.port)
+            else:
+                server = smtplib.SMTP(self.host, self.port)
+                if self.use_tls:
+                    server.starttls()
+
             server.login(self.username, self.password)
-            print("ishlayapt2")
             server.sendmail(self.username, to_email, msg.as_string())
-            print("ishlayapt3")
             server.quit()
-            print("ishlayapti4")
             return {"status": "success", "to": to_email}
         except Exception as e:
-            print("ishlamayapti")
-
             return {"status": "error", "error": str(e)}
