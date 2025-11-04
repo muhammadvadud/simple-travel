@@ -37,9 +37,12 @@ class PostModel(AbstractBaseModel):
         return str(self.pk)
 
     def save(self, *args, **kwargs):
-        if self.title and (not self.slug or self.slug != slugify(self.title)):
-            self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+        new_slug = slugify(f"{self.title}-{self.pk}")
+        if self.slug != new_slug:
+            self.slug = new_slug
+            self.__class__.objects.filter(pk=self.pk).update(slug=self.slug)
 
     @classmethod
     def _create_fake(self):

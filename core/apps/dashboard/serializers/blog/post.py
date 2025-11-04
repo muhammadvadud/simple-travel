@@ -75,7 +75,7 @@ class CreateDashboardPostSerializer(BaseDashboardPostSerializer):
     )
     post_text = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
     post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
-    post_tags = TagSerializer(many=True, write_only=True, required=True)
+    post_tags = TagSerializer(many=True, write_only=True, required=False)
     category = serializers.PrimaryKeyRelatedField(
         queryset=CategoryModel.objects.all()
     )
@@ -186,9 +186,10 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
                     text_ru=text_ru
                 )
 
-        if post_tags is not None:
+        if post_tags:
             instance.post_tags.all().delete()
-            for tag in post_tags:
-                TagModel.objects.create(post=instance, name=tag)
+            TagModel.objects.bulk_create(
+                [TagModel(post=instance, **tags) for tags in post_tags]
+            )
 
         return instance
