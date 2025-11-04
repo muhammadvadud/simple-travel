@@ -158,7 +158,8 @@ jobs:
               "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" \
               "ALLOWED_HOSTS=127.0.0.1,web,api.simpletravel.uz" \
               "CSRF_TRUSTED_ORIGINS=http://127.0.0.1:8081,https://api.simpletravel.uz" \
-              "SCRIPT=entrypoint-server.sh"
+              "SCRIPT=entrypoint-server.sh" \
+              "PROTOCOL_HTTPS=True"
 
             export PORT=8000
             docker stack deploy -c stack.yaml ${{ env.PROJECT_NAME }}
