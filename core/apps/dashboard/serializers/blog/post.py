@@ -28,6 +28,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryModel
         fields = [
+            "id",
             "name",
             "name_ru",
             "name_uz",
@@ -130,7 +131,7 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
     )
     post_text = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
     post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
-    post_tags = serializers.ListField(child=serializers.CharField(), write_only=True)
+    post_tags = TagSerializer(many=True, write_only=True, required=True)
 
     class Meta:
         model = PostModel
