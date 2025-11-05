@@ -7,6 +7,7 @@ from celery import shared_task
 from django.core.mail import send_mail, EmailMultiAlternatives, EmailMessage
 from config.env import env
 from datetime import datetime
+import os
 
 
 @shared_task
@@ -115,7 +116,7 @@ def EmailSendConfirm(email, code):
         #     fail_silently=False,
         # )
         from_name = "Simple Travel"
-        from_email = f"{from_name} <{env('EMAIL_HOST_USER')}>"
+        from_email = f"{from_name} <{os.getenv('EMAIL_HOST_USER')}>"
 
         email_message = EmailMessage(
             subject="Simple Travel — Tasdiqlash kodi",
