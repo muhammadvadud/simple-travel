@@ -164,7 +164,7 @@ jobs:
               "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" \
               "SMS_LOGIN=${{ secrets.SMS_LOGIN }}" \
               "SMS_PASSWORD=${{ secrets.SMS_PASSWORD }}" \
-              "OTP_PROD=${{ vars.OTP_PROD }}"
+              "OTP_PROD=${{ vars.OTP_PROD }}"g
 
             export PORT=8000
             docker stack deploy -c stack.yaml ${{ env.PROJECT_NAME }}
