@@ -43,4 +43,4 @@ def SendConfirm(phone, code, lang):
             "Error: {phone}-{code}\n\n{error}".format(phone=phone, code=code, error=e)
         )  # noqa
         raise Exception
-    
+

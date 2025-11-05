@@ -161,9 +161,9 @@ jobs:
               "SCRIPT=entrypoint-server.sh" \
               "PROTOCOL_HTTPS=True" \
               "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" \
-              "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} \
-              "SMS_LOGIN=${{ secrets.SMS_LOGIN }} \
-              "SMS_PASSWORD=${{ secrets.SMS_PASSWORD }} \
+              "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" \
+              "SMS_LOGIN=${{ secrets.SMS_LOGIN }}" \
+              "SMS_PASSWORD=${{ secrets.SMS_PASSWORD }}" \
               "OTP_PROD=${{ vars.OTP_PROD }}"
 
             export PORT=8000
