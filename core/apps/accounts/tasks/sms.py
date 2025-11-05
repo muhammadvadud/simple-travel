@@ -23,7 +23,6 @@ def SendConfirm(phone, code, lang):
     Raises:
         Exception: [TODO:description]
     """
-    print("ishlayapti-SendConfirm1")
 
     lang = str(lang)
     OTP_MESSAGE_UZ = f"simpletravel.uz saytiga xush kelibsiz! Sizning tasdiqlash kodingiz - {code} "

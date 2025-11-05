@@ -28,6 +28,7 @@ class RetrieveTravelAgencySerializer(BaseTravelAgencySerializer):
 
 class CreateTravelAgencySerializer(BaseTravelAgencySerializer):
     documents = serializers.ListField(child=serializers.FileField(), write_only=True, required=True)
+    web_site = serializers.CharField(write_only=True, required=False)
 
     class Meta(BaseTravelAgencySerializer.Meta):
         fields = [
