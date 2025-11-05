@@ -84,7 +84,7 @@ services:
         max-file: "5"
 
   web:
-    image: muhammadvadud/simple_travel:13
+    image: muhammadvadud/simple_travel:14
     env_file:
       - .env
     environment:
