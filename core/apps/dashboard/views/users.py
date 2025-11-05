@@ -14,7 +14,7 @@ from core.apps.dashboard.serializers.users import (
 
 @extend_schema(tags=["Dashboard-Users"])
 class UsersView(BaseViewSetMixin, ModelViewSet):
-    queryset = get_user_model().objects.filter(role=RoleChoice.USER).order_by("-id")
+    queryset = get_user_model().objects.filter(role=RoleChoice.USER, validated_at__isnull=False).order_by("-id")
     serializer_class = FullInfoUsersList
     permission_classes = [IsModeratorOrOperator]
     http_method_names = ["get", "patch", "head", "options"]

@@ -26,8 +26,8 @@ def SendConfirm(phone, code, lang):
     print("ishlayapti-SendConfirm1")
 
     lang = str(lang)
-    OTP_MESSAGE_UZ = f"simpletravel.uz saytida parolni tiklash kodi: {code} "
-    OTP_MESSAGE_RU = f"Kod vosstanovleniya parolya na sayte simpletravel.uz: {code}"
+    OTP_MESSAGE_UZ = f"simpletravel.uz saytiga xush kelibsiz! Sizning tasdiqlash kodingiz - {code} "
+    OTP_MESSAGE_RU = f"Dobro pojalovat na sayt simpletravel.uz! Vash kod podtverjdeniya - {code}"
     try:
         service = getattr(
             import_module(os.getenv("OTP_MODULE")), os.getenv("OTP_SERVICE")
@@ -43,4 +43,3 @@ def SendConfirm(phone, code, lang):
             "Error: {phone}-{code}\n\n{error}".format(phone=phone, code=code, error=e)
         )  # noqa
         raise Exception
-
