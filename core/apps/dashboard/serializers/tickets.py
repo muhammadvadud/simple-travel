@@ -75,7 +75,7 @@ class FullTariffWriteSerializer(serializers.ModelSerializer):
 class TicketImagesReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsImagesModel
-        fields = ["image"]
+        fields = ["id", "image"]
 
 
 class TicketImagesWriteSerializer(serializers.ModelSerializer):
@@ -166,7 +166,7 @@ class HotelWriteSerializer(serializers.ModelSerializer):
 class TicketsHotelMealsReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsHotelMealsModel
-        fields = ["image", "name", "name_ru", "name_uz", "desc", "desc_ru", "desc_uz"]
+        fields = ["id", "image", "name", "name_ru", "name_uz", "desc", "desc_ru", "desc_uz"]
 
 
 class TicketsHotelMealsWriteSerializer(serializers.ModelSerializer):
@@ -207,7 +207,7 @@ class TicketsItineraryReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TicketsItineraryModel
-        fields = ["title", "title_ru", "title_uz", "duration", "ticket_itinerary_image",
+        fields = ["id", "title", "title_ru", "title_uz", "duration", "ticket_itinerary_image",
                   "ticket_itinerary_destinations"]
 
 
@@ -226,6 +226,7 @@ class TicketsIncludedServicesReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketsIncludedServicesModel
         fields = [
+            "id",
             "image",
             "title",
             "title_ru",
@@ -640,6 +641,13 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
     extra_service = ExtraServicesWriteSerializer(many=True, write_only=True, required=False)
     paid_extra_service = PaidExtraServicesWriteSerializer(many=True, write_only=True, required=False)
 
+    # ids list
+    ticket_images_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    ticket_hotel_meals_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    ticket_included_services_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True,
+                                                         required=False)
+    ticket_itinerary_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
             "id",
@@ -680,6 +688,11 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
             "transports",
             "extra_service",
             "paid_extra_service",
+            # ids list
+            "ticket_images_ids",
+            "ticket_hotel_meals_ids",
+            "ticket_included_services_ids",
+            "ticket_itinerary_ids",
         ]
 
     def validate_badge(self, value):
@@ -755,6 +768,12 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
         tariffs = self._safe_pop_field(validated_data, "tariff", default=None)
         extra_service = self._safe_pop_field(validated_data, "extra_service", default=None)
         paid_extra_service = self._safe_pop_field(validated_data, "paid_extra_service", default=None)
+        # ids list
+        ticket_images_ids = self._safe_pop_field(validated_data, "ticket_images_ids", default=[])
+        ticket_hotel_meals_ids = self._safe_pop_field(validated_data, "ticket_hotel_meals_ids", default=[])
+        ticket_included_services_ids = self._safe_pop_field(validated_data, "ticket_included_services_ids",
+                                                            default=[])
+        ticket_itinerary_ids = self._safe_pop_field(validated_data, "ticket_itinerary_ids", default=[])
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -771,7 +790,8 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
                 instance.badge.clear()
 
         if ticket_images is not None:
-            instance.ticket_images.all().delete()
+            instance.ticket_images.exclude(id__in=ticket_images_ids).delete()
+            # instance.ticket_images.objects.all().delete()
             if ticket_images:
                 TicketsImagesModel.objects.bulk_create(
                     [TicketsImagesModel(image=image, ticket=instance) for image in ticket_images]
@@ -789,14 +809,14 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
                 instance.ticket_amenities.clear()
 
         if ticket_included_services is not None:
-            instance.ticket_included_services.all().delete()
+            instance.ticket_included_services.exclude(id__in=ticket_included_services_ids).delete()
             if ticket_included_services:
                 TicketsIncludedServicesModel.objects.bulk_create(
                     [TicketsIncludedServicesModel(ticket=instance, **service) for service in ticket_included_services]
                 )
 
         if ticket_hotel_meals is not None:
-            instance.ticket_hotel_meals.all().delete()
+            instance.ticket_hotel_meals.exclude(id__in=ticket_hotel_meals_ids).delete()
             if ticket_hotel_meals:
                 TicketsHotelMealsModel.objects.bulk_create(
                     [TicketsHotelMealsModel(ticket=instance, **meal) for meal in ticket_hotel_meals]
@@ -873,7 +893,7 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
                 )
 
         if ticket_itinerary is not None:
-            instance.ticket_itinerary.all().delete()
+            instance.ticket_itinerary.exclude(id__in=ticket_itinerary_ids).delete()
 
             for itinerary_data in ticket_itinerary:
                 if not isinstance(itinerary_data, dict):

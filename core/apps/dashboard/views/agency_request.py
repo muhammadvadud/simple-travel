@@ -11,7 +11,7 @@ from ..serializers.agency_request import ListDashboardTravelAgencyRequestSeriali
     RetrieveDashboardTravelAgencyRequestSerializer
 
 
-@extend_schema(tags=["Dashboard-TravelAgency-Request"])
+@extend_schema(tags=["ff"])
 class TravelAgencyRequestViewSet(BaseViewSetMixin, ModelViewSet):
     queryset = TravelAgency.objects.all().order_by("-id")
     serializer_class = ListDashboardTravelAgencyRequestSerializer
