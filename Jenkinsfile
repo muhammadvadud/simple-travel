@@ -46,7 +46,7 @@ pipeline {
                     cp ${PROD_ENV} ./.env
                 '''
                 sh """
-                    docker build -t ${IMAGE_NAME}:${PROD_TAG} --build-arg SCRIPT=entrypoint-server.sh -f ./docker/Dockerfile.web .
+                    docker build -t ${IMAGE_NAME}:${PROD_TAG} -f ./docker/Dockerfile.web .
                 """
             }
         }
@@ -102,6 +102,28 @@ pipeline {
                 }
             }
         }
+        stage("Update stack.yaml") {
+            when {
+                expression { currentBuild.currentResult == "SUCCESS" }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        sed -i 's|image: ${DOCKER_USER}/${IMAGE_NAME}:.*|image: ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER}|' stack.yaml
+                    """
+                        // git config --global user.email "admin@jscorp.uz"
+                        // git config --global user.name "Jenkins"
+                        // if ! git diff --quiet stack.yaml; then
+                        //     git add stack.yaml
+                        //     git commit -m "feat(swarm) Update image tag to ${BUILD_NUMBER} [ci skip]"
+                        //     git push origin main
+                        // else
+                        //     echo "No changes in stack.yaml"
+                        // fi
+                }
+
+            }
+        }
         stage('Deploy stack') {
             when {
                 expression { currentBuild.currentResult == "SUCCESS" }
@@ -114,7 +136,7 @@ pipeline {
                 }
             }
         }
- 
+
     }
 
     post {
@@ -134,7 +156,7 @@ pipeline {
                 sh '''
                 curl -s -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage \
                 -d chat_id=${CHAT_ID} \
-                -d text="✅ SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}\nRepo: ${GIT_URL}\nBranch: ${GIT_BRANCH}\nCommit: ${GIT_COMMIT}\nMessage: ${GIT_MESSAGE}"
+                -d text="✅ SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}"
                 '''
             }
         }
@@ -147,7 +169,7 @@ pipeline {
                 sh '''
                 curl -s -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage \
                 -d chat_id=${CHAT_ID} \
-                -d text="🚨 FAILED: ${JOB_NAME} #${BUILD_NUMBER}\nRepo: ${GIT_URL}\nBranch: ${GIT_BRANCH}\nCommit: ${GIT_COMMIT}\nMessage: ${GIT_MESSAGE}"
+                -d text="🚨 FAILED: ${JOB_NAME} #${BUILD_NUMBER}"
                 '''
             }
         }
