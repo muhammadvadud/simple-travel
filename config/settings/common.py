@@ -1,4 +1,4 @@
-#type: ignore
+# type: ignore
 import os
 import pathlib
 from typing import List, Union
@@ -13,7 +13,7 @@ from rich.traceback import install
 install(show_locals=True)
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = env.str("DJANGO_SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = env.bool("DEBUG")
 
 ALLOWED_HOSTS: Union[List[str]] = ["*"]
