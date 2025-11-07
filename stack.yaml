@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:16.3-alpine
     environment:
-      - POSTGRES_DB=django
+      - POSTGRES_DB=simple_travel
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=2309
+      - POSTGRES_PASSWORD=1423
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
