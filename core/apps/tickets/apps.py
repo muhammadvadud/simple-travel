@@ -8,3 +8,5 @@ class ModuleConfig(AppConfig):
 
     def ready(self):
         import core.apps.tickets.signals
+        import core.apps.dashboard.signals.payme.payme
+        import core.apps.dashboard.signals.click.click
