@@ -125,6 +125,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "hotel_info",
             "duration_days",
             "hotel_meals",
+            "slug",
             "ticket_images",
             "ticket_amenities",
             "ticket_included_services",
