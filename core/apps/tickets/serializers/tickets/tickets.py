@@ -182,6 +182,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "rating",
             "duration_days",
             "destination",
+            "slug",
             "ticket_images",
             "ticket_amenities",
             "passenger_count",
