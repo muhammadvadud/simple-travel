@@ -10,7 +10,8 @@ os.makedirs(LOG_DIR, exist_ok=True)
 
 class ExcludeErrorsFilter:
     def filter(self, record):
-        return True
+        return record.levelno <= logging.ERROR
+
 
 LOGGING = {
     "version": 1,
