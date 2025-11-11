@@ -13,7 +13,7 @@ from ..serializers.agency_payout_request import ListTravelAgencyPayOutRequestSer
 
 @extend_schema(tags=["Dashboard-TravelAgencyPayOutRequest"])
 class TravelAgencyPayOutRequestViewSet(BaseViewSetMixin, ModelViewSet):
-    queryset = AgencyPayoutRequestModel.objects.all()
+    queryset = AgencyPayoutRequestModel.objects.all().order_by("-id")
     serializer_class = ListTravelAgencyPayOutRequestSerializer
     permission_classes = [IsModeratorOrTourAdminOrBuxgalter]
     http_method_names = ["get", "post", "patch", "head", "options"]
