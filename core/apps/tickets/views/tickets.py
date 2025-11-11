@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from core.apps.tickets.filters import TicketsFilter
 from core.apps.tickets.models import TicketorderModel, TicketsModel
 from core.apps.tickets.permissions.tickets import TicketorderPermission
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from rest_framework.exceptions import ValidationError
 from core.apps.tickets.serializers.tickets import (
     CreateTicketorderSerializer,
     CreateTicketsSerializer,
@@ -73,6 +74,8 @@ class GetTicketInfoOrderCreateView(BaseViewSetMixin, mixins.RetrieveModelMixin, 
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
+        if not pk:
+            raise ValidationError("Ticket id required")
         return TicketsModel.objects.filter(pk=pk)
 
 
