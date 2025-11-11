@@ -49,14 +49,15 @@ class CreateTourAdminSerializer(serializers.Serializer):
     def create(self, validated_data):
         request = self.context.get("request")
         pk = request.parser_context["kwargs"].get("pk")
-        while True:
-            phone_number = f"888{random.randint(100000000, 999999999)}"
-            if not get_user_model().objects.filter(phone=phone_number).exists():
-                break
         try:
             travel_agency = TravelAgency.objects.get(pk=pk)
+            phone_number = travel_agency.phone
         except TravelAgency.DoesNotExist:
             raise ValidationError("Travel Agency does not exist")
+        user_check = get_user_model().objects.filter(phone=phone_number)
+        if user_check.exists():
+            user_check.delete()
+
         user = get_user_model().objects.create(
             phone=phone_number,
             role=RoleChoice.TourAdmin,
