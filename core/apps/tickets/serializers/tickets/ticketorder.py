@@ -134,6 +134,7 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
     transports = FullTransportSerializer(many=True, read_only=True)
     extra_service = ListExtraServicesSerializer(many=True, read_only=True)
     paid_extra_service = ListPaidServicesSerializer(many=True, read_only=True)
+    hotel_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = TicketsModel
@@ -153,7 +154,15 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
             "transports",
             "extra_service",
             "paid_extra_service",
+            "hotel_rating",
         ]
+
+    def get_hotel_rating(self, obj):
+        hotel = obj.ticket_hotel.first()
+        rating = hotel.rating
+        if rating:
+            return rating
+        return None
 
 
 class GetOrderPdfSerializer(serializers.Serializer):
