@@ -69,7 +69,6 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
             "arrival_time",
             "participant",
             "ticket",
-            "tariff",
             "transport",
             "extra_service",
             "extra_paid_service",
@@ -130,7 +129,6 @@ class FullTransportSerializer(serializers.ModelSerializer):
 
 class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
     ticket_amenities = TicketsAmenitiesSerializer(many=True, read_only=True)
-    tariff = TicketsFullTariffSerializer(many=True, read_only=True)
     transports = FullTransportSerializer(many=True, read_only=True)
     extra_service = ListExtraServicesSerializer(many=True, read_only=True)
     paid_extra_service = ListPaidServicesSerializer(many=True, read_only=True)
@@ -150,7 +148,6 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
             "image_banner",
             "rating",
             "ticket_amenities",
-            "tariff",
             "transports",
             "extra_service",
             "paid_extra_service",
