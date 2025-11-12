@@ -13,10 +13,24 @@ from core.apps.tickets.models import (
     TicketsItineraryImagesModel,
     TicketsItineraryModel,
     TicketsModel,
-    TicketorderModel
+    TicketorderModel,
+    HotelModel
+
 )
 from core.apps.tickets.models.tariff import TariffModel, FullTariff
 from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
+
+
+class TicketHotelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelModel
+        fields = [
+            "id",
+            "name",
+            "meal_plan",
+            "rating",
+            
+        ]
 
 
 class TicketsTariffSerializer(serializers.ModelSerializer):
@@ -107,6 +121,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     is_liked = serializers.SerializerMethodField()
     travel_agency_id = serializers.SerializerMethodField()
     allow_comment = serializers.SerializerMethodField()
+    ticket_hotel = TicketHotelSerializer(many=True, read_only=True)
 
     class Meta:
         model = TicketsModel
@@ -137,6 +152,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "is_liked",
             "allow_comment",
             "featured_tickets",
+            "ticket_hotel",
         ]
 
     def get_is_liked(self, obj):
