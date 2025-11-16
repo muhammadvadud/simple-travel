@@ -29,7 +29,7 @@ class TicketHotelSerializer(serializers.ModelSerializer):
             "name",
             "meal_plan",
             "rating",
-            
+
         ]
 
 
@@ -206,6 +206,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "visa_required",
             "is_liked",
             "featured_tickets",
+            "ticket_hotel",
         ]
 
     def get_ticket_images(self, obj):
