@@ -30,6 +30,6 @@ class TicketsViewSet(BaseViewSetMixin, ModelViewSet):
         user = self.request.user
 
         if hasattr(user, "role") and user.role == RoleChoice.TourAdmin:
-            return TicketsModel.objects.filter(travel_agency=user.travel_agency)
+            return TicketsModel.objects.filter(travel_agency=user.travel_agency).order_by("-id")
 
-        return TicketsModel.objects.all()
+        return TicketsModel.objects.all().order_by("-id")

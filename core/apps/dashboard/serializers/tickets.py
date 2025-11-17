@@ -107,7 +107,7 @@ class HotelAmenitiesWriteSerializer(serializers.ModelSerializer):
 class TransportTicketReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransportTicketModel
-        fields = ["name", "icon_name"]
+        fields = ["id", "name", "icon_name"]
 
 
 class TransportTicketWriteSerializer(serializers.ModelSerializer):
@@ -121,7 +121,7 @@ class FullTransportInfoReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FullTransportInfoModel
-        fields = ["price", "transport"]
+        fields = ["id", "price", "transport"]
 
 
 class FullTransportInfoWriteSerializer(serializers.ModelSerializer):

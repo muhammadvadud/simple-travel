@@ -193,6 +193,7 @@ class ListTicketsSerializer(BaseTicketsSerializer):
             "title",
             "price",
             "travel_time",
+            "departure_time",
             "departure",
             "passenger_count",
             "rating",
