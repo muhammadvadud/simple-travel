@@ -3,7 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from drf_spectacular.utils import extend_schema
 from core.apps.accounts.models.travel_agency import TravelAgency
 from ..serializers.tour_agency import FullListTravelAgencySerializer, RetrieveTravelAgencySerializer, \
-    BaseTravelAgencySerializer
+    UpdateTravelAgencySerializer
 from ..permission.tour_agency import IsModerator, IsOperatorOrModerator
 from core.apps.accounts.choices.travel_agency import TravelAgencyStatusChoices
 
@@ -21,7 +21,7 @@ class TourAgencyViewSet(BaseViewSetMixin, ModelViewSet):
     action_serializer_class = {
         "list": FullListTravelAgencySerializer,
         "retrieve": RetrieveTravelAgencySerializer,
-        "partial_update": RetrieveTravelAgencySerializer
+        "partial_update": UpdateTravelAgencySerializer
     }
 
     def list(self, request, *args, **kwargs):

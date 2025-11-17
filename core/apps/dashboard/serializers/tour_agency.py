@@ -99,6 +99,12 @@ class FullListTravelAgencySerializer(serializers.Serializer):
 
 
 class RetrieveTravelAgencySerializer(BaseTravelAgencySerializer):
+    web_site = serializers.CharField(read_only=True)
+
+    class Meta(BaseTravelAgencySerializer.Meta): ...
+
+
+class UpdateTravelAgencySerializer(BaseTravelAgencySerializer):
     web_site = serializers.CharField(write_only=True)
 
     class Meta(BaseTravelAgencySerializer.Meta): ...
