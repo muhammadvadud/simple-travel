@@ -50,3 +50,5 @@ click-pkg==0.15
 payme-pkg==3.0.28
 requests
 model_bakery
+drf_nested_forms
+

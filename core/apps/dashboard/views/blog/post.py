@@ -4,6 +4,8 @@ from core.apps.blog.permissions.post import IsModeratorOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from core.apps.blog.models import PostModel
 from core.apps.accounts.choices.user import RoleChoice
+from drf_nested_forms.parsers import NestedMultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser
 from core.apps.dashboard.serializers.blog.post import (
     ListDashboardPostSerializer,
     RetrieveDashboardPostSerializer,
@@ -18,7 +20,11 @@ class PostView(BaseViewSetMixin, ModelViewSet):
     serializer_class = ListDashboardPostSerializer
     permission_classes = [IsModeratorOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
-
+    parser_classes = [
+        NestedMultiPartParser,
+        FormParser,
+        MultiPartParser,
+    ]
     action_permission_classes = {}
     action_serializer_class = {
         "list": ListDashboardPostSerializer,
@@ -35,3 +41,7 @@ class PostView(BaseViewSetMixin, ModelViewSet):
             return qs
 
         return qs.filter(is_public=True)
+
+    def partial_update(self, request, *args, **kwargs):
+        print("REQ DATA:", request.data)
+        return super().partial_update(request, *args, **kwargs)

@@ -11,6 +11,7 @@ APPS = [
 
     "drf_spectacular",
     "rest_framework",
+    "drf_nested_forms",
     "corsheaders",
     "django_filters",
     "django_redis",
