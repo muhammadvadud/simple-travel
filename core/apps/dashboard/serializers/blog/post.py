@@ -155,6 +155,7 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
         required=False
     )
     category = serializers.PrimaryKeyRelatedField(queryset=CategoryModel.objects.all(), write_only=True, required=False)
+    post_tags = TagSerializer(many=True, write_only=True, required=True)
 
     class Meta:
         model = PostModel
@@ -197,6 +198,7 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
         new_images = validated_data.pop("post_images", None)
         new_texts = validated_data.pop("post_text", None)
         new_texts_ru = validated_data.pop("post_text_ru", None)
+        post_tags = validated_data.pop("post_tags", None)
 
         updates = validated_data.pop("updates", None)
         delete_ids = validated_data.pop("delete_list", None)
@@ -241,5 +243,9 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
                     text=txt,
                     text_ru=txt_ru
                 )
-
+        if post_tags:
+            instance.post_tags.all().delete()
+            TagModel.objects.bulk_create(
+                [TagModel(post=instance, **tags) for tags in post_tags]
+            )
         return instance
