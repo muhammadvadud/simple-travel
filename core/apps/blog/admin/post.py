@@ -4,12 +4,18 @@ from unfold.admin import ModelAdmin
 from core.apps.blog.models import CategoryModel, PostimagesModel, PostModel, TagModel
 
 
+class PostImagesInline(admin.TabularInline):
+    model = PostimagesModel
+    extra = 1
+
+
 @admin.register(PostModel)
 class PostAdmin(ModelAdmin):
     list_display = (
         "id",
         "__str__",
     )
+    inlines = [PostImagesInline]
 
 
 @admin.register(TagModel)

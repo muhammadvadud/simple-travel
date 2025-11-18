@@ -25,6 +25,16 @@ class TagSerializer(serializers.ModelSerializer):
         ]
 
 
+class TagWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TagModel
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+        ]
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryModel
@@ -76,7 +86,7 @@ class CreateDashboardPostSerializer(BaseDashboardPostSerializer):
     )
     post_text = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
     post_text_ru = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
-    post_tags = TagSerializer(many=True, write_only=True, required=False)
+    post_tags = TagWriteSerializer(many=True, write_only=True, required=False)
     category = serializers.PrimaryKeyRelatedField(
         queryset=CategoryModel.objects.all()
     )
@@ -156,7 +166,7 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
         required=False
     )
     category = serializers.PrimaryKeyRelatedField(queryset=CategoryModel.objects.all(), write_only=True, required=False)
-    post_tags = TagSerializer(many=True, write_only=True, required=True)
+    post_tags = TagWriteSerializer(many=True, write_only=True, required=True)
 
     class Meta:
         model = PostModel
@@ -175,6 +185,9 @@ class UpdateDashboardPostSerializer(BaseDashboardPostSerializer):
 
             "updates",
             "delete_list",
+
+            "post_tags",
+            "is_public",
         ]
 
     def validate(self, data):
