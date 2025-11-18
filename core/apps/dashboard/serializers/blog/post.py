@@ -6,6 +6,7 @@ class DashboardPostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostimagesModel
         fields = [
+            "id",
             "image",
             "text",
             "text_ru",
