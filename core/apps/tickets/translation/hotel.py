@@ -7,7 +7,6 @@ from core.apps.tickets.models import HotelModel, HotelTypeModel, HotelFeatureTyp
 @register(HotelModel)
 class HotelTranslation(TranslationOptions):
     fields = [
-        "name",
     ]
 
 
