@@ -3,9 +3,10 @@ from core.apps.tickets.models import (
     TicketsModel, TicketsImagesModel, TicketsAmenitiesModel, TicketsIncludedServicesModel,
     TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel,
     TicketsHotelMealsModel, TransportTicketModel, FullTransportInfoModel, FullTariff,
-    PaidServicesModel, ExtraServicesModel
+    PaidServicesModel, ExtraServicesModel, TicketsCommentsModel
 )
 from core.apps.tickets.models import HotelModel
+from django.contrib.auth import get_user_model
 
 
 # ------------------ PAID / EXTRA SERVICES ------------------
@@ -262,6 +263,24 @@ class TicketsAmenitiesReadSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = TicketsAmenitiesModel
 #         fields = ['name', 'name_ru', 'icon_name']
+class CommentUserSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ["id", "username"]
+
+    def get_username(self, obj):
+        username = f"{obj.first_name} {obj.last_name}"
+        return username
+
+
+class TicketsCommentsSerializer(serializers.ModelSerializer):
+    user = CommentUserSerializer(read_only=True)
+
+    class Meta:
+        model = TicketsCommentsModel
+        fields = ["user", "text", "rating"]
 
 
 class BaseTicketsSerializer(serializers.ModelSerializer):
@@ -278,6 +297,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     tariff = FullTariffReadSerializer(many=True, read_only=True)
     extra_service = ExtraServicesReadSerializer(many=True, read_only=True)
     paid_extra_service = PaidExtraServicesReadSerializer(many=True, read_only=True)
+    ticket_comments = TicketsCommentsSerializer(many=True, read_only=True)
 
     class Meta:
         model = TicketsModel
@@ -327,6 +347,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "tariff",
             "extra_service",
             "paid_extra_service",
+            "ticket_comments",
 
         ]
 

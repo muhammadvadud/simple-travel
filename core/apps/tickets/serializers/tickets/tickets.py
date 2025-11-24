@@ -48,9 +48,15 @@ class TicketsFullTariffSerializer(serializers.ModelSerializer):
 
 
 class CommentUserSerializer(UserSerializer):
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["id", "username"]
+
+    def get_username(self, obj):
+        username = f"{obj.first_name} {obj.last_name}"
+        return username
 
 
 class TicketsCommentsSerializer(serializers.ModelSerializer):
