@@ -22,7 +22,7 @@ class TransportTicketModel(AbstractBaseModel):
 
 
 class FullTransportInfoModel(AbstractBaseModel):
-    transport = models.ForeignKey(TransportTicketModel, verbose_name=_("transport"), on_delete=models.PROTECT,
+    transport = models.ForeignKey(TransportTicketModel, verbose_name=_("transport"), on_delete=models.CASCADE,
                                   related_name="full_info")
     price = models.PositiveBigIntegerField(verbose_name=_("price"), default=0)
 
