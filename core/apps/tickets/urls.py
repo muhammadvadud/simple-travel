@@ -1,11 +1,13 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import BadgeView, ExtraServicesView, PaidServicesView, TariffView, TicketorderView, GetOrderPdfView,TicketsCommentsViewSet
+from .views import BadgeView, ExtraServicesView, PaidServicesView, TariffView, TicketorderView, GetOrderPdfView, \
+    TicketsCommentsViewSet, CountryView
 from .views.hotel import HotelView
 from .views.tickets import TicketsView, GetTicketInfoOrderCreateView
 
 router = DefaultRouter()
+router.register("countries", CountryView, basename="countries")
 router.register("badge", BadgeView, basename="badge")
 router.register("ticketorder", TicketorderView, basename="ticketorder")
 router.register("paid_services", PaidServicesView, basename="paid_services")

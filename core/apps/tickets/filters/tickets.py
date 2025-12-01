@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from core.apps.tickets.models import TicketsModel
+from core.apps.tickets.models import TicketsModel, Region
 
 
 class TicketsFilter(filters.FilterSet):
@@ -17,8 +17,12 @@ class TicketsFilter(filters.FilterSet):
     meal_plan = filters.CharFilter(field_name="ticket_hotel__meal_plan", lookup_expr="icontains")
     hotel_type = filters.CharFilter(field_name="ticket_hotel__hotel_type__name", lookup_expr="icontains")
     ticket_amenities = filters.CharFilter(field_name="ticket_amenities__name", lookup_expr="icontains")
-    departure = filters.CharFilter(field_name="departure", lookup_expr="icontains")
-    destination = filters.CharFilter(field_name="destination", lookup_expr="icontains")
+    departure = filters.ModelChoiceFilter(
+        queryset=Region.objects.all()
+    )
+    destination = filters.ModelChoiceFilter(
+        queryset=Region.objects.all()
+    )
     min_departure_date = filters.DateFilter(field_name="departure_time", lookup_expr="gte")
     max_departure_date = filters.DateFilter(field_name="travel_time", lookup_expr="lte")
     passenger_count = filters.NumberFilter(field_name="passenger_count", lookup_expr="gte")

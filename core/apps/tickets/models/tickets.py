@@ -6,6 +6,7 @@ from core.apps.accounts.models.participant import ParticipantModel
 from .tariff import FullTariff
 from django.utils.text import slugify
 from ..choices.order import OrderStatusChoices
+from .countries import Region
 
 
 class TransportTicketModel(AbstractBaseModel):
@@ -42,10 +43,10 @@ class TicketsModel(AbstractBaseModel):
     price = models.BigIntegerField(verbose_name=_("price"))
     min_person = models.PositiveIntegerField(verbose_name=_("min person"))
     max_person = models.PositiveIntegerField(verbose_name=_("max person"))
-    departure = models.CharField(verbose_name=_("departure"), max_length=255)
-    destination = models.CharField(verbose_name=_("destination"), max_length=255)
-    #############
-    # Bu uchalasi aniq bo'lgandan keyin yo olib tashlanadi yoki qoladi !
+    departure = models.ForeignKey(Region, related_name="departure", on_delete=models.SET_NULL,
+                                  verbose_name=_("departure"), null=True, blank=True)
+    destination = models.ForeignKey(Region, related_name="destination", on_delete=models.SET_NULL,
+                                    verbose_name=_("departure"), null=True, blank=True)
     departure_time = models.DateTimeField(verbose_name=_("departure time"))
     travel_time = models.DateTimeField(verbose_name=_("travel time"))
     location_name = models.CharField(
@@ -54,7 +55,6 @@ class TicketsModel(AbstractBaseModel):
         null=True,
         blank=True
     )
-    ##############
     passenger_count = models.IntegerField(verbose_name=_("passenger count"))
     languages = models.CharField(verbose_name=_("languages"), max_length=255)
     rating = models.FloatField(verbose_name=_("rating"))
@@ -97,8 +97,8 @@ class TicketsModel(AbstractBaseModel):
         ticket = self.objects.create(
             title="mock",
             price=150000,
-            destination="mock",
-            departure="mock",
+            destination=Region._create_fake(),
+            departure=Region._create_fake(),
             passenger_count=4,
             min_person=4,
             max_person=4,
@@ -118,11 +118,10 @@ class TicketsModel(AbstractBaseModel):
         ticket.badge.set([badge])
         return ticket
 
-
-class Meta:
-    db_table = "tickets"
-    verbose_name = _("TicketsModel")
-    verbose_name_plural = _("TicketsModels")
+    class Meta:
+        db_table = "tickets"
+        verbose_name = _("TicketsModel")
+        verbose_name_plural = _("TicketsModels")
 
 
 class TicketsImagesModel(AbstractBaseModel):

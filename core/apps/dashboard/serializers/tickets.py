@@ -3,10 +3,55 @@ from core.apps.tickets.models import (
     TicketsModel, TicketsImagesModel, TicketsAmenitiesModel, TicketsIncludedServicesModel,
     TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel,
     TicketsHotelMealsModel, TransportTicketModel, FullTransportInfoModel, FullTariff,
-    PaidServicesModel, ExtraServicesModel, TicketsCommentsModel
+    PaidServicesModel, ExtraServicesModel, TicketsCommentsModel, Country, Region
 )
 from core.apps.tickets.models import HotelModel
 from django.contrib.auth import get_user_model
+
+
+# ------------------ COUNTRIES ------------------
+
+class CountryReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = [
+            "id",
+            "name",
+            "name_ru"
+        ]
+
+
+class CountryWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+            "name_uz"
+        ]
+
+
+class RegionReadSerializer(serializers.ModelSerializer):
+    country = CountryReadSerializer(read_only=True)
+
+    class Meta:
+        model = Region
+        fields = [
+            "id",
+            "name",
+            "name_ru",
+            "country"
+        ]
+
+
+class RegionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = [
+            "id",
+            "name"
+        ]
 
 
 # ------------------ PAID / EXTRA SERVICES ------------------
@@ -298,6 +343,8 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     extra_service = ExtraServicesReadSerializer(many=True, read_only=True)
     paid_extra_service = PaidExtraServicesReadSerializer(many=True, read_only=True)
     ticket_comments = TicketsCommentsSerializer(many=True, read_only=True)
+    departure = RegionReadSerializer(read_only=True)
+    destination = RegionReadSerializer(read_only=True)
 
     class Meta:
         model = TicketsModel
@@ -313,11 +360,7 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
             "min_person",
             "max_person",
             "departure",
-            "departure_ru",
-            "departure_uz",
             "destination",
-            "destination_ru",
-            "destination_uz",
             "departure_time",
             "travel_time",
             "location_name",
@@ -410,6 +453,8 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
     )
     extra_service = ExtraServicesWriteSerializer(many=True, write_only=True, required=False)
     paid_extra_service = PaidExtraServicesWriteSerializer(many=True, write_only=True, required=False)
+    departure = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), write_only=True, required=True)
+    destination = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), write_only=True, required=True)
 
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
@@ -423,9 +468,7 @@ class CreateTicketsSerializer(BaseTicketsSerializer):
             "min_person",
             "max_person",
             "departure",
-            "departure_ru",
             "destination",
-            "destination_ru",
             "departure_time",
             "travel_time",
             "location_name",
@@ -676,6 +719,8 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
     ticket_included_services_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True,
                                                          required=False)
     ticket_itinerary_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+    departure = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), write_only=True, required=True)
+    destination = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), write_only=True, required=True)
 
     class Meta(BaseTicketsSerializer.Meta):
         fields = [
@@ -689,9 +734,7 @@ class UpdateTicketsSerializer(BaseTicketsSerializer):
             "min_person",
             "max_person",
             "departure",
-            "departure_ru",
             "destination",
-            "destination_ru",
             "departure_time",
             "travel_time",
             "location_name",

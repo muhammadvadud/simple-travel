@@ -6,7 +6,8 @@ from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSe
     CategoryViewSet, FaqViewSet, FaqCategoryViewSet, SupportViewSet, TravelAgencyRequestViewSet, HotelFeatureViewSet, \
     HotelFeatureTypeViewSet, SiteSettingsViewSet, SiteSeoViewSet, OffertaViewSet, HelpPageViewSet, \
     UpdateFeaturedTicketAPIView, BannerViewSet, TravelAgencyReportViewSet, TravelAgencyPaymentsViewSet, \
-    TourAdminViewSet, TicketAmenitiesViewSet, OrderStatusHistoryPaymentsViewSet, TravelAgencyPayOutRequestViewSet
+    TourAdminViewSet, TicketAmenitiesViewSet, OrderStatusHistoryPaymentsViewSet, TravelAgencyPayOutRequestViewSet, \
+    CountryViewSet, RegionViewSet
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -48,6 +49,10 @@ router.register("dashboard-order-status-history", OrderStatusHistoryPaymentsView
                 basename="dashboard-order-status-history")
 router.register("dashboard-agency-payout-request", TravelAgencyPayOutRequestViewSet,
                 basename="dashboard-agency-payout-request")
+router.register("dashboard-ticket-settings-country", CountryViewSet,
+                basename="dashboard-ticket-settings-country")
+router.register("dashboard-ticket-settings-region", RegionViewSet,
+                basename="dashboard-ticket-settings-region")
 
 urlpatterns = [
     path("", include(router.urls)),

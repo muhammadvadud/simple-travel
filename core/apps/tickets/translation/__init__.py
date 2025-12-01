@@ -4,3 +4,4 @@ from .hotel import *  # noqa
 from .tariff import *  # noqa
 from .tickets import *  # noqa
 from .transport import *  # noqa
+from .countries import *  # noqa

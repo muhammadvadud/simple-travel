@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from core.apps.accounts.models import User
 from core.apps.accounts.serializers.user import UserSerializer
-from collections import Counter
 
 from core.apps.tickets.models import (
     TicketsAmenitiesModel,
@@ -14,11 +13,43 @@ from core.apps.tickets.models import (
     TicketsItineraryModel,
     TicketsModel,
     TicketorderModel,
-    HotelModel
+    HotelModel,
+    Region,
+    Country,
 
 )
 from core.apps.tickets.models.tariff import TariffModel, FullTariff
 from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
+
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = [
+            "id",
+            "name"
+        ]
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    country = CountrySerializer(read_only=True)
+
+    class Meta:
+        model = Region
+        fields = [
+            "id",
+            "name",
+            "country"
+        ]
+
+
+class RegionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = [
+            "id",
+            "name"
+        ]
 
 
 class TicketHotelSerializer(serializers.ModelSerializer):
@@ -128,6 +159,8 @@ class BaseTicketsSerializer(serializers.ModelSerializer):
     travel_agency_id = serializers.SerializerMethodField()
     allow_comment = serializers.SerializerMethodField()
     ticket_hotel = TicketHotelSerializer(many=True, read_only=True)
+    departure = RegionSerializer(read_only=True)
+    destination = RegionSerializer(read_only=True)
 
     class Meta:
         model = TicketsModel
@@ -191,6 +224,8 @@ class ListTicketsSerializer(BaseTicketsSerializer):
     ticket_images = serializers.SerializerMethodField()
     badge = ListBadgeSerializer(many=True, read_only=True)
     is_liked = serializers.SerializerMethodField()
+    departure = RegionSerializer(read_only=True)
+    destination = RegionSerializer(read_only=True)
 
     class Meta:
         model = TicketsModel
@@ -268,13 +303,19 @@ class FullInformationTicketsSerializer(serializers.Serializer):
 
     def get_top_destinations(self, obj):
         from collections import Counter
+
         qs = obj
 
-        destination_list = [
-            t.destination for t in qs if getattr(t, "destination", None) is not None
-        ]
+        destination_list = [t.destination for t in qs if t.destination]
+
         counter = Counter(destination_list)
-        return [{"destination": val} for val, _ in counter.most_common(5)]
+
+        result = []
+        for region, _ in counter.most_common(5):
+            data = RegionListSerializer(region).data
+            result.append(data)
+
+        return result
 
     def get_hotel_features_by_type(self, obj):
         from collections import defaultdict

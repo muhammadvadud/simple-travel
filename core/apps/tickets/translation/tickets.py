@@ -8,8 +8,6 @@ from core.apps.tickets.models import TicketorderModel, TicketsModel, TicketsAmen
 class TicketsTranslation(TranslationOptions):
     fields = [
         "title",
-        "departure",
-        "destination",
         "location_name",
         "hotel_info",
         "hotel_meals",
