@@ -3,10 +3,28 @@ from core.apps.tickets.models import (
     TicketsModel, TicketsImagesModel, TicketsAmenitiesModel, TicketsIncludedServicesModel,
     TicketsItineraryModel, TicketsItineraryDestinationsModel, TicketsItineraryImagesModel,
     TicketsHotelMealsModel, TransportTicketModel, FullTransportInfoModel, FullTariff,
-    PaidServicesModel, ExtraServicesModel, TicketsCommentsModel, Country, Region
+    PaidServicesModel, ExtraServicesModel, TicketsCommentsModel, Country, Region, HotelMealPlan
 )
 from core.apps.tickets.models import HotelModel
 from django.contrib.auth import get_user_model
+
+
+# ------------------ HOTEL MEAL PLAN ------------------
+
+class HotelMealPlanReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelMealPlan
+        fields = [
+            "name",
+        ]
+
+
+class HotelMealPlanWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelMealPlan
+        fields = [
+            "name",
+        ]
 
 
 # ------------------ COUNTRIES ------------------
@@ -179,6 +197,8 @@ class FullTransportInfoWriteSerializer(serializers.ModelSerializer):
 # ------------------ HOTEL ------------------
 
 class HotelReadSerializer(serializers.ModelSerializer):
+    meal_plan = HotelMealPlanReadSerializer(read_only=True)
+
     class Meta:
         model = HotelModel
         fields = [
@@ -194,6 +214,8 @@ class HotelReadSerializer(serializers.ModelSerializer):
 
 
 class HotelWriteSerializer(serializers.ModelSerializer):
+    meal_plan = HotelMealPlanWriteSerializer(write_only=True)
+
     class Meta:
         model = HotelModel
         fields = [

@@ -7,7 +7,7 @@ from .views import EmployeesViewSet, TourAgencyViewSet, UsersView, TicketsViewSe
     HotelFeatureTypeViewSet, SiteSettingsViewSet, SiteSeoViewSet, OffertaViewSet, HelpPageViewSet, \
     UpdateFeaturedTicketAPIView, BannerViewSet, TravelAgencyReportViewSet, TravelAgencyPaymentsViewSet, \
     TourAdminViewSet, TicketAmenitiesViewSet, OrderStatusHistoryPaymentsViewSet, TravelAgencyPayOutRequestViewSet, \
-    CountryViewSet, RegionViewSet
+    CountryViewSet, RegionViewSet, HotelMealPlanViewSet
 
 router = DefaultRouter()
 router.register("users", UsersView, basename="dashboard-users")
@@ -53,6 +53,8 @@ router.register("dashboard-ticket-settings-country", CountryViewSet,
                 basename="dashboard-ticket-settings-country")
 router.register("dashboard-ticket-settings-region", RegionViewSet,
                 basename="dashboard-ticket-settings-region")
+router.register("dashboard-hotel-meal-plan", HotelMealPlanViewSet,
+                basename="dashboard-hotel-meal-plan")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -4,8 +4,19 @@ from core.apps.tickets.models import (
     TicketsAmenitiesModel,
     HotelTypeModel,
     HotelFeatureModel,
-    HotelFeatureTypeModel
+    HotelFeatureTypeModel,
+    HotelMealPlan
+
 )
+
+
+class HotelMealPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelMealPlan
+        fields = [
+            "name_ru",
+            "name_uz"
+        ]
 
 
 class HotelFeatureTypeSerializer(serializers.ModelSerializer):
@@ -44,6 +55,8 @@ class HotelAmenitiesSerializer(serializers.ModelSerializer):
 
 
 class BaseHotelSerializer(serializers.ModelSerializer):
+    meal_plan = HotelMealPlanSerializer(read_only=True)
+
     class Meta:
         model = HotelModel
         fields = ["id"]
@@ -98,6 +111,7 @@ class CreateHotelSerializer(serializers.ModelSerializer):
         many=True,
         required=False
     )
+    meal_plan = serializers.PrimaryKeyRelatedField(queryset=HotelMealPlan.objects.all())
 
     class Meta:
         model = HotelModel

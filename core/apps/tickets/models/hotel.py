@@ -4,6 +4,18 @@ from django_core.models import AbstractBaseModel
 from .tickets import TicketsModel, TicketsAmenitiesModel
 
 
+class HotelMealPlan(AbstractBaseModel):
+    name = models.CharField(max_length=255, verbose_name=_('name'))
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        db_table = 'hotel_meal_plan'
+        verbose_name = _('hotel meal plan')
+        verbose_name_plural = _('hotel meal plans')
+
+
 class HotelTypeModel(models.Model):
     name = models.CharField(verbose_name=_("name"), max_length=255)
 
@@ -97,8 +109,8 @@ class HotelModel(AbstractBaseModel):
                                on_delete=models.CASCADE)
     name = models.CharField(verbose_name=_("name"), max_length=255)
     rating = models.FloatField(verbose_name=_("rating"), blank=True, null=True)
-    meal_plan = models.CharField(verbose_name=_("meal plan"), choices=MEAL_PLAN_CHOICES, max_length=255,
-                                 default="breakfast")
+    meal_plan = models.ForeignKey(HotelMealPlan, related_name="meal_plan", verbose_name=_("meal plan"),
+                                  on_delete=models.SET_NULL, null=True, blank=True)
     hotel_type = models.ManyToManyField(HotelTypeModel, verbose_name=_("hotel type"))
     hotel_amenities = models.ManyToManyField(TicketsAmenitiesModel, blank=True, verbose_name=_("hotel amenities"))
     hotel_features = models.ManyToManyField(HotelFeatureModel, verbose_name=_("hotel features"), null=True, blank=True)

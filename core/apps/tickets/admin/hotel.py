@@ -1,8 +1,8 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 
-from core.apps.tickets.models import HotelModel, HotelTypeModel,  HotelFeatureModel, \
-    HotelFeatureTypeModel
+from core.apps.tickets.models import HotelModel, HotelTypeModel, HotelFeatureModel, \
+    HotelFeatureTypeModel, HotelMealPlan
 
 
 @admin.register(HotelModel)
@@ -29,10 +29,16 @@ class HotelFeatureTypeModelAdmin(ModelAdmin):
     )
 
 
-
-
 @admin.register(HotelFeatureModel)
 class HotelFeatureModelAdmin(ModelAdmin):
+    list_display = (
+        "id",
+        "__str__",
+    )
+
+
+@admin.register(HotelMealPlan)
+class HotelMealPlanAdmin(ModelAdmin):
     list_display = (
         "id",
         "__str__",

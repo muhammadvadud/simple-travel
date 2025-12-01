@@ -16,10 +16,19 @@ from core.apps.tickets.models import (
     HotelModel,
     Region,
     Country,
-
+    HotelMealPlan
 )
 from core.apps.tickets.models.tariff import TariffModel, FullTariff
 from core.apps.tickets.serializers.badge.badge import ListBadgeSerializer
+
+
+class HotelMealPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelMealPlan
+        fields = [
+            "id",
+            "name"
+        ]
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -53,6 +62,8 @@ class RegionListSerializer(serializers.ModelSerializer):
 
 
 class TicketHotelSerializer(serializers.ModelSerializer):
+    meal_plan = HotelMealPlanSerializer(read_only=True)
+
     class Meta:
         model = HotelModel
         fields = [

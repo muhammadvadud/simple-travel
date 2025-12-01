@@ -7,3 +7,4 @@ from .featured_tickets import *  # noqa
 from .ticket_amenities import *  # noqa
 from .country import *  # noqa
 from .region import *  # noqa
+from .hotel_meal_plan import *  # noqa

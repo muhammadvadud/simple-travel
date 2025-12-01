@@ -1,7 +1,14 @@
 from modeltranslation.translator import TranslationOptions, register
 
 from core.apps.tickets.models import HotelModel, HotelTypeModel, HotelFeatureTypeModel, \
-    HotelFeatureModel
+    HotelFeatureModel, HotelMealPlan
+
+
+@register(HotelMealPlan)
+class HotelMealPlanTranslation(TranslationOptions):
+    fields = [
+        "name"
+    ]
 
 
 @register(HotelModel)
