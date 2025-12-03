@@ -1,12 +1,33 @@
 from rest_framework import serializers
 from core.apps.tickets.models import TicketorderModel, TicketsModel, PaidServicesModel, ExtraServicesModel, \
-    TransportTicketModel, FullTransportInfoModel
+    TransportTicketModel, FullTransportInfoModel, Region, Country
 
 from core.apps.accounts.models import ParticipantModel
 from core.apps.accounts.serializers.participant.participant import ListParticipantSerializer
 from core.apps.tickets.serializers import ListExtraServicesSerializer, ListPaidServicesSerializer
 from ..tickets.tickets import TicketsAmenitiesSerializer, TicketsFullTariffSerializer
 from core.utils.order_pdf_creator import creator_pdf
+
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = [
+            "id",
+            "name"
+        ]
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    country = CountrySerializer(read_only=True)
+
+    class Meta:
+        model = Region
+        fields = [
+            "id",
+            "name",
+            "country"
+        ]
 
 
 class OrderTicketSerializer(serializers.ModelSerializer):
@@ -25,6 +46,8 @@ class BaseTicketorderSerializer(serializers.ModelSerializer):
     participant = ListParticipantSerializer(many=True, read_only=True)
     extra_service = ListExtraServicesSerializer(many=True, read_only=True)
     extra_paid_service = ListPaidServicesSerializer(many=True, read_only=True)
+    departure = RegionSerializer(read_only=True)
+    destination = RegionSerializer(read_only=True)
 
     class Meta:
         model = TicketorderModel
@@ -61,10 +84,14 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
                                                             required=False)
     ticket = serializers.PrimaryKeyRelatedField(
         queryset=TicketsModel.objects.all(), required=True)
+    departure = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), required=True)
+    destination = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), required=True)
 
     class Meta(BaseTicketorderSerializer.Meta):
         fields = [
             "id",
+            "departure",
+            "destination",
             "departure_date",
             "arrival_time",
             "participant",
@@ -81,15 +108,6 @@ class CreateTicketorderSerializer(BaseTicketorderSerializer):
             validated_data["user"] = request.user
         else:
             raise serializers.ValidationError({"user": "User is required"})
-
-        ticket = validated_data.get("ticket")
-        if ticket:
-            validated_data["departure"] = ticket.departure
-            validated_data["departure_uz"] = ticket.departure_uz
-            validated_data["departure_ru"] = ticket.departure_ru
-            validated_data["destination"] = ticket.destination
-            validated_data["destination_uz"] = ticket.destination_uz
-            validated_data["destination_ru"] = ticket.destination_ru
 
         participants_data = validated_data.pop("participant", [])
         extra_services_data = validated_data.pop("extra_service", [])
@@ -133,6 +151,8 @@ class GetTicketInfoOrderCreateSerializer(serializers.ModelSerializer):
     extra_service = ListExtraServicesSerializer(many=True, read_only=True)
     paid_extra_service = ListPaidServicesSerializer(many=True, read_only=True)
     hotel_rating = serializers.SerializerMethodField()
+    departure = RegionSerializer(read_only=True)
+    destination = RegionSerializer(read_only=True)
 
     class Meta:
         model = TicketsModel

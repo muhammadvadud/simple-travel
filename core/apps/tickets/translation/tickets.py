@@ -17,8 +17,6 @@ class TicketsTranslation(TranslationOptions):
 @register(TicketorderModel)
 class TicketorderTranslation(TranslationOptions):
     fields = [
-        "departure",
-        "destination",
     ]
 
 

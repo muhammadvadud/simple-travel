@@ -336,8 +336,11 @@ class TicketsCommentsModel(AbstractBaseModel):
 
 class TicketorderModel(AbstractBaseModel):
     user = models.ForeignKey(User, verbose_name=_("user"), related_name="orders", on_delete=models.CASCADE)
-    departure = models.CharField(verbose_name=_("departure"), max_length=255)
-    destination = models.CharField(verbose_name=_("destination"), max_length=255)
+    departure = models.ForeignKey(Region, verbose_name=_("departure"), on_delete=models.SET_NULL,
+                                  related_name="order_departure", null=True, blank=True)
+    destination = models.ForeignKey(Region, verbose_name=_("destination"), on_delete=models.SET_NULL,
+                                    related_name="order_destination", null=True,
+                                    blank=True)
     departure_date = models.DateField(verbose_name=_("departure date"))
     arrival_time = models.DateField(verbose_name=_("arrival time"))
     participant = models.ManyToManyField(ParticipantModel, verbose_name=_("participant"), null=True, blank=True)
@@ -361,8 +364,6 @@ class TicketorderModel(AbstractBaseModel):
         from core.apps.tickets.models.extra_services import ExtraServicesModel, PaidServicesModel
         order = self.objects.create(
             user=User._create_fake(),
-            departure="mock",
-            destination="mock",
             departure_date="2025-12-01",
             arrival_time="2025-12-01",
             ticket=TicketsModel._create_fake(),
