@@ -10,4 +10,13 @@ class RegionFilter(filters.FilterSet):
         model = Region
         fields = [
             "country",
+            "name",
+        ]
+
+
+class CountryFilter(filters.FilterSet):
+    class Meta:
+        model = Country
+        fields = [
+            "name",
         ]

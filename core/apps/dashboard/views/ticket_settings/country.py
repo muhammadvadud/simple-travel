@@ -6,6 +6,8 @@ from core.apps.dashboard.permission import IsModerator, IsModeratorOrTourAdminOr
 from core.apps.dashboard.serializers.ticket_settings.country import (
     ListCountrySerializer, RetrieveCountrySerializer, CreateCountrySerializer
 )
+from core.apps.dashboard.filters.countries import CountryFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 @extend_schema(tags=["Ticket Settings Country"])
@@ -14,7 +16,8 @@ class CountryViewSet(BaseViewSetMixin, ModelViewSet):
     serializer_class = ListCountrySerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
-
+    filterset_class = CountryFilter
+    filter_backends = [DjangoFilterBackend]
     action_permission_classes = {
         "list": [IsModeratorOrTourAdminOrOperator],
         "retrieve": [IsModeratorOrTourAdminOrOperator]
