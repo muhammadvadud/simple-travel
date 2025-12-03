@@ -6,6 +6,8 @@ from core.apps.dashboard.permission import IsModerator, IsModeratorOrTourAdminOr
 from core.apps.dashboard.serializers.ticket_settings.hotel_meal_plan import (
     ListHotelMealPlanSerializer, RetrieveHotelMealPlanSerializer, CreateHotelMealPlanSerializer
 )
+from django_filters.rest_framework import DjangoFilterBackend
+from core.apps.dashboard.filters.hotel import HotelMealPlanFilter
 
 
 @extend_schema(tags=["Ticket Settings Hotel Meal Plan"])
@@ -14,6 +16,8 @@ class HotelMealPlanViewSet(BaseViewSetMixin, ModelViewSet):
     serializer_class = ListHotelMealPlanSerializer
     permission_classes = [IsModerator]
     http_method_names = ["get", "post", "patch", "delete", "head", "options"]
+    filterset_class = HotelMealPlanFilter
+    filter_backends = [DjangoFilterBackend]
 
     action_permission_classes = {
         "list": [IsModeratorOrTourAdminOrOperator],

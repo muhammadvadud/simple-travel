@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from core.apps.tickets.models import HotelModel, TicketsModel
+from core.apps.tickets.models import HotelModel, TicketsModel, HotelMealPlan
 
 
 class HotelFilter(filters.FilterSet):
@@ -10,4 +10,14 @@ class HotelFilter(filters.FilterSet):
         model = HotelModel
         fields = [
             "ticket",
+        ]
+
+
+class HotelMealPlanFilter(filters.FilterSet):
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+
+    class Meta:
+        model = HotelMealPlan
+        fields = [
+            "name",
         ]
