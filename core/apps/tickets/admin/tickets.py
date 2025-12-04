@@ -72,7 +72,10 @@ class TicketsCommentsAdmin(ModelAdmin):
 class TicketorderAdmin(ModelAdmin):
     list_display = (
         "id",
-        "__str__",
+        "ticket",
+        "destination",
+        "departure",
+        "user",
     )
 
 
