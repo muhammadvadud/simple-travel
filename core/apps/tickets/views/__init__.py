@@ -5,3 +5,4 @@ from .tariff import *  # noqa
 from .tickets import *  # noqa
 from .comment import *  # noqa
 from .countries import *  # noqa
+from .hotel_meal_plan import *  # noqa
