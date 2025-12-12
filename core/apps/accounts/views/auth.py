@@ -52,13 +52,14 @@ class RegisterView(BaseViewSetMixin, GenericViewSet, UserService):
     @action(methods=["POST"], detail=False, url_path="register")
     def register(self, request):
         lang = request.headers.get('Accept-Language')
+        type = "register"
         ser = self.get_serializer(data=request.data)
         ser.is_valid(raise_exception=True)
         data = ser.data
         phone = data.get("phone")
         # Create pending user
         self.create_user(phone)
-        self.send_confirmation(phone, lang)  # Send confirmation code for sms eskiz.uz
+        self.send_confirmation(phone, lang, type)  # Send confirmation code for sms eskiz.uz
         return Response(
             {"detail": _("Sms %(phone)s raqamiga yuborildi") % {"phone": phone}},
             status=status.HTTP_202_ACCEPTED,
@@ -129,10 +130,11 @@ class ResetPasswordView(BaseViewSetMixin, GenericViewSet, UserService):
     @action(methods=["POST"], detail=False, url_path="reset-password")
     def reset_password(self, request):
         lang = request.headers.get('Accept-Language')
+        type = "reset_password"
         ser = self.get_serializer(data=request.data)
         ser.is_valid(raise_exception=True)
         phone = ser.data.get("phone")
-        self.send_confirmation(phone, lang)
+        self.send_confirmation(phone, lang, type)
         return Response({"detail": _("Sms %(phone)s raqamiga yuborildi") % {"phone": phone}})
 
     @action(methods=["POST"], detail=False, url_path="reset-password-confirm")

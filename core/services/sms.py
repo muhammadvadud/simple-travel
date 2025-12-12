@@ -10,7 +10,7 @@ from core.apps.accounts.models.user import EmailCodeConfirm
 
 class SmsService:
     @staticmethod
-    def send_confirm(phone, lang):
+    def send_confirm(phone, lang, type):
         """Tasdiqlash ko'dini yuborish
 
         Args:
@@ -45,7 +45,7 @@ class SmsService:
         )  # noqa
         sms_confirm.save()
 
-        SendConfirm.delay(phone, code, lang)
+        SendConfirm.delay(phone, code, lang, type)
         return True
 
     @staticmethod

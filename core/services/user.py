@@ -42,9 +42,9 @@ class UserService(sms.SmsService):
             user.set_unusable_password()
             user.save()
 
-    def send_confirmation(self, phone, lang='uz') -> bool:
+    def send_confirmation(self, phone, lang='uz', type='register') -> bool:
         try:
-            self.send_confirm(phone, lang)
+            self.send_confirm(phone, lang, type)
 
             return True
         except exceptions.SmsException as e:
